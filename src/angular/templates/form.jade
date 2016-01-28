@@ -1,0 +1,6 @@
+form.form-vertical(novalidate="" ng-controller=controller)&attributes(form_attrs)
+  fieldset
+    legend= legend
+    div!= controls
+    div.clearfix
+    pre= '{{' + form_attrs.name + ' | json}}'

@@ -1,0 +1,19 @@
+div.control-container.form-group(ng-class="{'has-error': " + form_name +"." + data.id +".$touched && " + form_name +"." + data.id +".$invalid}"
+  id=data.id + "-container"
+  ng-scope="{control: controls." + data.id+ "}"
+  )&attributes(data.container)
+  block label
+    label.col-xs-4.control-label(for=data.id translate="")= data.label
+  block content
+    div.col-xs-8
+      div.control-wapper
+        block control
+
+  if data.help
+    div.clearfix
+    div.col-xs-offset-4.col-xs-8.help-block= data.help
+  
+  div.clearfix
+  block errors
+    div.col-xs-offset-4.col-xs-8.error-list
+      include errors-list.jade

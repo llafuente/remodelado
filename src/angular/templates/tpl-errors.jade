@@ -1,0 +1,4 @@
+block errors
+  div.alert.alert-danger(ng-show=form_name + "." + data.id + ".$touched && " + form_name + "." + data.id + ".$invalid")
+    each err_str, key in data.error_list
+      block error

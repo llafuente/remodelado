@@ -1,0 +1,58 @@
+{
+  "name": "user",
+  "schema": {
+    "id": {
+      "type": "number",
+      "display": "static",
+      "label": "ID",
+      "create": false,
+      "update": false
+    },
+    "first_name": {
+      "type": "string",
+      "display": "text",
+      "label": "First Name",
+      "required": true,
+      "create": true,
+      "update": true
+    },
+    "last_name": {
+      "type": "string",
+      "display": "text",
+      "required": true,
+      "label": "Last name",
+      "create": true,
+      "update": true
+    },
+    "role": {
+      "type": "string",
+      "enum": ["admin", "user"],
+      "display": "select",
+      "label": "Role",
+      "create": true,
+      "update": true
+    },
+    "age": {
+      "type": "number",
+      "display": "number",
+      "label": "Age",
+      "create": true,
+      "update": true
+    },
+    "bio": {
+      "type": "string",
+      "display": "textarea",
+      "label": "About myself",
+      "create": true,
+      "update": true,
+      "default": null
+    }
+  },
+  "mongoose": {
+    "collection": "users"
+  },
+  "angular": {
+
+  }
+
+}

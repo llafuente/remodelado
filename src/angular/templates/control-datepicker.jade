@@ -1,0 +1,23 @@
+block control
+  input.form-control(
+    type="text"
+    ng-model=data.model
+    name=data.id
+    id=data.id
+    is-open="datepickers." + data.id + "_opended"
+    ng-focus="datepickers." + data.id + "_opended = true"
+    datepicker-popup=""
+    ng-datepicker-fix=""
+    datepicker-options="{}"
+  )
+  span.input-group-btn
+    button.btn.btn-default(
+      type="button"
+      ng-click=data.id + "_open($event)"
+    )
+      i.glyphicon.glyphicon-calendar
+
+block content
+  div(class=layout === "horizontal" ? "col-xs-8" : undefined)
+    div.control-wapper.input-group
+      block control

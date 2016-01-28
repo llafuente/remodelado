@@ -1,0 +1,9 @@
+block label
+  span
+  
+block content
+  div(class=layout === "horizontal" ? "col-xs-offset-4 col-xs-8" : undefined)
+    div.control-wapper.checkbox
+      label 
+        input(type="checkbox" ng-model=data.model name=data.id id=data.id ng-true-value="true" ng-false-value="false")
+        span= data.label
