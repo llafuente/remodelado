@@ -179,6 +179,7 @@ test('http: get create user form', function (t) {
   .expect(200)
   .end(function(err, res) {
     if (err) { throw err; }
+
     //console.log("body", res.text);
 
     var $ = cheerio.load(res.text);
@@ -199,6 +200,19 @@ test('http: get create user form', function (t) {
     var $ = cheerio.load(res.text);
     // bio cannot be updated! -1
     t.equal($(".control-container").toArray().length, 5);
+
+    t.end();
+  });
+});
+
+test('http: get user routes.js', function (t) {
+  request(app)
+  .get("/users/routes.js?action=update")
+  .expect(200)
+  .end(function(err, res) {
+    if (err) { throw err; }
+
+    console.log("body", res.text);
 
     t.end();
   });

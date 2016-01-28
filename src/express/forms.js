@@ -1,11 +1,11 @@
 var form = require("../angular/form.js");
-module.exports = create_form_middleware;
+module.exports = forms_middleware;
 
 var mongoosemask = require('mongoosemask');
 var clean_body = require('./clean_body.js');
 
-function create_form_middleware(mdl) {
-  console.log("create_form_middleware", mdl.name);
+function forms_middleware(mdl) {
+  console.log("forms_middleware", mdl.name);
 
   return function(req, res, next) {
     //console.log("create_form", mdl.name);

@@ -3,7 +3,8 @@ module.exports = router;
 var express = require("express");
 var error_handler = require("./error.js");
 var create = require("./create.js");
-var forms = require("./forms.js");
+var angular_forms = require("./forms.js");
+var angular_routes = require("./routes.js");
 
 function router(mdl) {
   var r = express.Router();
@@ -21,7 +22,8 @@ function router(mdl) {
   });
 
   r.post(mdl.create_url, create(mdl));
-  r.get(mdl.forms_url, forms(mdl));
+  r.get(mdl.forms_url, angular_forms(mdl));
+  r.get(mdl.routes_url, angular_routes(mdl));
 
   return r;
 }

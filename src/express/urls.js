@@ -8,13 +8,18 @@ var assert = require('assert');
 function urls(mdl) {
   assert.ok(mdl.model === undefined);
 
+  var plural = mdl.plural = pluralize(mdl.name);
+
+  mdl.param_url = mdl.name + '_id';
+
   mdl.read_url =
   mdl.delete_url =
-  mdl.update_url = '/' + pluralize(mdl.name) + '/:' + mdl.name + '_id';
+  mdl.update_url = '/' + plural + '/:' + mdl.param_url;
 
-  mdl.forms_url =
-  mdl.create_url =
-  mdl.list_url = '/' + pluralize(mdl.name);
+  var base = '/' + plural;
+  mdl.create_url = base;
+  mdl.list_url = base;
 
-  mdl.forms_url += '/forms';
+  mdl.routes_url = base + '/routes.js';
+  mdl.forms_url = base + '/forms';
 }
