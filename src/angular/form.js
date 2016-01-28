@@ -8,8 +8,10 @@ var join = require("path").join;
 var fs = require("fs");
 
 // TODO cache compiled
-function gen_control(field, path, base_path, layout, cb) {
-  var file = join(__dirname, "/templates/control-" + field.options.display + ".jade");
+function gen_control(control, path, form_path, base_path, layout, cb) {
+  //console.log("control", control);
+
+  var file = join(__dirname, "/templates/control-" + control.type + ".jade");
   var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" +
   fs.readFile(file, {encoding: "utf-8"}, function(err, data) {
     if (err) {
@@ -25,8 +27,12 @@ function gen_control(field, path, base_path, layout, cb) {
       var html = compiled({
         //debug: true,
         layout: layout,
-        form_name: base_path,
-        data: field
+
+        form_path: form_path,
+        control_path: form_path + "." + control.name,
+        model: base_path + "." + control.name,
+
+        control: control
       });
       return cb(null, html);
     } catch(e) {
@@ -36,10 +42,19 @@ function gen_control(field, path, base_path, layout, cb) {
 
 }
 
-function form(mdl, action, layout, base_path, cb) {
+function check_action(action, options) {
+  if (options.options.display[action] === undefined) {
+    return !!options.options[action];
+  }
+
+  return !!options.options.display[action];
+}
+
+function form(mdl, action, layout, form_path, base_path, cb) {
   assert.ok(["create", "update"].indexOf(action) !== -1);
   assert.ok(["vertical", "horizontal", "inline"].indexOf(layout) !== -1);
 
+  form_path = form_path || "form";
   base_path = base_path || "entity";
 
   var controls = [];
@@ -52,17 +67,13 @@ function form(mdl, action, layout, base_path, cb) {
       return ;
     }
 
-    if (action == "create" && options.options.create === false) {
-      return;
-    }
-
-    if (action == "update" && options.options.update === false) {
+    if (!check_action(action, options)) {
       return;
     }
 
     ++todo;
 
-    controls.push(gen_control(options, path, base_path, layout, function(err, html) {
+    controls.push(gen_control(options.options.display, path, form_path, base_path, layout, function(err, html) {
       --todo;
 
       if (err) {
@@ -73,7 +84,7 @@ function form(mdl, action, layout, base_path, cb) {
 
       if (!todo) {
         console.log("form generated, returned");
-        cb(errors, controls);
+        cb(errors.length ? errors : null, controls);
       }
     }));
   });

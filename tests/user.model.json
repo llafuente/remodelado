@@ -2,50 +2,76 @@
   "name": "user",
   "schema": {
     "id": {
-      "type": "number",
-      "display": "static",
       "label": "ID",
+
+      "type": "number",
       "create": false,
-      "update": false
+      "update": false,
+
+      "display": {
+        "type": "static",
+        "create": true,
+        "update": true
+      }
     },
     "first_name": {
-      "type": "string",
-      "display": "text",
       "label": "First Name",
+
+      "type": "string",
       "required": true,
-      "create": true,
-      "update": true
-    },
-    "last_name": {
-      "type": "string",
-      "display": "text",
-      "required": true,
-      "label": "Last name",
-      "create": true,
-      "update": true
-    },
-    "role": {
-      "type": "string",
-      "enum": ["admin", "user"],
-      "display": "select",
-      "label": "Role",
-      "create": true,
-      "update": true
-    },
-    "age": {
-      "type": "number",
-      "display": "number",
-      "label": "Age",
-      "create": true,
-      "update": true
-    },
-    "bio": {
-      "type": "string",
-      "display": "textarea",
-      "label": "About myself",
       "create": true,
       "update": true,
-      "default": null
+
+      "display": {
+        "type": "text"
+      }
+    },
+    "last_name": {
+      "label": "Last name",
+
+      "type": "string",
+      "required": true,
+      "create": true,
+      "update": true,
+
+      "display": {
+        "type": "text"
+      }
+    },
+    "role": {
+      "label": "Role",
+
+      "type": "string",
+      "enum": ["admin", "user"],
+      "create": true,
+      "update": true,
+
+      "display": {
+        "type": "select"
+      }
+    },
+    "age": {
+      "label": "Age",
+
+      "type": "number",
+      "create": true,
+      "update": false,
+
+      "display": {
+        "type": "number"
+      }
+    },
+    "bio": {
+      "label": "About myself",
+
+      "type": "string",
+      "create": true,
+      "update": true,
+      "default": null,
+
+      "display": {
+        "type": "textarea"
+      }
     }
   },
   "mongoose": {

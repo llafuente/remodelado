@@ -13,6 +13,7 @@ var timestamps = require('mongoose-timestamp');
 
 var default_schema = require('./schema/default.js');
 var angular_schema = require('./schema/angular.js');
+var schema_mongoose = require('./schema/mongoose.js');
 
 function use(_mongoose) {
   mongoose = _mongoose;
@@ -21,12 +22,13 @@ function use(_mongoose) {
 function model(json) {
   // always have the full metadata available
   default_schema(json);
-  angular_schema(json);
+  var angular = angular_schema(json);
+  var schema = schema_mongoose(json);
 
   var mdl = {
     json: json,
     name: json.name,
-    schema: new mongoose.Schema(json.schema, json.mongoose)
+    schema: new mongoose.Schema(schema, json.mongoose)
   };
 
   express(mdl);

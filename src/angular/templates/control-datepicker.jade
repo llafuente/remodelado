@@ -1,11 +1,11 @@
 block control
   input.form-control(
     type="text"
-    ng-model=data.model
-    name=data.id
-    id=data.id
-    is-open="datepickers." + data.id + "_opended"
-    ng-focus="datepickers." + data.id + "_opended = true"
+    ng-model=model
+    name=control.name
+    id=control
+    is-open="datepickers." + control + "_opended"
+    ng-focus="datepickers." + control + "_opended = true"
     datepicker-popup=""
     ng-datepicker-fix=""
     datepicker-options="{}"
@@ -13,7 +13,7 @@ block control
   span.input-group-btn
     button.btn.btn-default(
       type="button"
-      ng-click=data.id + "_open($event)"
+      ng-click=control + "_open($event)"
     )
       i.glyphicon.glyphicon-calendar
 

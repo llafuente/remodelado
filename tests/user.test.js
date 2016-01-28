@@ -4,7 +4,8 @@ var remodelado = require("../src/index.js");
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var app = require("./express.js");
+var app = require("../server/express.js");
+var cheerio = require("cheerio");
 
 // test
 var request = require('supertest');
@@ -19,10 +20,13 @@ test('create user model', function (t) {
   var model = require("./user.model.json");
   var mdl = remodelado.model(model);
 
-  console.log(mdl.json.schema.first_name.$constraints);
+  console.log(
+    require("util").inspect(mdl.json, {depth: null, colors: true})
+
+  );
 
   // schema check
-  t.equal(mdl.json.schema.first_name.$constraints['ng-required'], true);
+  t.equal(mdl.json.schema.first_name.display.constraints['ng-required'], true);
 
 
   // url check
@@ -171,12 +175,30 @@ test('http: create user (err-cast)', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/users/form")
-  .expect(500)
+  .get("/users/forms?action=create")
+  .expect(200)
   .end(function(err, res) {
     if (err) { throw err; }
+    //console.log("body", res.text);
 
-    console.log(res.body);
+    var $ = cheerio.load(res.text);
+    t.equal($(".control-container").toArray().length, 6);
+
+    t.end();
+  });
+});
+
+test('http: get create user form', function (t) {
+  request(app)
+  .get("/users/forms?action=update")
+  .expect(200)
+  .end(function(err, res) {
+    if (err) { throw err; }
+    //console.log("body", res.text);
+
+    var $ = cheerio.load(res.text);
+    // bio cannot be updated! -1
+    t.equal($(".control-container").toArray().length, 5);
 
     t.end();
   });

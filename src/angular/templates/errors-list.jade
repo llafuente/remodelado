@@ -1,7 +1,7 @@
 extends tpl-errors.jade
 
 block error
-  p.help-block.error-block.ng-hide(ng-show=form_name + "." + data.id + ".$touched && " +  form_name + "." + data.id + ".$error." + key)
+  p.help-block.error-block.ng-hide(ng-show= control_path + ".$touched && " + control_path + ".$error." + key)
     span &times;&nbsp;
     span
      = err_str

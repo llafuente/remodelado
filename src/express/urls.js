@@ -12,9 +12,9 @@ function urls(mdl) {
   mdl.delete_url =
   mdl.update_url = '/' + pluralize(mdl.name) + '/:' + mdl.name + '_id';
 
-  mdl.create_form =
+  mdl.forms_url =
   mdl.create_url =
   mdl.list_url = '/' + pluralize(mdl.name);
 
-  mdl.create_form += '/form';
+  mdl.forms_url += '/forms';
 }

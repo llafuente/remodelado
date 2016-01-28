@@ -12,9 +12,7 @@ var default_field_data = {
   update_order: -1,
 
   filter: false,
-  filter_order: -1,
-  // redundant, white-list
-  $constraints: {}
+  filter_order: -1
 };
 
 function schema_default(json) {

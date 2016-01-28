@@ -1,17 +1,17 @@
-div.control-container.form-group(ng-class="{'has-error': " + form_name +"." + data.id +".$touched && " + form_name +"." + data.id +".$invalid}"
-  id=data.id + "-container"
-  ng-scope="{control: controls." + data.id+ "}"
-  )&attributes(data.container)
+div.control-container.form-group(ng-class="{'has-error': " + control_path +".$touched && " + control_path +".$invalid}"
+  id=control.name + "-container"
+  ng-scope="{control: controls." + control.name+ "}"
+  )&attributes(control.container)
   block label
-    label.col-xs-4.control-label(for=data.id translate="")= data.label
+    label.col-xs-4.control-label(for=control.name translate="")= control.label
   block content
     div.col-xs-8
       div.control-wapper
         block control
 
-  if data.help
+  if control.help
     div.clearfix
-    div.col-xs-offset-4.col-xs-8.help-block= data.help
+    div.col-xs-offset-4.col-xs-8.help-block= control.help
   
   div.clearfix
   block errors

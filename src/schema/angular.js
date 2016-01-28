@@ -13,12 +13,21 @@ var constraints = {
 var _ = require('lodash');
 
 function schema_angular(json) {
+  var schema = {};
 
-  // always have the full metadata available
-  _.forEach(json.schema, function(field, kf) {
-    _.forEach(field, function(o, k) {
-      if (constraints[k]) {
-        field.$constraints[constraints[k]] = o;
+  _.forEach(json.schema, function(o, k) {
+    o.display.constraints = o.display.constraints || {};
+    o.display.container = o.display.container || {};
+    o.display.errors = o.display.errors || {};
+    schema[k] = o.display;
+    schema[k].label = o.label;
+    schema[k].name = k;
+
+    _.forEach(o, function(odb, kdb) {
+      var kan = constraints[kdb];
+      // overwrite only if not set
+      if (kan && schema[k].constraints[kan] === undefined) {
+        schema[k].constraints[kan] = odb;
       }
     })
   });

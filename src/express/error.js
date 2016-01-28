@@ -8,12 +8,14 @@ var forEach = _.forEach;
 var clone = _.clone;
 
 function error_handler(err, res, schema) {
+  console.log("ERROR:", JSON.stringify(err));
+
   if (Array.isArray(err)) {
     return res.status(500).json({
       error: err.map(function(e) {
         return e.message;
       })
-    });    
+    });
   }
 
   if (err instanceof ValidationError) {
@@ -51,8 +53,6 @@ function error_handler(err, res, schema) {
 
       errors.push(value);
     });
-
-    console.log("bad request", JSON.stringify(errors));
 
     return res.status(400).json({error: errors});
   }

@@ -9,13 +9,15 @@ function create_form_middleware(mdl) {
 
   return function(req, res, next) {
     //console.log("create_form", mdl.name);
+    var action = req.query.action || "create";
+    var layout = req.query.layout || "vertical";
 
-    form(mdl, "create", "vertical", "entity", function(err, html) {
-      console.log(err);
+    form(mdl, action, layout, "form", "entity", function(err, controls) {
       if (err) {
         return res.error(err);
       }
-      res.status(200).send(html);
+      console.log("output!");
+      return res.status(200).send(controls.join("\n\n"));
     });
   };
 }
