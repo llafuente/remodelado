@@ -20,8 +20,12 @@ function routes(mdl, app_name, base_state, cb) {
     cb(null, compiled({
       base_state: base_state,
       param_url: mdl.param_url,
+
+      list_tpl: mdl.list_tpl,
       list_url: mdl.list_url,
+
       read_url: mdl.read_url,
+
       app_name: app_name
     }));
   });

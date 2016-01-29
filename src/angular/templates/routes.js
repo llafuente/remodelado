@@ -12,6 +12,7 @@ angular
   .state('<%= base_state %>', {
     url: '/<%= base_state %>',
     templateUrl: 'views/<%= base_state %>.tpl.html',
+    templateUrl: '<%= list_tpl %>',
     data: {
       model: "entity"
     }

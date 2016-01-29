@@ -1,7 +1,6 @@
 module.exports = error_handler;
 
 var mongoose = require("mongoose");
-var mongoose = require("mongoose");
 var ValidationError = mongoose.Error.ValidationError;
 var _ = require('lodash');
 var forEach = _.forEach;

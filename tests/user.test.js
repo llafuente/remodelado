@@ -20,10 +20,9 @@ test('create user model', function (t) {
   var model = require("./user.model.json");
   var mdl = remodelado.model(model);
 
-  console.log(
-    require("util").inspect(mdl.json, {depth: null, colors: true})
-
-  );
+  //console.log(
+  //  require("util").inspect(mdl.json, {depth: null, colors: true})
+  //);
 
   // schema check
   t.equal(mdl.json.schema.first_name.display.constraints['ng-required'], true);
@@ -52,7 +51,7 @@ test('http: create user', function (t) {
   })
   .expect(201)
   .end(function(err, res) {
-    if (err) { throw err; }
+    t.error(err);
 
     t.type(res.body.id, "string", "id type");
     t.type(res.body.first_name, "string", "first_name type");
@@ -61,6 +60,8 @@ test('http: create user', function (t) {
     t.equal(res.body.last_name, "Pérez", "last_name value");
     t.equal(res.body.age, 35, "age value");
     t.equal(res.body.bio, null, "bio value");
+    t.isDate(res.body.created_at, "created_at defined");
+    t.isDate(res.body.updated_at, "updated_at defined");
 
     t.end();
   });
@@ -72,7 +73,7 @@ test('http: create user (err)', function (t) {
   .send([1,2,3])
   .expect(422)
   .end(function(err, res) {
-    if (err) { throw err; }
+    t.error(err);
 
     t.equal(res.body.error, "body is an array");
 
@@ -86,7 +87,7 @@ test('http: create user (err-required)', function (t) {
   .send({})
   .expect(400)
   .end(function(err, res) {
-    if (err) { throw err; }
+    t.error(err);
 
     t.deepEqual(res.body, {
       error: [
@@ -123,7 +124,7 @@ test('http: create user (err-enum)', function (t) {
   })
   .expect(400)
   .end(function(err, res) {
-    if (err) { throw err; }
+    t.error(err);
 
     t.deepEqual(res.body, {
       error: [
@@ -153,7 +154,7 @@ test('http: create user (err-cast)', function (t) {
   })
   .expect(400)
   .end(function(err, res) {
-    if (err) { throw err; }
+    t.error(err);
 
     t.deepEqual(res.body, {
       error: [
@@ -175,12 +176,10 @@ test('http: create user (err-cast)', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/users/forms?action=create")
+  .get("/users/angular/controls.tpl.html?action=create")
   .expect(200)
   .end(function(err, res) {
-    if (err) { throw err; }
-
-    //console.log("body", res.text);
+    t.error(err);
 
     var $ = cheerio.load(res.text);
     t.equal($(".control-container").toArray().length, 6);
@@ -191,11 +190,10 @@ test('http: get create user form', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/users/forms?action=update")
+  .get("/users/angular/controls.tpl.html?action=update")
   .expect(200)
   .end(function(err, res) {
-    if (err) { throw err; }
-    //console.log("body", res.text);
+    t.error(err);
 
     var $ = cheerio.load(res.text);
     // bio cannot be updated! -1
@@ -207,12 +205,96 @@ test('http: get create user form', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/users/routes.js?action=update")
+  .get("/users/angular/routes.js?action=update")
   .expect(200)
   .end(function(err, res) {
-    if (err) { throw err; }
+    t.error(err);
 
-    console.log("body", res.text);
+    t.ok(res.text.length > 0);
+
+    t.end();
+  });
+});
+
+test('http: get user routes.js', function (t) {
+  request(app)
+  .get("/users/angular/routes.js?base_state=root&action=update")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.ok(res.text.length > 0);
+
+    t.end();
+  });
+});
+
+
+test('http: get user list', function (t) {
+  request(app)
+  .get("/users")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.ok(res.body.count > 0);
+    t.equal(res.body.count, res.body.list.length);
+    t.equal(res.body.limit, 0);
+    t.equal(res.body.offset, 0);
+
+    t.end();
+  });
+});
+
+test('http: get user list (err-invalid offset)', function (t) {
+  request(app)
+  .get("/users?offset=no")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"offset":{"path":"query:offset","message":"offset must be a number","type":"invalid-offset","value":null,"value_type":"number"}}}});
+
+    t.end();
+  });
+});
+
+test('http: get user list (err-invalid offset)', function (t) {
+  request(app)
+  .get("/users?offset=2&limit=no")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"limit":{"path":"query:limit","message":"limit must be a number","type":"invalid-limit","value":null,"value_type":"number"}}}});
+
+    t.end();
+  });
+});
+
+test('http: get user list (err-invalid invalid sort)', function (t) {
+  request(app)
+  .get("/users?offset=2&limit=10&sort=noexistentfield")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"sort":{"path":"query:sort","message":"not found in schema","type":"invalid-sort","label":null,"value":"noexistentfield","value_type":"string"}}}});
+
+    t.end();
+  });
+});
+
+test('http: get user list with offset/limit', function (t) {
+  request(app)
+  .get("/users?offset=0&limit=1")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.equal(res.body.list.length, 1);
+    t.equal(res.body.limit, 1);
+    t.ok(res.body.count > 0);
 
     t.end();
   });

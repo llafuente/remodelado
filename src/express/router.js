@@ -2,7 +2,10 @@ module.exports = router;
 
 var express = require("express");
 var error_handler = require("./error.js");
+
+var list = require("./list.js");
 var create = require("./create.js");
+
 var angular_forms = require("./forms.js");
 var angular_routes = require("./routes.js");
 
@@ -21,7 +24,11 @@ function router(mdl) {
     next();
   });
 
+  // api
+  r.get(mdl.list_url, list(mdl));
   r.post(mdl.create_url, create(mdl));
+
+  // angular
   r.get(mdl.forms_url, angular_forms(mdl));
   r.get(mdl.routes_url, angular_routes(mdl));
 

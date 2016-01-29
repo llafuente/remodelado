@@ -18,14 +18,16 @@
       ])
       .controller('MainCtrl', function ($state) {
         console.log(angular.toJson($state.get()));
+        $state.go("users.list");
       });
     </script>
-    <script src="/users/routes.js?app=app"></script>
+    <script src="/users/angular/routes.js?app=app"></script>
   </head>
 
   <body ng-app="app">
   <div class="container" ng-controller="MainCtrl">
     <!-- form -->
   </div>
+  <ui-view></ui-view>
   </body>
 </html>
