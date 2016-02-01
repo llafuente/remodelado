@@ -10,6 +10,7 @@
 
       "display": {
         "type": "static",
+        "list": 1,
         "create": true,
         "update": true
       }
@@ -23,7 +24,8 @@
       "update": true,
 
       "display": {
-        "type": "text"
+        "type": "text",
+        "list": 2
       }
     },
     "last_name": {
@@ -35,7 +37,8 @@
       "update": true,
 
       "display": {
-        "type": "text"
+        "type": "text",
+        "list": 3
       }
     },
     "role": {
@@ -47,7 +50,8 @@
       "update": true,
 
       "display": {
-        "type": "select"
+        "type": "select",
+        "list": 5
       }
     },
     "age": {
@@ -58,7 +62,8 @@
       "update": false,
 
       "display": {
-        "type": "number"
+        "type": "number",
+        "list": 4
       }
     },
     "bio": {

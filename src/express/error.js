@@ -8,6 +8,7 @@ var clone = _.clone;
 
 function error_handler(err, res, schema) {
   console.log("ERROR:", JSON.stringify(err));
+  console.log(err.stack);
 
   if (Array.isArray(err)) {
     return res.status(500).json({

@@ -11,7 +11,7 @@ var fs = require("fs");
 function gen_control(control, path, form_path, base_path, layout, cb) {
   //console.log("control", control);
 
-  var file = join(__dirname, "/templates/control-" + control.type + ".jade");
+  var file = join(__dirname, "templates", "control-" + control.type + ".jade");
   var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" +
   fs.readFile(file, {encoding: "utf-8"}, function(err, data) {
     if (err) {

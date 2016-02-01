@@ -11,15 +11,15 @@ angular
   $stateProvider
   .state('<%= base_state %>', {
     url: '/<%= base_state %>',
-    templateUrl: 'views/<%= base_state %>.tpl.html',
-    templateUrl: '<%= list_tpl %>',
+    //templateUrl: 'views/<%= base_state %>.tpl.html',
+    template: '<ui-view></ui-view>',
     data: {
       model: "entity"
     }
   })
   .state('<%= base_state %>.list', {
     url: '/list',
-    templateUrl: 'views/<%= base_state %>.list.tpl.html',
+    templateUrl: '<%= list_tpl_url %>',
     controller: '<%= base_state %>ListCtrl',
     resolve: {
       list: ["$http", function($http) {

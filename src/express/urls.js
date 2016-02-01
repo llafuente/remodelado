@@ -22,5 +22,5 @@ function urls(mdl) {
 
   mdl.routes_url = base + '/angular/routes.js';
   mdl.forms_url = base + '/angular/controls.tpl.html';
-  mdl.list_tpl = base + '/angular/list.tpl.html';
+  mdl.list_tpl_url = base + '/angular/list.tpl.html';
 }

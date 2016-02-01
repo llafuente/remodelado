@@ -21,8 +21,8 @@ function routes(mdl, app_name, base_state, cb) {
       base_state: base_state,
       param_url: mdl.param_url,
 
-      list_tpl: mdl.list_tpl,
       list_url: mdl.list_url,
+      list_tpl_url: mdl.list_tpl_url,
 
       read_url: mdl.read_url,
 

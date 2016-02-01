@@ -300,5 +300,21 @@ test('http: get user list with offset/limit', function (t) {
   });
 });
 
+test('http: get user list with offset/limit', function (t) {
+  request(app)
+  .get("/users/angular/list.tpl.html")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    var $ = cheerio.load(res.text);
+    t.equal($("table").toArray().length, 1);
+    t.equal($("th").toArray().length, 5);
+    t.equal($("td").toArray().length, 5);
+    t.equal($("th").text(), "IDFirst NameLast nameAgeRole");
+
+    t.end();
+  });
+});
 
 require("./finish.js");

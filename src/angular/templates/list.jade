@@ -1,0 +1,9 @@
+table.table.table-striped(st-table='rowCollection')
+  thead
+    tr
+      each val in listable_fields
+        th= val.label
+  tbody
+    tr(ng-repeat='row in list')
+      each val in listable_fields
+        td= '{{row.' + val.display.name + '}}'

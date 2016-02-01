@@ -6,8 +6,7 @@ var error_handler = require("./error.js");
 var list = require("./list.js");
 var create = require("./create.js");
 
-var angular_forms = require("./forms.js");
-var angular_routes = require("./routes.js");
+var angular = require("./angular.js");
 
 function router(mdl) {
   var r = express.Router();
@@ -29,8 +28,9 @@ function router(mdl) {
   r.post(mdl.create_url, create(mdl));
 
   // angular
-  r.get(mdl.forms_url, angular_forms(mdl));
-  r.get(mdl.routes_url, angular_routes(mdl));
+  r.get(mdl.forms_url, angular.forms(mdl));
+  r.get(mdl.routes_url, angular.routes(mdl));
+  r.get(mdl.list_tpl_url, angular.list_tpl(mdl));
 
   return r;
 }
