@@ -1,9 +1,22 @@
-table.table.table-striped(st-table='rowCollection')
+div.pull-right
+  button.btn.btn-primary(ui-sref=create_state) Create
+
+div.clearfix
+
+//pre {{list}}
+
+table.table.table-striped(st-table='rowCollection' id=name)
   thead
     tr
       each val in listable_fields
         th= val.label
+      th Actions
   tbody
-    tr(ng-repeat='row in list')
+    tr(ng-repeat='row in list.list')
       each val in listable_fields
         td= '{{row.' + val.display.name + '}}'
+      td
+        a.entity-action.entity-update(ui-sref='^.update({id: row.id})', title='Edit')
+          i.fa.fa-pencil-square-o.fa-lg
+        a.entity-action.entity-remove(ng-click='remove(row)', confirm-if='true', confirm='¿Está seguro que desea eliminar?', title='Remove')
+          i.fa.list.fa-trash-o.fa-lg

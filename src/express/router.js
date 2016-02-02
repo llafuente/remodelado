@@ -31,6 +31,7 @@ function router(mdl) {
   r.get(mdl.forms_url, angular.forms(mdl));
   r.get(mdl.routes_url, angular.routes(mdl));
   r.get(mdl.list_tpl_url, angular.list_tpl(mdl));
+  r.get(mdl.list_ctrl_url, angular.list_ctrl(mdl));
 
   return r;
 }

@@ -52,6 +52,7 @@ function create_middleware(mdl) {
           return res.error(err);
         }
 
+        // TODO remove and use an autoincrement
         data.id = data._id;
         delete data._id;
 

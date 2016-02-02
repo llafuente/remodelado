@@ -26,6 +26,8 @@ angular
         return  $http({
           method: "GET",
           url: "<%= list_url %>"
+        }).then(function(res) {
+          return res.data;
         });
       }],
     },
@@ -33,7 +35,7 @@ angular
       model: "list"
     }
   })
-  .state('<%= base_state %>.create', {
+  .state('<%= create_state %>', {
     url: '/create',
     templateUrl: 'views/<%= base_state %>.create.tpl.html',
     controller: '<%= base_state %>CreateCtrl',

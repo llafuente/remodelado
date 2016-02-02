@@ -1,4 +1,6 @@
-module.exports = list;
+module.exports = {
+  list: list
+};
 
 var assert = require("assert");
 var jade = require("jade");
@@ -35,6 +37,8 @@ function list(mdl, listable_fields, cb) {
 
     try {
       var html = compiled({
+        name: mdl.plural,
+        create_state: mdl.create_state,
         listable_fields: listable_fields
       });
       return cb(null, html);

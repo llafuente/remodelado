@@ -176,6 +176,13 @@ function list_middleware(mdl) {
               return res.error(err);
             }
 
+            // TODO remove and use an autoincrement
+            var i;
+            for (i = 0; i < output_list.length; ++i) {
+              output_list[i].id = output_list[i]._id;
+              delete output_list[i] ._id;
+            }
+
             res.status(200).json({
               count: count,
               offset: offset,

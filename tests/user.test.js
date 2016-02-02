@@ -309,9 +309,10 @@ test('http: get user list with offset/limit', function (t) {
 
     var $ = cheerio.load(res.text);
     t.equal($("table").toArray().length, 1);
-    t.equal($("th").toArray().length, 5);
-    t.equal($("td").toArray().length, 5);
-    t.equal($("th").text(), "IDFirst NameLast nameAgeRole");
+    // 5 fields + actions
+    t.equal($("th").toArray().length, 6);
+    t.equal($("td").toArray().length, 6);
+    t.equal($("th").text(), "IDFirst NameLast nameAgeRoleActions");
 
     t.end();
   });

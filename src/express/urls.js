@@ -19,8 +19,10 @@ function urls(mdl) {
   var base = '/' + plural;
   mdl.create_url = base;
   mdl.list_url = base;
+  mdl.create_state = plural + ".create";
 
   mdl.routes_url = base + '/angular/routes.js';
   mdl.forms_url = base + '/angular/controls.tpl.html';
   mdl.list_tpl_url = base + '/angular/list.tpl.html';
+  mdl.list_ctrl_url = base + '/angular/list.ctrl.js';
 }
