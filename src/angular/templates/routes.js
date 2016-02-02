@@ -9,7 +9,7 @@ angular
   .when('/<%= base_state %>', '/<%= base_state %>/list');
 
   $stateProvider
-  .state('<%= base_state %>', {
+  .state('<%= states.root %>', {
     url: '/<%= base_state %>',
     //templateUrl: 'views/<%= base_state %>.tpl.html',
     template: '<ui-view></ui-view>',
@@ -17,15 +17,15 @@ angular
       model: "entity"
     }
   })
-  .state('<%= base_state %>.list', {
+  .state('<%= states.list %>', {
     url: '/list',
-    templateUrl: '<%= list_tpl_url %>',
-    controller: '<%= base_state %>ListCtrl',
+    templateUrl: '<%= templates.list %>',
+    controller: '<%= controllers.list %>',
     resolve: {
       list: ["$http", function($http) {
         return  $http({
           method: "GET",
-          url: "<%= list_url %>"
+          url: "<%= api.list %>"
         }).then(function(res) {
           return res.data;
         });
@@ -35,21 +35,26 @@ angular
       model: "list"
     }
   })
-  .state('<%= create_state %>', {
+  .state('<%= states.create %>', {
     url: '/create',
-    templateUrl: 'views/<%= base_state %>.create.tpl.html',
-    controller: '<%= base_state %>CreateCtrl',
+    templateUrl: '<%= templates.create %>',
+    controller: '<%= controllers.create %>',
     // TODO defaults
     resolve: {
     }
   })
-  .state('<%= base_state %>.update', {
-    url: '/update/:<%= param_url %>',
-    templateUrl: 'views/<%= base_state %>.update.tpl.html',
-    controller: '<%= base_state %>UpdateCtrl',
+  .state('<%= states.update %>', {
+    url: '/update/:<%= id_param %>',
+    templateUrl: '<%= templates.update %>',
+    controller: '<%= controllers.update %>',
     resolve: {
       entity: ['$http', '$state', '$stateParams', function($http, $state, $stateParams) {
-        return $http.get('<%= read_url %>/'.replace('<%= param_url %>', $stateParams['<%= param_url %>']));
+        return $http({
+          method: 'GET',
+          url: '<%= api.read %>/'.replace(':<%= id_param %>', $stateParams['<%= id_param %>'])
+        }).then(function(res) {
+          return res.data;
+        });
       }],
     },
     data: {

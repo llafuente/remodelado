@@ -1,6 +1,8 @@
 module.exports = schema_default;
 
 var _ = require('lodash');
+var pluralize = require('pluralize');
+
 var default_field_data = {
   type: "string",
   display: "text",
@@ -22,4 +24,7 @@ function schema_default(json) {
   _.forEach(t, function(o, k) {
     json.schema[k] = _.defaults(o, default_field_data);
   });
+
+  json.singular = json.name;
+  json.plural = pluralize(json.name);
 }

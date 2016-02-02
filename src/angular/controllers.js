@@ -21,18 +21,14 @@ function routes(mdl, app_name, base_state, cb) {
 
     var compiled = _.template(js);
     cb(null, compiled({
+      app_name: app_name,
+
       base_state: base_state,
-      param_url: mdl.param_url,
-
-      // TODO  use base_state ?!
-      create_state: mdl.create_state,
-
-      list_url: mdl.list_url,
-      list_tpl_url: mdl.list_tpl_url,
-
-      read_url: mdl.read_url,
-
-      app_name: app_name
+      id_param: mdl.json.$express.id_param,
+      states: mdl.json.$angular.states,
+      templates: mdl.json.$angular.templates,
+      controllers: mdl.json.$angular.controllers,
+      api: mdl.json.$express,
     }));
   });
 }
@@ -46,7 +42,7 @@ function list_ctrl(mdl, app_name, cb) {
 
     var compiled = _.template(js);
     cb(null, compiled({
-      name: mdl.plural,
+      controllers: mdl.json.$angular.controllers,
       app_name: app_name
     }));
   });

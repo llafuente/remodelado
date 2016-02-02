@@ -29,12 +29,12 @@ test('create user model', function (t) {
 
 
   // url check
-  t.equal(mdl.read_url, "/users/:user_id");
-  t.equal(mdl.delete_url, "/users/:user_id");
-  t.equal(mdl.update_url, "/users/:user_id");
+  t.equal(mdl.json.$express.read, "/users/:user_id");
+  t.equal(mdl.json.$express.delete, "/users/:user_id");
+  t.equal(mdl.json.$express.update, "/users/:user_id");
 
-  t.equal(mdl.create_url, "/users");
-  t.equal(mdl.list_url, "/users");
+  t.equal(mdl.json.$express.create, "/users");
+  t.equal(mdl.json.$express.list, "/users");
 
   app.use(mdl.router);
 
@@ -176,7 +176,7 @@ test('http: create user (err-cast)', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/users/angular/controls.tpl.html?action=create")
+  .get("/angular/users.forms.tpl.html?action=create")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -190,7 +190,7 @@ test('http: get create user form', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/users/angular/controls.tpl.html?action=update")
+  .get("/angular/users.forms.tpl.html?action=update")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -205,7 +205,7 @@ test('http: get create user form', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/users/angular/routes.js?action=update")
+  .get("/angular/users.routes.js")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -218,7 +218,7 @@ test('http: get user routes.js', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/users/angular/routes.js?base_state=root&action=update")
+  .get("/angular/users.routes.js?base_state=root&action=update")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -302,7 +302,7 @@ test('http: get user list with offset/limit', function (t) {
 
 test('http: get user list with offset/limit', function (t) {
   request(app)
-  .get("/users/angular/list.tpl.html")
+  .get("/angular/users.list.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
