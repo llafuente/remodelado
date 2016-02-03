@@ -12,8 +12,9 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
   //console.log("control", control);
 
   var file = join(__dirname, "templates", "control-" + control.type + ".jade");
-  var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" +
   fs.readFile(file, {encoding: "utf-8"}, function(err, data) {
+    var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" + data;
+
     if (err) {
       return cb(err, null);
     }
@@ -32,7 +33,10 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
         control_path: form_path + "." + control.name,
         model: base_path + "." + control.name,
 
-        control: control
+        control: control,
+        error_messages: {
+          number: "xxxx",
+        }
       });
       return cb(null, html);
     } catch(e) {
@@ -73,7 +77,7 @@ function form(mdl, action, layout, form_path, base_path, cb) {
 
     ++todo;
 
-    controls.push(gen_control(options.options.display, path, form_path, base_path, layout, function(err, html) {
+    gen_control(options.options.display, path, form_path, base_path, layout, function(err, html) {
       --todo;
 
       if (err) {
@@ -83,9 +87,35 @@ function form(mdl, action, layout, form_path, base_path, cb) {
       }
 
       if (!todo) {
-        console.log("form generated, returned");
-        cb(errors.length ? errors : null, controls);
+        if (errors.length) {
+          return cb(errors, null);
+        }
+
+        var file = join(__dirname, "templates", "form.jade");
+        fs.readFile(file, {encoding: "utf-8"}, function(err, form_jade) {
+          if (err) {
+            return cb(err, null);
+          }
+
+
+          var compiled = jade.compile(form_jade, {
+            filename: file,
+            pretty: true
+          });
+
+          try {
+            var html = compiled({
+              name: form_path,
+              controls: controls
+            });
+
+            console.log("form generated, returned");
+            return cb(null, html);
+          } catch(e) {
+            return cb(e, null);
+          }
+        });
       }
-    }));
+    });
   });
 }

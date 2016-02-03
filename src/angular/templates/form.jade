@@ -1,6 +1,17 @@
-form.form-vertical(novalidate="" ng-controller=controller)&attributes(form_attrs)
+form.form-vertical(novalidate="" name=name)
   fieldset
     legend= legend
-    div!= controls
+    each c in controls
+      // TODO this should be a div ?
+      span!= c
     div.clearfix
-    pre= '{{' + form_attrs.name + ' | json}}'
+    //pre= '{{' + name + ' | json}}'
+    div.row
+      div.col-xs-4
+        pre= '{{' + name + '.$error | json}}'
+      div.col-xs-1(ng-class="{'bg-danger': " + name + ".$dirty, 'bg-success': !" + name + ".$dirty }")
+        span.btn= 'dirty: {{' + name + '.$dirty | json}}'
+      div.col-xs-1(ng-class="{'bg-danger': !" + name + ".$valid, 'bg-success': " + name + ".$valid }")
+        span.btn= 'valid: {{' + name + '.$valid | json}}'
+      div.col-xs-1(ng-class="{'bg-danger': " + name + ".$submitted, 'bg-success': !" + name + ".$submitted }")
+        span.btn= 'submitted: {{' + name + '.$submitted | json}}'

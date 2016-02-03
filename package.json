@@ -4,7 +4,6 @@
   "description": "Angular + Express + Mongoose REST",
   "main": "index.js",
   "scripts": {
-    "test": "mkdir -p test-e2e/generated/ && tap -b --cov --coverage-report=lcov tests/*.test.js",
     "test": "mkdir -p test-e2e/generated/ && tap -b tests/*.test.js"
   },
   "author": "",
@@ -21,7 +20,8 @@
     "mongoose-timestamp": "^0.5.0",
     "mongoosemask": "0.0.6",
     "pluralize": "^1.2.1",
-    "priorityqueuejs": "^1.0.0"
+    "priorityqueuejs": "^1.0.0",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "cheerio": "^0.19.0",

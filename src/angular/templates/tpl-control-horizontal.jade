@@ -1,6 +1,5 @@
-div.control-container.form-group(ng-class="{'has-error': " + control_path +".$touched && " + control_path +".$invalid}"
+div.control-container.form-group(ng-class="{'has-error': (" + control_path +".$touched || " + form_path +".$dirty) && " + control_path +".$invalid}"
   id=control.name + "-container"
-  ng-scope="{control: controls." + control.name+ "}"
   )&attributes(control.container)
   block label
     label.col-xs-4.control-label(for=control.name translate="")= control.label

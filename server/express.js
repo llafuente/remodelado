@@ -1,10 +1,13 @@
-// express config
 var express = require('express');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var mongoose = require("mongoose");
 var ValidationError = mongoose.Error.ValidationError;
 var forEach = require('lodash.foreach');
+
+//
+// express initialization
+//
 
 var app = express();
 app.use(bodyParser.json());
@@ -13,6 +16,27 @@ app.use(function(req, res, next) {
   console.log("    ##", req.method, req.url);
   next();
 });
+
+//
+// logs
+//
+
+var winston = require('winston');
+var logger = new (winston.Logger)({
+  transports: [new (winston.transports.Console)({
+    prettyPrint: true,
+    level: 'silly',
+    handleExceptions: true
+  })]
+});
+app.use(function(req, res, next) {
+  req.log = logger;
+  next();
+});
+
+//
+// mongoose errors
+//
 
 var mongoose = require('mongoose');
 var messages = mongoose.Error.messages;

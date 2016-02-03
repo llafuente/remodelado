@@ -1,6 +1,7 @@
 module.exports = {
   routes: routes,
-  list_ctrl: list_ctrl
+  list_ctrl: list_ctrl,
+  create_ctrl: create_ctrl
 }
 
 var _ = require("lodash");
@@ -42,8 +43,24 @@ function list_ctrl(mdl, app_name, cb) {
 
     var compiled = _.template(js);
     cb(null, compiled({
+      app_name: app_name,
+
       controllers: mdl.json.$angular.controllers,
-      app_name: app_name
+    }));
+  });
+}
+
+function create_ctrl(mdl, app_name, cb) {
+  fs.readFile(join(__dirname, "templates/create.ctrl.js"), {encoding: "utf-8"}, function(err, js) {
+    if (err) {
+      return cb(err, null);
+    }
+
+    var compiled = _.template(js);
+    cb(null, compiled({
+      app_name: app_name,
+
+      controllers: mdl.json.$angular.controllers,
     }));
   });
 }

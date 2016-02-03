@@ -1,4 +1,4 @@
 block errors
-  div.alert.alert-danger(ng-show= control_path + ".$touched && " + control_path + ".$invalid")
-    each err_str, key in control.errors
+  div.alert.alert-danger(ng-show= "(" +control_path + ".$touched || " + form_path + ".$dirty) && " + control_path + ".$invalid")
+    each err_str, key in error_messages
       block error

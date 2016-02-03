@@ -1,5 +1,5 @@
 div.pull-right
-  button.btn.btn-primary(ui-sref=create_state) Create
+  a.btn.btn-primary(ui-sref= states.create) Create
 
 div.clearfix
 
@@ -16,7 +16,7 @@ table.table.table-striped(st-table='rowCollection' id=name)
       each val in listable_fields
         td= '{{row.' + val.display.name + '}}'
       td
-        a.entity-action.entity-update(ui-sref='^.update({id: row.id})', title='Edit')
+        a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', title='Edit')
           i.fa.fa-pencil-square-o.fa-lg
         a.entity-action.entity-remove(ng-click='remove(row)', confirm-if='true', confirm='¿Está seguro que desea eliminar?', title='Remove')
           i.fa.list.fa-trash-o.fa-lg

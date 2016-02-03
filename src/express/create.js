@@ -9,8 +9,6 @@ function create(mdl, blacklist, data, error, ok) {
   delete data.__v;
   data = mongoosemask.mask(data, blacklist);
 
-  console.log("create", data);
-
   return mdl.model.create(data, function(err, mdata) {
     if (err) {
       return error(err);
@@ -33,30 +31,30 @@ function create_middleware(mdl) {
     }
   });
 
-  console.log("create middleware", mdl.name, " blacklist", blacklist);
+  console.log("# create middleware", mdl.name, " blacklist", blacklist);
 
   return function(req, res, next) {
-    console.log("create", mdl.name);
+    req.log.info(req.body);
 
     if (Array.isArray(req.body)) {
       return res.error(422, "body is an array");
     }
 
     return create(mdl, blacklist, req.body, res.error, function(mdata) {
-      console.log("create ok");
+      req.log.info("created ok");
 
       var data = mdata.toJSON();
 
-      mdl.express.before_send("create", data, function(err, data) {
+      mdl.express.before_send("create", data, function(err, output) {
         if (err) {
           return res.error(err);
         }
 
         // TODO remove and use an autoincrement
-        data.id = data._id;
-        delete data._id;
+        output.id = output._id;
+        delete output._id;
 
-        res.status(201).json(data);
+        res.status(201).json(output);
       });
 
     });

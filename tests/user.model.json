@@ -11,7 +11,7 @@
       "display": {
         "type": "static",
         "list": 1,
-        "create": true,
+        "create": false,
         "update": true
       }
     },

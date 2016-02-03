@@ -20,7 +20,7 @@ angular
   .state('<%= states.list %>', {
     url: '/list',
     templateUrl: '<%= templates.list %>',
-    controller: '<%= controllers.list %>',
+    controller: '<%= controllers.list_ctrl %>',
     resolve: {
       list: ["$http", function($http) {
         return  $http({
@@ -38,15 +38,12 @@ angular
   .state('<%= states.create %>', {
     url: '/create',
     templateUrl: '<%= templates.create %>',
-    controller: '<%= controllers.create %>',
-    // TODO defaults
-    resolve: {
-    }
+    controller: '<%= controllers.create_ctrl %>'
   })
   .state('<%= states.update %>', {
     url: '/update/:<%= id_param %>',
     templateUrl: '<%= templates.update %>',
-    controller: '<%= controllers.update %>',
+    controller: '<%= controllers.update_ctrl %>',
     resolve: {
       entity: ['$http', '$state', '$stateParams', function($http, $state, $stateParams) {
         return $http({

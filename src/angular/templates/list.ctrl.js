@@ -2,6 +2,6 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.list %>', function ($rootScope, $scope, $http, list) {
+.controller('<%= controllers.list_ctrl %>', function ($rootScope, $scope, $http, list) {
   $scope.list = list;
 });

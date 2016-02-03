@@ -38,8 +38,9 @@ function list(mdl, listable_fields, cb) {
     try {
       var html = compiled({
         name: mdl.plural,
-        create_state: mdl.create_state,
-        listable_fields: listable_fields
+        id_param: mdl.json.$express.id_param,
+        states: mdl.json.$angular.states,
+        listable_fields: listable_fields,
       });
       return cb(null, html);
     } catch(e) {
