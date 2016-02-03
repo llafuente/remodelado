@@ -6,6 +6,7 @@ var error_handler = require("./error.js");
 var read = require("./read.js");
 var list = require("./list.js");
 var create = require("./create.js");
+var update = require("./update.js");
 
 var angular = require("./angular.js");
 
@@ -30,6 +31,7 @@ function router(mdl) {
   r.get(json.$express.list, list(mdl));
   r.get(json.$express.read, read(mdl));
   r.post(json.$express.create, create(mdl));
+  r.patch(json.$express.update, update(mdl));
 
   // angular
   // internal: r.get(json.$angular.templates.forms, angular.forms(mdl));

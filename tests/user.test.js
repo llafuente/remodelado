@@ -386,6 +386,7 @@ test('http: get user list with first_name=abc', function (t) {
   });
 });
 
+var user_id;
 test('http: get user list age=37', function (t) {
   request(app)
   .get("/users?where[age]=37&limit=1")
@@ -396,16 +397,50 @@ test('http: get user list age=37', function (t) {
     t.equal(res.body.count, 2);
     t.equal(res.body.list.length, 1);
 
+    user_id = res.body.list[0].id;
+    t.end();
+  });
+});
+
+test('http: update user', function (t) {
+  request(app)
+  .patch("/users/" + user_id)
+  .send({
+    last_name: "last!",
+    no_exists: "do not update"
+  })
+  .expect(200)
+  .end(function(err, res2) {
+    t.error(err);
+
+    t.equal(res2.body.id, user_id);
+
     request(app)
-    .get("/users/" + res.body.list[0].id)
+    .get("/users/" + user_id)
     .expect(200)
     .end(function(err, res2) {
       t.error(err);
 
-      t.equal(res2.body.id, res.body.list[0].id);
+      t.equal(res2.body.id, user_id);
+      t.equal(res2.body.last_name, "last!");
+      t.equal(res2.body.no_exists, undefined);
+      t.isDate(res2.body.created_at);
+      //TODO t.equal(res2.body._v, 2);
 
       t.end();
     });
+  });
+});
+
+test('http: update user (err)', function (t) {
+  request(app)
+  .patch("/users/" + user_id)
+  .send([1, 2, 3])
+  .expect(422)
+  .end(function(err, res2) {
+    t.error(err);
+
+    t.end();
   });
 });
 
