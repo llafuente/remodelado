@@ -7,10 +7,11 @@ function read_middleware(mdl) {
     // TODO int validation?!
 
     mdl.model.findById(id, function(err, mdata) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
 
+      /* istanbul ignore next */
       if (!mdata) {
         return res.status(404).json({error: "Not found"}); // todo err message
       }
@@ -18,7 +19,7 @@ function read_middleware(mdl) {
       var data = mdata.toJSON();
 
       mdl.express.before_send("read", data, function(err, output) {
-        if (err) {
+        /* istanbul ignore next */ if (err) {
           return res.error(err);
         }
 
@@ -26,7 +27,7 @@ function read_middleware(mdl) {
         output.id = output._id;
         delete output._id;
 
-        res.status(201).json(output);
+        res.status(200).json(output);
       });
     });
   };

@@ -18,9 +18,10 @@ function routes_middleware(mdl) {
     var app_name = req.query.app || "app";
 
     controllers.routes(mdl, app_name, base_state, function(err, js_text) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
+
       req.log.silly("return js generated");
       return res
         .status(200)
@@ -39,9 +40,10 @@ function forms_middleware(mdl) {
     var layout = req.query.layout || "horizontal";
 
     form(mdl, action, layout, "form", "entity", function(err, html) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
+
       req.log.silly("return form generated");
       return res.status(200).send(html);
     });
@@ -55,9 +57,10 @@ function list_tpl_middleware(mdl) {
     req.log.silly("list.html", mdl.name);
 
     templates.list(mdl, null, function(err, html) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
+
       req.log.silly("return list.html generated");
       return res.status(200).send(html);
     });
@@ -72,9 +75,10 @@ function list_ctrl_middleware(mdl) {
     var app_name = req.query.app || "app";
 
     controllers.list_ctrl(mdl, app_name, function(err, html) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
+
       req.log.silly("return list.js generated");
       return res.status(200).send(html);
     });
@@ -89,9 +93,10 @@ function create_ctrl_middleware(mdl) {
     var app_name = req.query.app || "app";
 
     controllers.create_ctrl(mdl, app_name, function(err, html) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
+
       req.log.silly("return create.js generated");
       return res.status(200).send(html);
     });

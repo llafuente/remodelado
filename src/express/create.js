@@ -14,6 +14,7 @@ function create(mdl, blacklist, data, error, ok) {
       return error(err);
     }
 
+    /* istanbul ignore next */
     if (!mdata) {
       return error(500, "database don't return data");
     }
@@ -46,7 +47,7 @@ function create_middleware(mdl) {
       var data = mdata.toJSON();
 
       mdl.express.before_send("create", data, function(err, output) {
-        if (err) {
+        /* istanbul ignore next */ if (err) {
           return res.error(err);
         }
 

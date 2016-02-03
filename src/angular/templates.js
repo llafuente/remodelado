@@ -26,7 +26,7 @@ function list(mdl, listable_fields, cb) {
 
   var file = join(__dirname, "templates", "list.jade");
   fs.readFile(file, {encoding: "utf-8"}, function(err, file_str) {
-    if (err) {
+    /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
 

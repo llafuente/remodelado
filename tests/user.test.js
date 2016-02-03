@@ -38,32 +38,49 @@ test('create user model', function (t) {
 
   app.use(mdl.router);
 
-  t.end();
+  mdl.model.remove({}, function() {
+    t.end();
+  });
 });
 
-test('http: create user', function (t) {
-  request(app)
-  .post("/users")
-  .send({
-    first_name: "José Manuel",
-    last_name: "Pérez",
-    age: 35
-  })
-  .expect(201)
-  .end(function(err, res) {
-    t.error(err);
+[{
+  first_name: "a ☃ ← 🐲",
+  last_name: "DEF",
+  age: 35
+},{
+  first_name: "b á ó",
+  last_name: "JLK",
+  age: 37
+}, {
+  first_name: "abc",
+  last_name: "def",
+  age: 37
+}].forEach(function(u) {
 
-    t.type(res.body.id, "string", "id type");
-    t.type(res.body.first_name, "string", "first_name type");
-    t.type(res.body.last_name, "string", "last_name type");
-    t.equal(res.body.first_name, "José Manuel", "first_name value");
-    t.equal(res.body.last_name, "Pérez", "last_name value");
-    t.equal(res.body.age, 35, "age value");
-    t.equal(res.body.bio, null, "bio value");
-    t.isDate(res.body.created_at, "created_at defined");
-    t.isDate(res.body.updated_at, "updated_at defined");
+  test('http: create user', function (t) {
+    request(app)
+    .post("/users")
+    .send({
+      first_name: u.first_name,
+      last_name: u.last_name,
+      age: u.age,
+    })
+    .expect(201)
+    .end(function(err, res) {
+      t.error(err);
 
-    t.end();
+      t.type(res.body.id, "string", "id type");
+      t.type(res.body.first_name, "string", "first_name type");
+      t.type(res.body.last_name, "string", "last_name type");
+      t.equal(res.body.first_name, u.first_name, "first_name value");
+      t.equal(res.body.last_name, u.last_name, "last_name value");
+      t.equal(res.body.age, u.age, "age value");
+      t.equal(res.body.bio, null, "bio value");
+      t.isDate(res.body.created_at, "created_at defined");
+      t.isDate(res.body.updated_at, "updated_at defined");
+
+      t.end();
+    });
   });
 });
 
@@ -176,13 +193,13 @@ test('http: create user (err-cast)', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/angular/users.forms.tpl.html?action=create")
+  .get("/angular/users.create.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
 
     var $ = cheerio.load(res.text);
-    t.equal($(".control-container").toArray().length, 6);
+    t.equal($(".control-container").toArray().length, 5);
 
     t.end();
   });
@@ -190,7 +207,7 @@ test('http: get create user form', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/angular/users.forms.tpl.html?action=update")
+  .get("/angular/users.create.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -300,7 +317,112 @@ test('http: get user list with offset/limit', function (t) {
   });
 });
 
-test('http: get user list with offset/limit', function (t) {
+test('http: get user list (err invalid sort)', function (t) {
+  request(app)
+  .get("/users?sort=-ao_id")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"sort":{"path":"query:sort","message":"field is restricted","type":"invalid-sort","value":"ao_id","value_type":"string"}}}});
+
+    t.end();
+  });
+});
+
+test('http: get user list (err invalid populate)', function (t) {
+  request(app)
+  .get("/users?populate=telephones")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:populate","message":"is not an array","type":"invalid-populate","value":"telephones"}}}});
+
+    t.end();
+  });
+});
+
+test('http: get user list (err invalid populate)', function (t) {
+  request(app)
+  .get("/users?populate[]=telephones")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:populate","message":"not found in schema","type":"invalid-populate","value":"telephones"}}}});
+
+    t.end();
+  });
+});
+
+test('http: get user list (err invalid populate)', function (t) {
+  request(app)
+  .get("/users?populate[]=first_name")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+    //console.log(res.text);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:populate","message":"field cannot be populated","type":"invalid-populate","value":"first_name"}}}});
+
+    t.end();
+  });
+});
+
+// TODO test a valid populate that it's restricted
+
+test('http: get user list with first_name=abc', function (t) {
+  request(app)
+  .get("/users?where[first_name]=abc")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.equal(res.body.count, 1);
+    t.equal(res.body.list.length, 1);
+
+    t.end();
+  });
+});
+
+test('http: get user list age=37', function (t) {
+  request(app)
+  .get("/users?where[age]=37&limit=1")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.equal(res.body.count, 2);
+    t.equal(res.body.list.length, 1);
+
+    request(app)
+    .get("/users/" + res.body.list[0].id)
+    .expect(200)
+    .end(function(err, res2) {
+      t.error(err);
+
+      t.equal(res2.body.id, res.body.list[0].id);
+
+      t.end();
+    });
+  });
+});
+
+test('http: get user not-found', function (t) {
+  request(app)
+  .get("/users/123")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"cast-failed","value":"123","path":"_id","type":"invalid-type","value_constraint":"cast","value_type":"objectid"}});
+
+    t.end();
+  });
+});
+
+test('http: get user list template', function (t) {
   request(app)
   .get("/angular/users.list.tpl.html")
   .expect(200)
@@ -313,6 +435,32 @@ test('http: get user list with offset/limit', function (t) {
     t.equal($("th").toArray().length, 6);
     t.equal($("td").toArray().length, 6);
     t.equal($("th").text(), "IDFirst NameLast nameAgeRoleActions");
+
+    t.end();
+  });
+});
+
+test('http: get user list controller', function (t) {
+  request(app)
+  .get("/angular/users.list.ctrl.js")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.ok(res.text.indexOf(".controller") != -1);
+
+    t.end();
+  });
+});
+
+test('http: get user create controller', function (t) {
+  request(app)
+  .get("/angular/users.create.ctrl.js")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.ok(res.text.indexOf(".controller") != -1);
 
     t.end();
   });

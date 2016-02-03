@@ -16,7 +16,7 @@ function routes(mdl, app_name, base_state, cb) {
   base_state = base_state ? base_state + "." + mdl.plural : mdl.plural;
 
   fs.readFile(join(__dirname, "templates/routes.js"), {encoding: "utf-8"}, function(err, js) {
-    if (err) {
+    /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
 
@@ -37,7 +37,7 @@ function routes(mdl, app_name, base_state, cb) {
 
 function list_ctrl(mdl, app_name, cb) {
   fs.readFile(join(__dirname, "templates/list.ctrl.js"), {encoding: "utf-8"}, function(err, js) {
-    if (err) {
+    /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
 
@@ -52,7 +52,7 @@ function list_ctrl(mdl, app_name, cb) {
 
 function create_ctrl(mdl, app_name, cb) {
   fs.readFile(join(__dirname, "templates/create.ctrl.js"), {encoding: "utf-8"}, function(err, js) {
-    if (err) {
+    /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
 

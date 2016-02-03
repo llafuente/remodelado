@@ -13,12 +13,11 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
 
   var file = join(__dirname, "templates", "control-" + control.type + ".jade");
   fs.readFile(file, {encoding: "utf-8"}, function(err, data) {
-    var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" + data;
-
-    if (err) {
+    /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
 
+    var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" + data;
     var compiled = jade.compile(file_str, {
       filename: file,
       pretty: true

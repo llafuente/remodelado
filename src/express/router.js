@@ -32,7 +32,7 @@ function router(mdl) {
   r.post(json.$express.create, create(mdl));
 
   // angular
-  r.get(json.$angular.templates.forms, angular.forms(mdl));
+  // internal: r.get(json.$angular.templates.forms, angular.forms(mdl));
   r.get(json.$angular.routes, angular.routes(mdl));
 
   r.get(json.$angular.templates.list, angular.list_tpl(mdl));

@@ -94,6 +94,17 @@ function list(mdl, where, sort, limit, offset, populate, error, ok) {
   query.sort(sort);
 
   // populate
+  if (!Array.isArray(populate)) {
+    err = new ValidationError(null);
+    err.errors.populate = {
+      path: "query:populate",
+      message: 'is not an array',
+      type: 'invalid-populate',
+      value: populate,
+    };
+    return error(400, err);
+  }
+
   for (i = 0; i < populate.length; ++i) {
     path = populate[i];
     options = mdl.schema.path(path);
@@ -108,11 +119,11 @@ function list(mdl, where, sort, limit, offset, populate, error, ok) {
       return error(400, err);
     }
 
-    if (exutils.type_can_be_populated(options.options.type)) {
+    if (!exutils.type_can_be_populated(options.options.type)) {
       err = new ValidationError(null);
       err.errors.populate = {
         path: "query:populate",
-        message: 'field is not a ref',
+        message: 'field cannot be populated',
         type: 'invalid-populate',
         value: path,
       };
@@ -136,16 +147,19 @@ function list(mdl, where, sort, limit, offset, populate, error, ok) {
   // where
   forEach(where, function(val, path) {
     query = query.where(path).equals(val);
+    qcount = qcount.where(path).equals(val);
   });
 
+  //console.log(query);
+
   query.exec(function(err, mlist) {
-    if (err) {
-      return error(err);
+    /* istanbul ignore next */ if (err) {
+      return error(500, err);
     }
 
     qcount.exec(function(err, count) {
-      if (err) {
-        return error(err);
+      /* istanbul ignore next */ if (err) {
+        return error(500, err);
       }
 
       return ok(count, offset, limit, mlist);
@@ -172,7 +186,7 @@ function list_middleware(mdl) {
           // TODO rename
           //list = mdl.before_send("list", list);
           mdl.express.before_send("list", list, function(err, output_list) {
-            if (err) {
+            /* istanbul ignore next */ if (err) {
               return res.error(err);
             }
 
