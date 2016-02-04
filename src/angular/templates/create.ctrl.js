@@ -5,4 +5,6 @@ angular
 .controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http) {
   $scope.entity = {
   }; // TODO defaults!
+
+  <%= controls_js %>;
 });

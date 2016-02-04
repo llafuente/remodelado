@@ -3,6 +3,7 @@ module.exports = form;
 var assert = require("assert");
 var jade = require("jade");
 var join = require("path").join;
+var $angular = require("../schema/angular.js");
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
 var fs = require("fs");
@@ -42,26 +43,6 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
       return cb(e, null);
     }
   });
-
-}
-
-function check_action(action, options) {
-  // internal values like __v
-  // or fields that aren't exposed to angular
-  if (!options.options.display) {
-    return false;
-  }
-  // if it has no type, can be displayed!
-  if (!options.options.display.type) {
-    return false;
-  }
-
-  // fallback to api?
-  if (options.options.display[action] === undefined) {
-    return !!options.options[action];
-  }
-
-  return !!options.options.display[action];
 }
 
 function form(mdl, action, layout, form_path, base_path, cb) {
@@ -75,16 +56,7 @@ function form(mdl, action, layout, form_path, base_path, cb) {
   var errors = [];
   var todo = 0;
 
-  mdl.schema.eachPath(function(path, options) {
-    // ignore private
-    if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
-      return ;
-    }
-
-    if (!check_action(action, options)) {
-      return;
-    }
-
+  $angular.each_control(mdl, action, function(options, path) {
     ++todo;
 
     gen_control(options.options.display, path, form_path, base_path, layout, function(err, html) {

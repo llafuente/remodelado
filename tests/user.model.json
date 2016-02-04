@@ -56,6 +56,10 @@
 
       "display": {
         "type": "select",
+        "labels": [
+          {"id": "admin", "label": "Admin"},
+          {"id": "user", "label": "User"}
+        ],
         "list": 5
       }
     },

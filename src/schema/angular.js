@@ -1,4 +1,5 @@
 module.exports = schema_angular;
+module.exports.each_control = each_control;
 
 var constraints = {
   "required": "ng-required",
@@ -30,6 +31,14 @@ function schema_angular(json) {
         schema[k].constraints[kan] = odb;
       }
     });
+
+    // angular select
+    if (o.display.type == "select") {
+      // labels are required
+      if (!o.display || Array.isArray(o.display)) {
+        throw new Error("labels are required for select display type.");
+      }
+    }
   });
 
   json.$angular = {
@@ -57,4 +66,37 @@ function schema_angular(json) {
       list: '/angular/' + json.plural + '.list.ctrl.js',
     }
   };
+}
+
+function check_action(action, options) {
+  // internal values like __v
+  // or fields that aren't exposed to angular
+  if (!options.options.display) {
+    return false;
+  }
+  // if it has no type, can be displayed!
+  if (!options.options.display.type) {
+    return false;
+  }
+
+  // fallback to api?
+  if (options.options.display[action] === undefined) {
+    return !!options.options[action];
+  }
+
+  return !!options.options.display[action];
+}
+
+function each_control (mdl, action, cb) {
+  mdl.schema.eachPath(function(path, options) {
+    // ignore private
+    if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
+      return ;
+    }
+
+    if (!check_action(action, options)) {
+      return;
+    }
+    cb(options, path);
+  });
 }
