@@ -6,7 +6,7 @@ module.exports.list = list;
 var mongoose = require("mongoose");
 var ValidationError = mongoose.Error.ValidationError;
 
-var exutils = require("./utils.js");
+var exutils = require("../utils.js");
 
 var _ = require("lodash");
 var forEach = _.forEach;
@@ -188,13 +188,6 @@ function list_middleware(mdl) {
           mdl.express.before_send("list", list, function(err, output_list) {
             /* istanbul ignore next */ if (err) {
               return res.error(err);
-            }
-
-            // TODO remove and use an autoincrement
-            var i;
-            for (i = 0; i < output_list.length; ++i) {
-              output_list[i].id = output_list[i]._id;
-              delete output_list[i] ._id;
             }
 
             res.status(200).json({

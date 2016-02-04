@@ -5,7 +5,7 @@ var pluralize = require('pluralize');
 
 var default_field_data = {
   type: "string",
-  display: "text",
+  display: {},
 
   create: false,
   create_order: -1,

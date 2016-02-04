@@ -23,10 +23,6 @@ function read_middleware(mdl) {
           return res.error(err);
         }
 
-        // TODO remove and use an autoincrement
-        output.id = output._id;
-        delete output._id;
-
         res.status(200).json(output);
       });
     });

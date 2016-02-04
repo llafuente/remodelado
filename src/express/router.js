@@ -3,10 +3,10 @@ module.exports = router;
 var express = require("express");
 var error_handler = require("./error.js");
 
-var read = require("./read.js");
-var list = require("./list.js");
-var create = require("./create.js");
-var update = require("./update.js");
+var read = require("./crud/read.js");
+var list = require("./crud/list.js");
+var create = require("./crud/create.js");
+var update = require("./crud/update.js");
 
 var angular = require("./angular.js");
 

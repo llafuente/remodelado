@@ -15,9 +15,10 @@
         "update": true
       }
     },
-    "ao_id": {
+    "restricted_field": {
       "type": "number",
-      "restricted": true
+      "restricted": true,
+      "create": true
     },
     "first_name": {
       "label": "First Name",

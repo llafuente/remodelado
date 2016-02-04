@@ -55,16 +55,17 @@ test('create user model', function (t) {
   first_name: "abc",
   last_name: "def",
   age: 37
+}, {
+  first_name: "abc2",
+  last_name: "def3",
+  age: 36,
+  restricted_field: 101
 }].forEach(function(u) {
 
   test('http: create user', function (t) {
     request(app)
     .post("/users")
-    .send({
-      first_name: u.first_name,
-      last_name: u.last_name,
-      age: u.age,
-    })
+    .send(u)
     .expect(201)
     .end(function(err, res) {
       t.error(err);
@@ -78,6 +79,8 @@ test('create user model', function (t) {
       t.equal(res.body.bio, null, "bio value");
       t.isDate(res.body.created_at, "created_at defined");
       t.isDate(res.body.updated_at, "updated_at defined");
+      t.equal(res.body.__v, undefined, "version is not exposed");
+      t.equal(res.body.restricted_field, undefined, "restricted_field is not exposed");
 
       t.end();
     });
@@ -319,12 +322,12 @@ test('http: get user list with offset/limit', function (t) {
 
 test('http: get user list (err invalid sort)', function (t) {
   request(app)
-  .get("/users?sort=-ao_id")
+  .get("/users?sort=-restricted_field")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
 
-    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"sort":{"path":"query:sort","message":"field is restricted","type":"invalid-sort","value":"ao_id","value_type":"string"}}}});
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"sort":{"path":"query:sort","message":"field is restricted","type":"invalid-sort","value":"restricted_field","value_type":"string"}}}});
 
     t.end();
   });
@@ -410,22 +413,23 @@ test('http: update user', function (t) {
     no_exists: "do not update"
   })
   .expect(200)
-  .end(function(err, res2) {
-    t.error(err);
+  .end(function(err2, res2) {
+    t.error(err2);
 
     t.equal(res2.body.id, user_id);
+    t.equal(res2.body.__v, undefined, "version is not exposed");
 
     request(app)
     .get("/users/" + user_id)
     .expect(200)
-    .end(function(err, res2) {
-      t.error(err);
+    .end(function(err3, res3) {
+      t.error(err3);
 
-      t.equal(res2.body.id, user_id);
-      t.equal(res2.body.last_name, "last!");
-      t.equal(res2.body.no_exists, undefined);
-      t.isDate(res2.body.created_at);
-      //TODO t.equal(res2.body._v, 2);
+      t.equal(res3.body.id, user_id);
+      t.equal(res3.body.last_name, "last!");
+      t.equal(res3.body.no_exists, undefined);
+      t.isDate(res3.body.created_at);
+      t.equal(res3.body.__v, undefined, "version is not exposed");
 
       t.end();
     });

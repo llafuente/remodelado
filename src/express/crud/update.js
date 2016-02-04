@@ -1,7 +1,7 @@
 module.exports = update_middleware;
 
 var mongoosemask = require('mongoosemask');
-var clean_body = require('./clean_body.js');
+var clean_body = require('../clean_body.js');
 
 function update(mdl, row, data, blacklist, error, ok) {
   clean_body(mdl, data);
@@ -28,7 +28,7 @@ function update_middleware(mdl) {
   var blacklist = [];
 
   mdl.schema.eachPath(function(path, options) {
-    if (options.options.create === false) {
+    if (options.options.update === false) {
       blacklist.push(path);
     }
   });
@@ -60,10 +60,6 @@ function update_middleware(mdl) {
           /* istanbul ignore next */ if (err) {
             return res.error(err);
           }
-
-          // TODO remove and use an autoincrement
-          output.id = output._id;
-          delete output._id;
 
           res.status(200).json(output);
         });

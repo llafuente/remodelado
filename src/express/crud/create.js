@@ -2,7 +2,7 @@ module.exports = create_middleware;
 module.exports.create = create;
 
 var mongoosemask = require('mongoosemask');
-var clean_body = require('./clean_body.js');
+var clean_body = require('../clean_body.js');
 
 function create(mdl, blacklist, data, error, ok) {
   clean_body(mdl, data);
@@ -50,10 +50,6 @@ function create_middleware(mdl) {
         /* istanbul ignore next */ if (err) {
           return res.error(err);
         }
-
-        // TODO remove and use an autoincrement
-        output.id = output._id;
-        delete output._id;
 
         res.status(201).json(output);
       });

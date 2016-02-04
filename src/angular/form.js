@@ -46,6 +46,17 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
 }
 
 function check_action(action, options) {
+  // internal values like __v
+  // or fields that aren't exposed to angular
+  if (!options.options.display) {
+    return false;
+  }
+  // if it has no type, can be displayed!
+  if (!options.options.display.type) {
+    return false;
+  }
+
+  // fallback to api?
   if (options.options.display[action] === undefined) {
     return !!options.options[action];
   }
