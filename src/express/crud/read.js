@@ -11,9 +11,9 @@ function read_middleware(mdl) {
         return res.error(err);
       }
 
-      /* istanbul ignore next */
+      // TODO this could contains more info ?
       if (!mdata) {
-        return res.status(404).json({error: "Not found"}); // todo err message
+        return res.status(404).json({error: "Not found"});
       }
 
       var data = mdata.toJSON();

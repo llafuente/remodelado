@@ -448,6 +448,32 @@ test('http: update user (err)', function (t) {
   });
 });
 
+test('http: destroy user that don\'t exists (noerr?)', function (t) {
+  request(app)
+  .delete("/users/56b3683ce8b5ab05535c0e3f")
+  .expect(204)
+  .end(function(err, res2) {
+    t.error(err);
+
+    t.end();
+  });
+});
+
+test('http: user not found', function (t) {
+  request(app)
+  .get("/users/56b3683ce8b5ab05535c0e3f")
+  .expect(404)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":"Not found"});
+
+    t.end();
+  });
+});
+
+
+
 test('http: get user not-found', function (t) {
   request(app)
   .get("/users/123")
@@ -519,6 +545,17 @@ test('http: get user update controller', function (t) {
     t.ok(res.text.indexOf(".controller") != -1);
 
     t.equal(check_js(res.text), undefined);
+
+    t.end();
+  });
+});
+
+test('http: destroy user', function (t) {
+  request(app)
+  .delete("/users/" + user_id)
+  .expect(204)
+  .end(function(err, res) {
+    t.error(err);
 
     t.end();
   });

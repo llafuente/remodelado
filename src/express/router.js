@@ -7,6 +7,7 @@ var read = require("./crud/read.js");
 var list = require("./crud/list.js");
 var create = require("./crud/create.js");
 var update = require("./crud/update.js");
+var destroy = require("./crud/destroy.js");
 
 var angular = require("./angular.js");
 
@@ -32,6 +33,7 @@ function router(mdl) {
   r.get(json.$express.read, read(mdl));
   r.post(json.$express.create, create(mdl));
   r.patch(json.$express.update, update(mdl));
+  r.delete(json.$express.delete, destroy(mdl));
 
   // angular
   // internal: r.get(json.$angular.templates.forms, angular.forms(mdl));
