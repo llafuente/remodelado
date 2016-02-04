@@ -10,7 +10,7 @@ div.control-container.form-group(ng-class="{'has-error': (" + control_path +".$t
 
   if control.help
     div.clearfix
-    div.col-xs-offset-4.col-xs-8.help-block= control.help
+    div.col-xs-offset-4.col-xs-8.help-block(translate="")= control.help
   
   div.clearfix
   block errors

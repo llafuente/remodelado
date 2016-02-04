@@ -1,9 +1,11 @@
 form.form-vertical(novalidate="" name=name)
   fieldset
-    legend= legend
+    legend(translate="")= legend
     each c in controls
       // TODO this should be a div ?
       span!= c
+    div.clearfix
+      button.btn.btn-primary(type=button ng-click="submit()" translate="") Crear
     div.clearfix
     //pre= '{{' + name + ' | json}}'
     div.row

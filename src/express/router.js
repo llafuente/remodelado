@@ -40,9 +40,14 @@ function router(mdl) {
   r.get(json.$angular.templates.list, angular.list_tpl(mdl));
   r.get(json.$angular.controllers.list, angular.list_ctrl(mdl));
   r.get(json.$angular.controllers.create, angular.create_ctrl(mdl));
+  r.get(json.$angular.controllers.update, angular.update_ctrl(mdl));
 
   r.get(json.$angular.templates.create, function(req, res, next) {
     req.query.action = 'create';
+    next();
+  },angular.forms(mdl));
+  r.get(json.$angular.templates.update, function(req, res, next) {
+    req.query.action = 'update';
     next();
   },angular.forms(mdl));
 

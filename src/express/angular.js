@@ -3,7 +3,8 @@ module.exports = {
   forms: forms_middleware,
   list_tpl: list_tpl_middleware,
   list_ctrl: list_ctrl_middleware,
-  create_ctrl: create_ctrl_middleware
+  create_ctrl: create_ctrl_middleware,
+  update_ctrl: update_ctrl_middleware,
 };
 
 var controllers = require("../angular/controllers.js");
@@ -98,6 +99,24 @@ function create_ctrl_middleware(mdl) {
       }
 
       req.log.silly("return create.js generated");
+      return res.status(200).send(html);
+    });
+  };
+}
+
+function update_ctrl_middleware(mdl) {
+  console.log("# update_ctrl_middleware", mdl.name);
+
+  return function(req, res, next) {
+    req.log.silly("update.js", mdl.name);
+    var app_name = req.query.app || "app";
+
+    controllers.update_ctrl(mdl, app_name, function(err, html) {
+      /* istanbul ignore next */ if (err) {
+        return res.error(err);
+      }
+
+      req.log.silly("return update.js generated");
       return res.status(200).send(html);
     });
   };

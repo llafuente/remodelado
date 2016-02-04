@@ -19,6 +19,9 @@
         'ui.bootstrap',
         'ui.router'
       ])
+      .filter('translate', function () {
+        return function(x) { return x; };
+      })
       .controller('MainCtrl', function ($state) {
         console.log(angular.toJson($state.get()));
         $state.go("users.list");
@@ -27,6 +30,7 @@
 
     <script src="/angular/users.list.ctrl.js?app=app"></script>
     <script src="/angular/users.create.ctrl.js?app=app"></script>
+    <script src="/angular/users.update.ctrl.js?app=app"></script>
     <script src="/angular/users.routes.js?app=app"></script>
   </head>
 

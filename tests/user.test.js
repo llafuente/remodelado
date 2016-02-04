@@ -12,7 +12,7 @@ var request = require('supertest');
 var test = require('tap').test;
 var fs = require('fs');
 var join = require('path').join;
-
+var check_js = require('syntax-error');
 
 test('create user model', function (t) {
   remodelado.use(mongoose);
@@ -205,9 +205,9 @@ test('http: get create user form', function (t) {
   });
 });
 
-test('http: get create user form', function (t) {
+test('http: get update user form', function (t) {
   request(app)
-  .get("/angular/users.create.tpl.html")
+  .get("/angular/users.update.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -484,6 +484,8 @@ test('http: get user list controller', function (t) {
 
     t.ok(res.text.indexOf(".controller") != -1);
 
+    t.equal(check_js(res.text), undefined);
+
     t.end();
   });
 });
@@ -496,6 +498,23 @@ test('http: get user create controller', function (t) {
     t.error(err);
 
     t.ok(res.text.indexOf(".controller") != -1);
+
+    t.equal(check_js(res.text), undefined);
+
+    t.end();
+  });
+});
+
+test('http: get user update controller', function (t) {
+  request(app)
+  .get("/angular/users.update.ctrl.js")
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.ok(res.text.indexOf(".controller") != -1);
+
+    t.equal(check_js(res.text), undefined);
 
     t.end();
   });
