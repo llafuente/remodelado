@@ -3,8 +3,8 @@ module.exports = update_middleware;
 var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
 
-function update(mdl, row, data, blacklist, error, ok) {
-  clean_body(mdl, data);
+function update(meta, row, data, blacklist, error, ok) {
+  clean_body(meta, data);
   data = mongoosemask.mask(data, blacklist);
 
   // TODO review this!
@@ -24,16 +24,16 @@ function update(mdl, row, data, blacklist, error, ok) {
   });
 }
 
-function update_middleware(mdl) {
+function update_middleware(meta) {
   var blacklist = [];
 
-  mdl.schema.eachPath(function(path, options) {
+  meta.$schema.eachPath(function(path, options) {
     if (options.options.update === false) {
       blacklist.push(path);
     }
   });
 
-  console.log("# update middleware", mdl.name, " blacklist", blacklist);
+  console.log("# update middleware", meta.name, " blacklist", blacklist);
 
   return function(req, res, next) {
     req.log.info(req.body);
@@ -42,10 +42,10 @@ function update_middleware(mdl) {
       return res.error(422, "body is an array");
     }
 
-    var id = req.params[mdl.json.$express.id_param];
+    var id = req.params[meta.$express.id_param];
     // TODO int validation?!
 
-    mdl.model.findById(id, function(err, row) {
+    meta.$model.findById(id, function(err, row) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -55,8 +55,8 @@ function update_middleware(mdl) {
         return res.status(404).json({error: "Not found"}); // todo err message
       }
 
-      return update(mdl, row, req.body, blacklist, res.error, function(saved_row) {
-        mdl.express.before_send("update", saved_row.toJSON(), function(err, output) {
+      return update(meta, row, req.body, blacklist, res.error, function(saved_row) {
+        meta.$express.before_send("update", saved_row.toJSON(), function(err, output) {
           /* istanbul ignore next */ if (err) {
             return res.error(err);
           }

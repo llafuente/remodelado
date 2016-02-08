@@ -25,20 +25,20 @@ test('create user model', function (t) {
   //);
 
   // schema check, ng-required must be a "true" string!
-  t.equal(mdl.json.schema.first_name.display.constraints['ng-required'], "true");
+  t.equal(mdl.interface.first_name.constraints['ng-required'], "true");
 
 
   // url check
-  t.equal(mdl.json.$express.read, "/users/:user_id");
-  t.equal(mdl.json.$express.delete, "/users/:user_id");
-  t.equal(mdl.json.$express.update, "/users/:user_id");
+  t.equal(mdl.$express.read, "/users/:user_id");
+  t.equal(mdl.$express.delete, "/users/:user_id");
+  t.equal(mdl.$express.update, "/users/:user_id");
 
-  t.equal(mdl.json.$express.create, "/users");
-  t.equal(mdl.json.$express.list, "/users");
+  t.equal(mdl.$express.create, "/users");
+  t.equal(mdl.$express.list, "/users");
 
-  app.use(mdl.router);
+  app.use(mdl.$router);
 
-  mdl.model.remove({}, function() {
+  mdl.$model.remove({}, function() {
     t.end();
   });
 });
@@ -497,9 +497,10 @@ test('http: get user list template', function (t) {
     var $ = cheerio.load(res.text);
     t.equal($("table").toArray().length, 1);
     // 5 fields + actions
-    t.equal($("th").toArray().length, 6);
-    t.equal($("td").toArray().length, 6);
-    t.equal($("th").text(), "IDFirst NameLast nameAgeRoleActions");
+    t.equal($("thead tr").first().find("th").toArray().length, 6);
+    t.equal($("thead tr").first().find("th").text(), "IDFirst NameLast nameAgeRoleActions");
+    t.equal($("thead tr").last().find("th").toArray().length, 6);
+    t.equal($("tbody tr td").toArray().length, 6);
 
     t.end();
   });

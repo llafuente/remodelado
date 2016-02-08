@@ -5,7 +5,6 @@ angular
 .controller('<%= controllers.list_ctrl %>', function ($rootScope, $scope, $http) {
   $scope.getList = function(tablestate) {
     var pagination = tablestate.pagination;
-    console.log(tablestate);
 
     var qs = ['limit=20'];
     if (tablestate.sort && tablestate.sort.predicate) {

@@ -11,7 +11,7 @@ var destroy = require("./crud/destroy.js");
 
 var angular = require("./angular.js");
 
-function router(mdl) {
+function router(meta) {
   var r = express.Router();
 
   //crud
@@ -21,37 +21,37 @@ function router(mdl) {
         err = {status: err, message: message};
       }
 
-      return error_handler(err, req, res, mdl.schema);
+      return error_handler(err, req, res, meta.$schema);
     };
     next();
   });
 
   // api
-  var json = mdl.json;
-  //console.log(json);
-  r.get(json.$express.list, list(mdl));
-  r.get(json.$express.read, read(mdl));
-  r.post(json.$express.create, create(mdl));
-  r.patch(json.$express.update, update(mdl));
-  r.delete(json.$express.delete, destroy(mdl));
+
+  //console.log(meta);
+  r.get(meta.$express.list, list(meta));
+  r.get(meta.$express.read, read(meta));
+  r.post(meta.$express.create, create(meta));
+  r.patch(meta.$express.update, update(meta));
+  r.delete(meta.$express.delete, destroy(meta));
 
   // angular
-  // internal: r.get(json.$angular.templates.forms, angular.forms(mdl));
-  r.get(json.$angular.routes, angular.routes(mdl));
+  // internal: r.get(meta.$angular.templates.forms, angular.forms(meta));
+  r.get(meta.$angular.routes, angular.routes(meta));
 
-  r.get(json.$angular.templates.list, angular.list_tpl(mdl));
-  r.get(json.$angular.controllers.list, angular.list_ctrl(mdl));
-  r.get(json.$angular.controllers.create, angular.create_ctrl(mdl));
-  r.get(json.$angular.controllers.update, angular.update_ctrl(mdl));
+  r.get(meta.$angular.templates.list, angular.list_tpl(meta));
+  r.get(meta.$angular.controllers.list, angular.list_ctrl(meta));
+  r.get(meta.$angular.controllers.create, angular.create_ctrl(meta));
+  r.get(meta.$angular.controllers.update, angular.update_ctrl(meta));
 
-  r.get(json.$angular.templates.create, function(req, res, next) {
+  r.get(meta.$angular.templates.create, function(req, res, next) {
     req.query.action = 'create';
     next();
-  },angular.forms(mdl));
-  r.get(json.$angular.templates.update, function(req, res, next) {
+  },angular.forms(meta));
+  r.get(meta.$angular.templates.update, function(req, res, next) {
     req.query.action = 'update';
     next();
-  },angular.forms(mdl));
+  },angular.forms(meta));
 
   return r;
 }

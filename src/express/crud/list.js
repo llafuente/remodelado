@@ -11,13 +11,13 @@ var exutils = require("../utils.js");
 var _ = require("lodash");
 var forEach = _.forEach;
 
-function list(mdl, where, sort, limit, offset, populate, error, ok) {
-  var query = mdl.model.find({});
+function list(meta, where, sort, limit, offset, populate, error, ok) {
+  var query = meta.$model.find({});
   var qcount = (query.toConstructor())().count();
   var path;
   var options;
 
-  // some of theese can be mdl.options.xxx
+  // some of theese can be meta.options.xxx
   where = where || {};
   sort = sort || "_id";
   limit = limit ? parseInt(limit, 10) : 0;
@@ -63,7 +63,7 @@ function list(mdl, where, sort, limit, offset, populate, error, ok) {
   var i;
   for (i = 0; i < ss.length; ++i) {
     path = ss[i][0] == "-" ? ss[i].substring(1) : ss[i];
-    options = mdl.schema.path(path);
+    options = meta.$schema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.sort = {
@@ -107,7 +107,7 @@ function list(mdl, where, sort, limit, offset, populate, error, ok) {
 
   for (i = 0; i < populate.length; ++i) {
     path = populate[i];
-    options = mdl.schema.path(path);
+    options = meta.$schema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
@@ -167,10 +167,10 @@ function list(mdl, where, sort, limit, offset, populate, error, ok) {
   });
 }
 
-function list_middleware(mdl) {
+function list_middleware(meta) {
   return function(req, res, next) {
     return list(
-      mdl,
+      meta,
 
       req.query.where,
       req.query.sort,
@@ -184,8 +184,8 @@ function list_middleware(mdl) {
           var list = mlist.map(function(d) { return d.toJSON(); });
 
           // TODO rename
-          //list = mdl.before_send("list", list);
-          mdl.express.before_send("list", list, function(err, output_list) {
+          //list = meta.before_send("list", list);
+          meta.$express.before_send("list", list, function(err, output_list) {
             /* istanbul ignore next */ if (err) {
               return res.error(err);
             }

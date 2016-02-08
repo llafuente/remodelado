@@ -9,20 +9,20 @@ table.table.table-striped(st-table='' id=name st-pipe="getList" st-delay="1000")
   thead
     tr
       each val in listable_fields
-        th(st-sort=val.display.name translate="")= val.label
+        th(st-sort=val.name translate="")= val.label
       th(translate="") Actions
     tr
       each val in listable_fields
-        if (val.display.type == "text")
+        if (val.type == "text")
           th
-            input.input-sm.form-control(st-search=val.display.name type="search")
+            input.input-sm.form-control(st-search=val.name type="search")
         else
           th
       th
   tbody
     tr(ng-repeat='row in list.list')
       each val in listable_fields
-        td= '{{row.' + val.display.name + '}}'
+        td= '{{row.' + val.name + '}}'
       td
         a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', title="{{'Edit' | translate}}")
           i.fa.fa-pencil-square-o.fa-lg

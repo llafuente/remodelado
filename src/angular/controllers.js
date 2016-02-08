@@ -14,8 +14,8 @@ var $angular = require("../schema/angular.js");
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
 var fs = require("fs");
 
-function routes(mdl, app_name, base_state, cb) {
-  base_state = base_state ? base_state + "." + mdl.plural : mdl.plural;
+function routes(meta, app_name, base_state, cb) {
+  base_state = base_state ? base_state + "." + meta.plural : meta.plural;
 
   fs.readFile(join(__dirname, "templates/routes.js"), {encoding: "utf-8"}, function(err, js) {
     /* istanbul ignore next */ if (err) {
@@ -27,17 +27,17 @@ function routes(mdl, app_name, base_state, cb) {
       app_name: app_name,
 
       base_state: base_state,
-      id_param: mdl.json.$express.id_param,
-      states: mdl.json.$angular.states,
-      templates: mdl.json.$angular.templates,
-      controllers: mdl.json.$angular.controllers,
-      api: mdl.json.$express,
+      id_param: meta.$express.id_param,
+      states: meta.$angular.states,
+      templates: meta.$angular.templates,
+      controllers: meta.$angular.controllers,
+      api: meta.$express,
     }));
   });
 }
 
 
-function list_ctrl(mdl, app_name, cb) {
+function list_ctrl(meta, app_name, cb) {
   fs.readFile(join(__dirname, "templates/list.ctrl.js"), {encoding: "utf-8"}, function(err, js) {
     /* istanbul ignore next */ if (err) {
       return cb(err, null);
@@ -47,26 +47,26 @@ function list_ctrl(mdl, app_name, cb) {
     cb(null, compiled({
       app_name: app_name,
 
-      id_param: mdl.json.$express.id_param,
-      controllers: mdl.json.$angular.controllers,
-      api: mdl.json.$express,
+      id_param: meta.$express.id_param,
+      controllers: meta.$angular.controllers,
+      api: meta.$express,
     }));
   });
 }
 
-function get_controls_js(mdl, action, cb) {
+function get_controls_js(meta, action, cb) {
   var todo = 0;
   var controls_js = [];
-  $angular.each_control(mdl, action, function(options, path) {
+  $angular.each_control(meta, action, function(client_opt, path) {
     todo++;
-    fs.readFile(join(__dirname, "templates/control-" + options.options.display.type + ".js"), {encoding: "utf-8"}, function(err, js) {
+    fs.readFile(join(__dirname, "templates/control-" + client_opt.type + ".js"), {encoding: "utf-8"}, function(err, js) {
       --todo;
       // TODO do not ignore not found
       // this should be whitelisted
       if (!err) {
         var compiled = _.template(js);
         controls_js.push(compiled({
-          control: options.options.display
+          control: client_opt
         }));
       }
 
@@ -77,8 +77,8 @@ function get_controls_js(mdl, action, cb) {
   });
 }
 
-function create_ctrl(mdl, app_name, cb) {
-  get_controls_js(mdl, "create", function (controls_js) {
+function create_ctrl(meta, app_name, cb) {
+  get_controls_js(meta, "create", function (controls_js) {
     fs.readFile(join(__dirname, "templates/create.ctrl.js"), {encoding: "utf-8"}, function(err, js) {
       /* istanbul ignore next */ if (err) {
         return cb(err, null);
@@ -89,15 +89,15 @@ function create_ctrl(mdl, app_name, cb) {
         app_name: app_name,
         controls_js: controls_js,
 
-        controllers: mdl.json.$angular.controllers,
-        api: mdl.json.$express,
+        controllers: meta.$angular.controllers,
+        api: meta.$express,
       }));
     });
   });
 }
 
-function update_ctrl(mdl, app_name, cb) {
-  get_controls_js(mdl, "update", function (controls_js) {
+function update_ctrl(meta, app_name, cb) {
+  get_controls_js(meta, "update", function (controls_js) {
     fs.readFile(join(__dirname, "templates/update.ctrl.js"), {encoding: "utf-8"}, function(err, js) {
       /* istanbul ignore next */ if (err) {
         return cb(err, null);
@@ -108,9 +108,9 @@ function update_ctrl(mdl, app_name, cb) {
         app_name: app_name,
         controls_js: controls_js,
 
-        id_param: mdl.json.$express.id_param,
-        api: mdl.json.$express,
-        controllers: mdl.json.$angular.controllers,
+        id_param: meta.$express.id_param,
+        api: meta.$express,
+        controllers: meta.$angular.controllers,
       }));
     });
   });

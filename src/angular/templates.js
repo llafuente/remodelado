@@ -8,20 +8,11 @@ var join = require("path").join;
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
 var fs = require("fs");
+var $angular = require("../schema/angular.js");
 
-function list(mdl, listable_fields, cb) {
+function list(meta, listable_fields, cb) {
   if (!listable_fields) {
-    listable_fields = [];
-
-    mdl.schema.eachPath(function(path, options) {
-      if (options.options.display && options.options.display.list) {
-        listable_fields.push(options.options)
-      }
-    });
-
-    listable_fields = listable_fields.sort(function(a, b) {
-      return a.display.list - b.display.list;
-    });
+    listable_fields = $angular.each_control_sorted(meta, "list");
   }
 
   var file = join(__dirname, "templates", "list.jade");
@@ -37,9 +28,9 @@ function list(mdl, listable_fields, cb) {
 
     try {
       var html = compiled({
-        name: mdl.plural,
-        id_param: mdl.json.$express.id_param,
-        states: mdl.json.$angular.states,
+        name: meta.plural,
+        id_param: meta.$express.id_param,
+        states: meta.$angular.states,
         listable_fields: listable_fields,
       });
       return cb(null, html);

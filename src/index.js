@@ -5,7 +5,6 @@ module.exports = {
 
 var _ = require('lodash');
 var router = require("./express/router.js");
-var express = require("./express/express.js");
 
 var mongoose = null;
 var timestamps = require('mongoose-timestamp');
@@ -19,29 +18,21 @@ function use(_mongoose) {
   mongoose = _mongoose;
 }
 
-function model(json) {
+function model(meta) {
   // always have the full metadata available
-  schema_default(json);
-  schema_angular(json);
-  schema_express(json);
-  var schema = schema_mongoose(json);
+  schema_default(meta);
+  schema_angular(meta);
+  schema_mongoose(meta);
 
-  var mdl = {
-    json: json,
-    name: json.name,
-    schema: new mongoose.Schema(schema, json.mongoose)
-  };
-
-  express(mdl);
-
-  mdl.schema.plugin(timestamps, {
+  meta.$schema = new mongoose.Schema(meta.schema, meta.mongoose);
+  meta.$schema.plugin(timestamps, {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   });
+  meta.$model = mongoose.model(meta.name, meta.$schema);
 
-  mdl.router = router(mdl);
+  schema_express(meta);
+  meta.$router = router(meta);
 
-  mdl.model = mongoose.model(json.name, mdl.schema);
-
-  return mdl;
+  return meta;
 }

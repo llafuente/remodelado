@@ -3,28 +3,20 @@ module.exports = schema_default;
 var _ = require('lodash');
 var pluralize = require('pluralize');
 
-var default_field_data = {
+var default_schema = {
   type: "string",
-  display: {},
-
   create: false,
-  create_order: -1,
-
-  update: false,
-  update_order: -1,
-
-  filter: false,
-  filter_order: -1
+  update: false
 };
 
-function schema_default(json) {
-  var t = json.schema;
-  json.schema = {};
+function schema_default(meta) {
+  var t = meta.schema;
+  meta.schema = {};
 
   _.forEach(t, function(o, k) {
-    json.schema[k] = _.defaults(o, default_field_data);
+    meta.schema[k] = _.defaults(o, default_schema);
   });
 
-  json.singular = json.name;
-  json.plural = pluralize(json.name);
+  meta.singular = meta.name;
+  meta.plural = pluralize(meta.name);
 }

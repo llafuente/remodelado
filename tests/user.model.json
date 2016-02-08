@@ -6,14 +6,7 @@
 
       "type": "number",
       "create": false,
-      "update": false,
-
-      "display": {
-        "type": "static",
-        "list": 1,
-        "create": false,
-        "update": true
-      }
+      "update": false
     },
     "restricted_field": {
       "type": "number",
@@ -26,12 +19,7 @@
       "type": "string",
       "required": true,
       "create": true,
-      "update": true,
-
-      "display": {
-        "type": "text",
-        "list": 2
-      }
+      "update": true
     },
     "last_name": {
       "label": "Last name",
@@ -39,12 +27,7 @@
       "type": "string",
       "required": true,
       "create": true,
-      "update": true,
-
-      "display": {
-        "type": "text",
-        "list": 3
-      }
+      "update": true
     },
     "role": {
       "label": "Role",
@@ -52,28 +35,14 @@
       "type": "string",
       "enum": ["admin", "user"],
       "create": true,
-      "update": true,
-
-      "display": {
-        "type": "select",
-        "labels": [
-          {"id": "admin", "label": "Admin"},
-          {"id": "user", "label": "User"}
-        ],
-        "list": 5
-      }
+      "update": true
     },
     "age": {
       "label": "Age",
 
       "type": "number",
       "create": true,
-      "update": false,
-
-      "display": {
-        "type": "number",
-        "list": 4
-      }
+      "update": false
     },
     "bio": {
       "label": "About myself",
@@ -81,18 +50,42 @@
       "type": "string",
       "create": true,
       "update": true,
-      "default": null,
-
-      "display": {
-        "type": "textarea"
-      }
+      "default": null
     }
   },
   "mongoose": {
     "collection": "users"
   },
-  "angular": {
-
+  "interface": {
+    "id": {
+      "type": "static",
+      "list": 1,
+      "create": false,
+      "update": true
+    },
+    "first_name": {
+      "type": "text",
+      "list": 2
+    },
+    "last_name": {
+      "type": "text",
+      "list": 3
+    },
+    "role": {
+      "type": "select",
+      "labels": [
+        {"id": "admin", "label": "Admin"},
+        {"id": "user", "label": "User"}
+      ],
+      "list": 5
+    },
+    "age": {
+      "type": "number",
+      "list": 4
+    },
+    "bio": {
+      "type": "textarea"
+    }
   }
 
 }

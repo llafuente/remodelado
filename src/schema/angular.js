@@ -1,5 +1,6 @@
 module.exports = schema_angular;
 module.exports.each_control = each_control;
+module.exports.each_control_sorted = each_control_sorted;
 
 var constraints = {
   "required": "ng-required",
@@ -18,15 +19,20 @@ var err_messages = {
 
 var _ = require('lodash');
 
-function schema_angular(json) {
+function schema_angular(meta) {
   var schema = {};
 
-  _.forEach(json.schema, function(o, k) {
-    o.display.constraints = o.display.constraints || {};
-    o.display.container = o.display.container || {};
-    o.display.errors = o.display.errors || {};
+  _.forEach(meta.schema, function(o, k) {
+    // TODO maybe warning...
+    if (!meta.interface[k]) return;
 
-    schema[k] = o.display;
+    schema[k] = meta.interface[k];
+
+
+    schema[k].constraints = schema[k].constraints || {};
+    schema[k].container = schema[k].container || {};
+    schema[k].errors = schema[k].errors || {};
+
     schema[k].label = o.label;
     schema[k].name = k;
 
@@ -42,83 +48,107 @@ function schema_angular(json) {
           }
         }
         var err_id = kan.substring(3);
-        o.display.errors[err_id] = err_messages[err_id];
+        schema[k].errors[err_id] = err_messages[err_id];
       }
     });
 
     // add type validation by hand
-    if (o.display.type == "number") {
-      o.display.errors["number"] = err_messages["number"];
+    if (schema[k].type == "number") {
+      schema[k].errors["number"] = err_messages["number"];
     }
 
 
     schema[k].container.class = Object.keys(schema[k].constraints);
 
     // angular select
-    if (o.display.type == "select") {
+    if (schema[k].type == "select") {
       // labels are required
-      if (!o.display || Array.isArray(o.display)) {
+      if (!schema[k] || Array.isArray(schema[k])) {
         throw new Error("labels are required for select display type.");
       }
     }
   });
 
-  json.$angular = {
-    routes: '/angular/' + json.plural + '.routes.js',
+  meta.$angular = {
+    routes: '/angular/' + meta.plural + '.routes.js',
     states: {
-      root: json.plural,
-      list: json.plural + ".list",
-      create: json.plural + ".create",
-      update: json.plural + ".update",
+      root: meta.plural,
+      list: meta.plural + ".list",
+      create: meta.plural + ".create",
+      update: meta.plural + ".update",
     },
     templates: {
-      forms: '/angular/' + json.plural + '.forms.tpl.html',
-      create: '/angular/' + json.plural + '.create.tpl.html',
-      update: '/angular/' + json.plural + '.update.tpl.html',
-      list: '/angular/' + json.plural + '.list.tpl.html',
+      forms: '/angular/' + meta.plural + '.forms.tpl.html',
+      create: '/angular/' + meta.plural + '.create.tpl.html',
+      update: '/angular/' + meta.plural + '.update.tpl.html',
+      list: '/angular/' + meta.plural + '.list.tpl.html',
     },
     controllers: {
-      create_ctrl: json.plural + 'CreateCtrl',
-      create: '/angular/' + json.plural + '.create.ctrl.js',
+      create_ctrl: meta.plural + 'CreateCtrl',
+      create: '/angular/' + meta.plural + '.create.ctrl.js',
 
-      update_ctrl: json.plural + 'UpdateCtrl',
-      update: '/angular/' + json.plural + '.update.ctrl.js',
+      update_ctrl: meta.plural + 'UpdateCtrl',
+      update: '/angular/' + meta.plural + '.update.ctrl.js',
 
-      list_ctrl: json.plural + 'ListCtrl',
-      list: '/angular/' + json.plural + '.list.ctrl.js',
+      list_ctrl: meta.plural + 'ListCtrl',
+      list: '/angular/' + meta.plural + '.list.ctrl.js',
     }
   };
 }
 
-function check_action(action, options) {
+function check_action(action, model_opt, client_opt) {
   // internal values like __v
   // or fields that aren't exposed to angular
-  if (!options.options.display) {
+  if (!client_opt) {
     return false;
   }
   // if it has no type, can be displayed!
-  if (!options.options.display.type) {
+  if (!client_opt.type) {
     return false;
   }
 
   // fallback to api?
-  if (options.options.display[action] === undefined) {
-    return !!options.options[action];
+  if (client_opt[action] === undefined) {
+    return !!model_opt[action];
   }
 
-  return !!options.options.display[action];
+  return !!client_opt[action];
 }
 
-function each_control (mdl, action, cb) {
-  mdl.schema.eachPath(function(path, options) {
+// TODO fallback to api?!
+function each_control_sorted (meta, action, cb) {
+  var controls = [];
+
+  meta.$schema.eachPath(function(path, options) {
     // ignore private
     if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
       return ;
     }
 
-    if (!check_action(action, options)) {
+    var client_opt = meta.interface[path];
+    if (client_opt && client_opt[action]) {
+      controls.push(client_opt)
+    }
+  });
+
+  return controls.sort(function(a, b) {
+    return a[action] - b[action];
+  });
+}
+function each_control (meta, action, cb) {
+  meta.$schema.eachPath(function(path, options) {
+    // ignore private
+    if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
+      return ;
+    }
+
+    var client_opt = meta.interface[path];
+
+    if (!check_action(action, options.options, client_opt)) {
       return;
     }
-    cb(options, path);
+
+    // TODO this could be a problem because it's not one-one relation
+    cb(client_opt, path);
   });
 }

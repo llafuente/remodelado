@@ -1,12 +1,12 @@
 module.exports = read_middleware;
 
-function read_middleware(mdl) {
+function read_middleware(meta) {
   return function(req, res, next) {
 
-    var id = req.params[mdl.json.$express.id_param];
+    var id = req.params[meta.$express.id_param];
     // TODO int validation?!
 
-    mdl.model.findById(id, function(err, mdata) {
+    meta.$model.findById(id, function(err, mdata) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -18,7 +18,7 @@ function read_middleware(mdl) {
 
       var data = mdata.toJSON();
 
-      mdl.express.before_send("read", data, function(err, output) {
+      meta.$express.before_send("read", data, function(err, output) {
         /* istanbul ignore next */ if (err) {
           return res.error(err);
         }

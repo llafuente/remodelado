@@ -19,14 +19,4 @@ function schema_mongoose(json) {
   };
 
   // TODO add a version plugin
-
-  return json.schema;
-
-  /*
-  var schema = {};
-
-  _.forEach(json.schema, function(o, k) {
-    schema[k] = o.db;
-  });
-  */
 }

@@ -1,8 +1,8 @@
 module.exports = destroy_middleware;
 module.exports.destroy = destroy;
 
-function destroy(mdl, id, error, ok) {
-  mdl.model.findByIdAndRemove(id, function(err, data) {
+function destroy(meta, id, error, ok) {
+  meta.$model.findByIdAndRemove(id, function(err, data) {
     if (err) {
       return error(500, err);
     }
@@ -11,12 +11,12 @@ function destroy(mdl, id, error, ok) {
   });
 }
 
-function destroy_middleware(mdl) {
+function destroy_middleware(meta) {
   return function(req, res, next) {
-    var id = req.params[mdl.json.$express.id_param];
+    var id = req.params[meta.$express.id_param];
     // TODO int validation?!
 
-    return destroy(mdl, id, res.error, function() {
+    return destroy(meta, id, res.error, function() {
       res.status(204).json();
     });
   };

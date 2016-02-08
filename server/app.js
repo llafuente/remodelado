@@ -28,7 +28,7 @@ var user_json = require("../tests/user.model.json");
 var user = remodelado.model(user_json);
 
 
-app.use(user.router);
+app.use(user.$router);
 
 if (!process.argv[1] || process.argv[1].indexOf("mocha") === -1) {
   // Start server

@@ -42,7 +42,7 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
   });
 }
 
-function form(mdl, action, layout, form_path, base_path, cb) {
+function form(meta, action, layout, form_path, base_path, cb) {
   assert.ok(["create", "update"].indexOf(action) !== -1);
   assert.ok(["vertical", "horizontal", "inline"].indexOf(layout) !== -1);
 
@@ -53,10 +53,10 @@ function form(mdl, action, layout, form_path, base_path, cb) {
   var errors = [];
   var todo = 0;
 
-  $angular.each_control(mdl, action, function(options, path) {
+  $angular.each_control(meta, action, function(client_opt, path) {
     ++todo;
 
-    gen_control(options.options.display, path, form_path, base_path, layout, function(err, html) {
+    gen_control(client_opt, path, form_path, base_path, layout, function(err, html) {
       --todo;
 
       if (err) {
