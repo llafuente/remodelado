@@ -47,7 +47,9 @@ function list_ctrl(mdl, app_name, cb) {
     cb(null, compiled({
       app_name: app_name,
 
+      id_param: mdl.json.$express.id_param,
       controllers: mdl.json.$angular.controllers,
+      api: mdl.json.$express,
     }));
   });
 }
@@ -88,6 +90,7 @@ function create_ctrl(mdl, app_name, cb) {
         controls_js: controls_js,
 
         controllers: mdl.json.$angular.controllers,
+        api: mdl.json.$express,
       }));
     });
   });
@@ -103,8 +106,10 @@ function update_ctrl(mdl, app_name, cb) {
       var compiled = _.template(js);
       cb(null, compiled({
         app_name: app_name,
-          controls_js: controls_js,
+        controls_js: controls_js,
 
+        id_param: mdl.json.$express.id_param,
+        api: mdl.json.$express,
         controllers: mdl.json.$angular.controllers,
       }));
     });

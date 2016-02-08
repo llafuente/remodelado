@@ -33,10 +33,7 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
         control_path: form_path + "." + control.name,
         model: base_path + "." + control.name,
 
-        control: control,
-        error_messages: {
-          number: "xxxx",
-        }
+        control: control
       });
       return cb(null, html);
     } catch(e) {

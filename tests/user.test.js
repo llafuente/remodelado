@@ -24,8 +24,8 @@ test('create user model', function (t) {
   //  require("util").inspect(mdl.json, {depth: null, colors: true})
   //);
 
-  // schema check
-  t.equal(mdl.json.schema.first_name.display.constraints['ng-required'], true);
+  // schema check, ng-required must be a "true" string!
+  t.equal(mdl.json.schema.first_name.display.constraints['ng-required'], "true");
 
 
   // url check

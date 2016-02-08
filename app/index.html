@@ -7,17 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css">
-    <link rel="stylesheet" href="/dist/css.css">
+    <link rel="stylesheet" href="/css.css">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.1/ui-bootstrap-tpls.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.17/angular-ui-router.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-smart-table/2.1.7/smart-table.js"></script>
 
     <script>
       // app initialization
       angular
       .module('app', [
         'ui.bootstrap',
-        'ui.router'
+        'ui.router',
+        'smart-table'
       ])
       .filter('translate', function () {
         return function(x) { return x; };

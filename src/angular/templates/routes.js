@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 angular
 .module('<%= app_name %>')
 .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
-  console.info("<%= base_state %> routes setup");
+  console.info('<%= base_state %> routes setup');
 
   $urlRouterProvider
   .when('/<%= base_state %>', '/<%= base_state %>/list');
@@ -14,7 +14,7 @@ angular
     //templateUrl: 'views/<%= base_state %>.tpl.html',
     template: '<ui-view></ui-view>',
     data: {
-      model: "entity"
+      model: 'entity'
     }
   })
   .state('<%= states.list %>', {
@@ -22,17 +22,9 @@ angular
     templateUrl: '<%= templates.list %>',
     controller: '<%= controllers.list_ctrl %>',
     resolve: {
-      list: ["$http", function($http) {
-        return  $http({
-          method: "GET",
-          url: "<%= api.list %>"
-        }).then(function(res) {
-          return res.data;
-        });
-      }],
     },
     data: {
-      model: "list"
+      model: 'list'
     }
   })
   .state('<%= states.create %>', {
@@ -55,7 +47,7 @@ angular
       }],
     },
     data: {
-      model: "entity"
+      model: 'entity'
     }
   });
 });

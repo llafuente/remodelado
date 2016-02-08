@@ -5,7 +5,8 @@ form.form-vertical(novalidate="" name=name)
       // TODO this should be a div ?
       span!= c
     div.clearfix
-      button.btn.btn-primary(type=button ng-click="submit()" translate="") Crear
+      button.btn.btn-primary(type=button ng-click="submit()" translate="" ng-hide="submitting") Crear
+      span.btn.btn-secondary(translate="" ng-show="submitting") Creando
     div.clearfix
     //pre= '{{' + name + ' | json}}'
     div.row
@@ -17,3 +18,6 @@ form.form-vertical(novalidate="" name=name)
         span.btn= 'valid: {{' + name + '.$valid | json}}'
       div.col-xs-1(ng-class="{'bg-danger': " + name + ".$submitted, 'bg-success': !" + name + ".$submitted }")
         span.btn= 'submitted: {{' + name + '.$submitted | json}}'
+      div.col-xs-1(ng-class="{'bg-danger': !submitting, 'bg-success': submitting }")
+        span.btn= 'submitting: {{submitting | json}}'
+        
