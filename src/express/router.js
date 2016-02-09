@@ -46,10 +46,18 @@ function router(meta) {
 
   r.get(meta.$angular.templates.create, function(req, res, next) {
     req.query.action = 'create';
+    req.query.button = {
+      text: 'Create',
+      inprogress: 'Creating'
+    };
     next();
   },angular.forms(meta));
   r.get(meta.$angular.templates.update, function(req, res, next) {
     req.query.action = 'update';
+    req.query.button = {
+      text: 'Save',
+      inprogress: 'Saving'
+    };
     next();
   },angular.forms(meta));
 

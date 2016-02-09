@@ -1,12 +1,12 @@
-form.form-vertical(novalidate="" name=name)
+form.form-vertical(novalidate="" name=name role="form")
   fieldset
     legend(translate="")= legend
     each c in controls
       // TODO this should be a div ?
       span!= c
     div.clearfix
-      button.btn.btn-primary(type=button ng-click="submit()" translate="" ng-hide="submitting") Crear
-      span.btn.btn-secondary(translate="" ng-show="submitting") Creando
+      button.btn.btn-primary(type=button ng-click=name + ".$valid ? submit() : null" translate="" ng-hide="submitting" ng-disabled=name + ".$invalid")= button.text
+      span.btn.btn-secondary(translate="" ng-show="submitting")= button.inprogress
     div.clearfix
     //pre= '{{' + name + ' | json}}'
     div.row

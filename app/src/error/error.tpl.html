@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Se ha producido un error.</h3>
+</div>
+
+<div class="modal-body">
+    <div ng-if="template">
+      <div ng-include="template">
+      </div>
+    </div>
+
+    <ul ng-if="!template">
+        <li ng-repeat="err in errors track by $index" translate>{{err}}</li>
+    </ul>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()" translate>OK</button>
+</div>

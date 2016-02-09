@@ -42,7 +42,7 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
   });
 }
 
-function form(meta, action, layout, form_path, base_path, cb) {
+function form(meta, action, button, layout, form_path, base_path, cb) {
   assert.ok(["create", "update"].indexOf(action) !== -1);
   assert.ok(["vertical", "horizontal", "inline"].indexOf(layout) !== -1);
 
@@ -85,6 +85,7 @@ function form(meta, action, layout, form_path, base_path, cb) {
           try {
             var html = compiled({
               name: form_path,
+              button: button,
               controls: controls
             });
 

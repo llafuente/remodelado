@@ -38,9 +38,10 @@ function forms_middleware(mdl) {
   return function(req, res, next) {
     req.log.silly("create_form", mdl.name);
     var action = req.query.action || "create";
+    var button = req.query.button || "Create";
     var layout = req.query.layout || "horizontal";
 
-    form(mdl, action, layout, "form", "entity", function(err, html) {
+    form(mdl, action, button, layout, "form", "entity", function(err, html) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }

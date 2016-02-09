@@ -1,5 +1,9 @@
-div.control-container.form-group(ng-class="{'has-error': (" + control_path +".$touched || " + form_path +".$dirty) && " + control_path +".$invalid}"
-  id=control.name + "-container"
+div.control-container.form-group.has-feedback(
+  ng-class= "{" +
+    "'has-error': (" + control_path +".$touched || " + form_path +".$dirty) && " + control_path +".$invalid," +
+    "'has-success': " + control_path +".$valid" +
+  "}"
+  id= control.name + "-container"
   )&attributes(control.container)
   block label
     label.col-xs-4.control-label(for=control.name translate="")= control.label
@@ -7,7 +11,9 @@ div.control-container.form-group(ng-class="{'has-error': (" + control_path +".$t
     div.col-xs-8
       div.control-wapper
         block control
-
+        //span.glyphicon.glyphicon-ok.form-control-feedback.ng-hide(ng-show= control_path + ".$valid")
+        //span.glyphicon.glyphicon-remove.form-control-feedback.ng-hide(ng-show= control_path + ".$invalid")
+        
   if control.help
     div.clearfix
     div.col-xs-offset-4.col-xs-8.help-block(translate="")= control.help

@@ -8,6 +8,28 @@ var winston = require('winston');
 
 app.use('/', express.static('dist'));
 app.use('/', express.static('app'));
+app.post('/api/users/me', function(req, res, next) {
+  // TODO check token
+  if (!req.headers['x-access-token']) {
+    return res.status(401).json({error: "No session"});
+  }
+
+  if (req.headers['x-access-token'] != "1235fd1sdfs6f5sd1f6s") {
+    return res.status(401).json({error: "Invalid session"});
+  }
+
+  res.status(200).json({
+    "username": "username",
+    "permissions": ["do magic"],
+    "roles": ["user"],
+  });
+});
+
+app.post('/api/auth', function(req, res, next) {
+  res.status(200).json({
+    "token": "1235fd1sdfs6f5sd1f6s"
+  });
+});
 
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/ubermodel");
@@ -26,9 +48,12 @@ var logger = new (winston.Logger)({
 
 var user_json = require("../tests/user.model.json");
 var user = remodelado.model(user_json);
-
-
 app.use(user.$router);
+
+var order_json = require("../tests/order.model.json");
+var order = remodelado.model(order_json);
+app.use(order.$router);
+
 
 if (!process.argv[1] || process.argv[1].indexOf("mocha") === -1) {
   // Start server
