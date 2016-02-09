@@ -34,7 +34,7 @@ angular
 
     if(form.$valid) {
       Auth.login(
-        $scope.user.email,
+        $scope.user.username,
         $scope.user.password,
         $scope.user.remindme
       )

@@ -56,8 +56,8 @@
   <div class="container" ng-controller="MainCtrl">
     <!-- form -->
   </div>
-  <a class="btn btn-primary" ui-sref="login">Login</a>
-  <a class="btn btn-primary" ng-click="auth.logout()">Logout</a>
+  <a class="btn btn-primary" ui-sref="login" id="login">Login</a>
+  <a class="btn btn-primary" ng-click="auth.logout()" id="logout">Logout</a>
   <p class="btn btn-primary">Logged as: {{user | json}}</a>
   <div class="clearfix"></div>
   <ui-view cg-busy="loading"></ui-view>

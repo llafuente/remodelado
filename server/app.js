@@ -7,7 +7,10 @@ var winston = require('winston');
 //app.use('/', express.static(join(__dirname, 'dist')));
 
 app.use('/', express.static('dist'));
+
+app.use('/', express.static('tmp/instrumented/app'));
 app.use('/', express.static('app'));
+
 app.post('/api/users/me', function(req, res, next) {
   // TODO check token
   if (!req.headers['x-access-token']) {
