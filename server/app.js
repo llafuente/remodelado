@@ -3,12 +3,9 @@ var express = require('express');
 var join = require('path').join;
 var winston = require('winston');
 
-//timeout for testing purposes
-app.use(function(req, res, next) {
-  setTimeout(function() {
-    next();
-  }, 500);
-});
+require('./test.js')(app);
+
+
 
 //app.use('/', express.static(join(__dirname, 'app')));
 //app.use('/', express.static(join(__dirname, 'dist')));

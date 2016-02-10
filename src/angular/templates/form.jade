@@ -20,4 +20,6 @@ form.form-vertical(novalidate="" autocomplete="off" name=name role="form")
         span.btn= 'submitted: {{' + name + '.$submitted | json}}'
       div.col-xs-1(ng-class="{'bg-danger': !submitting, 'bg-success': submitting }")
         span.btn= 'submitting: {{submitting | json}}'
+      div.col-xs-4
+        pre entity = {{entity | json}}
         
