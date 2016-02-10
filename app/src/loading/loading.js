@@ -1,5 +1,8 @@
 'use strict';
 
+// hook ui-router and httpProvider supporting loading screens
+// without any verbose code
+
 angular
 .module('app')
 .factory('chainLoading', function($rootScope) {
@@ -26,37 +29,82 @@ angular
 })
 // state change -> loading!
 .run(function ($rootScope, chainLoadingQ, $log) {
-  var defers = [];
-  var defer;
+  var defer = null;
 
   $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
     $log.info("$stateChangeStart", toState.name);
-    defers.push(chainLoadingQ());
-  });
-
-  function resolve_all (/*event, toState, toParams, fromState, fromParams*/) {
-    //$log.info("$stateChangeSuccess", arguments, defers.length);
-    while(defer = defers.pop()) {
-      defer.resolve();
+    if (!defer) {
+      defer = chainLoadingQ();
     }
-    $rootScope.loading = null;
-  }
+  });
 
   $rootScope.$on("$stateChangePrevented", function(event, toState, toParams, fromState, fromParams) {
     $log.info("$stateChangePrevented", toState.name);
-    resolve_all();
+    if (defer) {
+      defer.resolve();
+      defer = null;
+    }
   });
   $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
     $log.info("$stateChangeSuccess", toState.name);
-    resolve_all();
+    if (defer) {
+      defer.resolve();
+      defer = null;
+    }
   });
 
   $rootScope.$on("$stateChangeError", function (event, tostate, toparams) {
     $log.error("$stateChangeError", arguments);
-    resolve_all();
+    if (defer) {
+      defer.resolve();
+      defer = null;
+    }
   });
 
   $rootScope.$on("$stateNotFound", function (event, unfoundState, fromState, fromParams) {
     $log.error("$stateNotFound", arguments);
+    if (defer) {
+      defer.resolve();
+      defer = null;
+    }
   });
+})
+.factory('HttpLoadingInterceptor', function ($q, $rootScope, $log, chainLoadingQ) {
+  var numLoadings = 0;
+  var defer = null;
+
+  return {
+    request: function (config) {
+      numLoadings++;
+
+      if (numLoadings == 1) {
+        defer = chainLoadingQ();
+      }
+
+      // Show loader
+      $rootScope.$broadcast("$loading");
+      return config;
+    },
+    response: function (response) {
+      if ((--numLoadings) === 0) {
+        // Hide loader
+        $rootScope.$broadcast("$loaded");
+        defer.resolve();
+      }
+
+      return response;
+    },
+    responseError: function (response) {
+      if (!(--numLoadings)) {
+        // Hide loader
+        $rootScope.$broadcast("$loaded");
+        defer.resolve();
+      }
+
+      return $q.reject(response);
+    }
+  };
+})
+.config(function ($httpProvider) {
+  $httpProvider.interceptors.push('HttpLoadingInterceptor');
 });

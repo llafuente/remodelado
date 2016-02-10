@@ -17,7 +17,7 @@ var check_js = require('syntax-error');
 test('create user model', function (t) {
   remodelado.use(mongoose);
 
-  var model = require("./user.model.json");
+  var model = require("./test_model.model.json");
   var mdl = remodelado.model(model);
 
   //console.log(
@@ -29,12 +29,12 @@ test('create user model', function (t) {
 
 
   // url check
-  t.equal(mdl.$express.read, "/users/:user_id");
-  t.equal(mdl.$express.delete, "/users/:user_id");
-  t.equal(mdl.$express.update, "/users/:user_id");
+  t.equal(mdl.$express.read, "/test_models/:test_model_id");
+  t.equal(mdl.$express.delete, "/test_models/:test_model_id");
+  t.equal(mdl.$express.update, "/test_models/:test_model_id");
 
-  t.equal(mdl.$express.create, "/users");
-  t.equal(mdl.$express.list, "/users");
+  t.equal(mdl.$express.create, "/test_models");
+  t.equal(mdl.$express.list, "/test_models");
 
   app.use(mdl.$router);
 
@@ -64,7 +64,7 @@ test('create user model', function (t) {
 
   test('http: create user', function (t) {
     request(app)
-    .post("/users")
+    .post("/test_models")
     .send(u)
     .expect(201)
     .end(function(err, res) {
@@ -89,7 +89,7 @@ test('create user model', function (t) {
 
 test('http: create user (err)', function (t) {
   request(app)
-  .post("/users")
+  .post("/test_models")
   .send([1,2,3])
   .expect(422)
   .end(function(err, res) {
@@ -103,7 +103,7 @@ test('http: create user (err)', function (t) {
 
 test('http: create user (err-required)', function (t) {
   request(app)
-  .post("/users")
+  .post("/test_models")
   .send({})
   .expect(400)
   .end(function(err, res) {
@@ -136,7 +136,7 @@ test('http: create user (err-required)', function (t) {
 
 test('http: create user (err-enum)', function (t) {
   request(app)
-  .post("/users")
+  .post("/test_models")
   .send({
     first_name: 101,
     last_name: "Pérez",
@@ -166,7 +166,7 @@ test('http: create user (err-enum)', function (t) {
 
 test('http: create user (err-cast)', function (t) {
   request(app)
-  .post("/users")
+  .post("/test_models")
   .send({
     first_name: "Manuel",
     last_name: "Pérez",
@@ -196,7 +196,7 @@ test('http: create user (err-cast)', function (t) {
 
 test('http: get create user form', function (t) {
   request(app)
-  .get("/angular/users.create.tpl.html")
+  .get("/angular/test_models.create.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -210,7 +210,7 @@ test('http: get create user form', function (t) {
 
 test('http: get update user form', function (t) {
   request(app)
-  .get("/angular/users.update.tpl.html")
+  .get("/angular/test_models.update.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -225,7 +225,7 @@ test('http: get update user form', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/angular/users.routes.js")
+  .get("/angular/test_models.routes.js")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -238,7 +238,7 @@ test('http: get user routes.js', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/angular/users.routes.js?base_state=root&action=update")
+  .get("/angular/test_models.routes.js?base_state=root&action=update")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -252,7 +252,7 @@ test('http: get user routes.js', function (t) {
 
 test('http: get user list', function (t) {
   request(app)
-  .get("/users")
+  .get("/test_models")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -268,7 +268,7 @@ test('http: get user list', function (t) {
 
 test('http: get user list (err-invalid offset)', function (t) {
   request(app)
-  .get("/users?offset=no")
+  .get("/test_models?offset=no")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -281,7 +281,7 @@ test('http: get user list (err-invalid offset)', function (t) {
 
 test('http: get user list (err-invalid offset)', function (t) {
   request(app)
-  .get("/users?offset=2&limit=no")
+  .get("/test_models?offset=2&limit=no")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -294,7 +294,7 @@ test('http: get user list (err-invalid offset)', function (t) {
 
 test('http: get user list (err-invalid invalid sort)', function (t) {
   request(app)
-  .get("/users?offset=2&limit=10&sort=noexistentfield")
+  .get("/test_models?offset=2&limit=10&sort=noexistentfield")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -307,7 +307,7 @@ test('http: get user list (err-invalid invalid sort)', function (t) {
 
 test('http: get user list with offset/limit', function (t) {
   request(app)
-  .get("/users?offset=0&limit=1")
+  .get("/test_models?offset=0&limit=1")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -322,7 +322,7 @@ test('http: get user list with offset/limit', function (t) {
 
 test('http: get user list (err invalid sort)', function (t) {
   request(app)
-  .get("/users?sort=-restricted_field")
+  .get("/test_models?sort=-restricted_field")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -335,7 +335,7 @@ test('http: get user list (err invalid sort)', function (t) {
 
 test('http: get user list (err invalid populate)', function (t) {
   request(app)
-  .get("/users?populate=telephones")
+  .get("/test_models?populate=telephones")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -348,7 +348,7 @@ test('http: get user list (err invalid populate)', function (t) {
 
 test('http: get user list (err invalid populate)', function (t) {
   request(app)
-  .get("/users?populate[]=telephones")
+  .get("/test_models?populate[]=telephones")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -361,7 +361,7 @@ test('http: get user list (err invalid populate)', function (t) {
 
 test('http: get user list (err invalid populate)', function (t) {
   request(app)
-  .get("/users?populate[]=first_name")
+  .get("/test_models?populate[]=first_name")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -377,7 +377,7 @@ test('http: get user list (err invalid populate)', function (t) {
 
 test('http: get user list with first_name=abc', function (t) {
   request(app)
-  .get("/users?where[first_name]=abc")
+  .get("/test_models?where[first_name]=abc")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -392,7 +392,7 @@ test('http: get user list with first_name=abc', function (t) {
 var user_id;
 test('http: get user list age=37', function (t) {
   request(app)
-  .get("/users?where[age]=37&limit=1")
+  .get("/test_models?where[age]=37&limit=1")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -407,7 +407,7 @@ test('http: get user list age=37', function (t) {
 
 test('http: update user', function (t) {
   request(app)
-  .patch("/users/" + user_id)
+  .patch("/test_models/" + user_id)
   .send({
     last_name: "last!",
     no_exists: "do not update"
@@ -420,7 +420,7 @@ test('http: update user', function (t) {
     t.equal(res2.body.__v, undefined, "version is not exposed");
 
     request(app)
-    .get("/users/" + user_id)
+    .get("/test_models/" + user_id)
     .expect(200)
     .end(function(err3, res3) {
       t.error(err3);
@@ -438,7 +438,7 @@ test('http: update user', function (t) {
 
 test('http: update user (err)', function (t) {
   request(app)
-  .patch("/users/" + user_id)
+  .patch("/test_models/" + user_id)
   .send([1, 2, 3])
   .expect(422)
   .end(function(err, res2) {
@@ -450,7 +450,7 @@ test('http: update user (err)', function (t) {
 
 test('http: destroy user that don\'t exists (noerr?)', function (t) {
   request(app)
-  .delete("/users/56b3683ce8b5ab05535c0e3f")
+  .delete("/test_models/56b3683ce8b5ab05535c0e3f")
   .expect(204)
   .end(function(err, res2) {
     t.error(err);
@@ -461,7 +461,7 @@ test('http: destroy user that don\'t exists (noerr?)', function (t) {
 
 test('http: user not found', function (t) {
   request(app)
-  .get("/users/56b3683ce8b5ab05535c0e3f")
+  .get("/test_models/56b3683ce8b5ab05535c0e3f")
   .expect(404)
   .end(function(err, res) {
     t.error(err);
@@ -476,7 +476,7 @@ test('http: user not found', function (t) {
 
 test('http: get user not-found', function (t) {
   request(app)
-  .get("/users/123")
+  .get("/test_models/123")
   .expect(400)
   .end(function(err, res) {
     t.error(err);
@@ -489,7 +489,7 @@ test('http: get user not-found', function (t) {
 
 test('http: get user list template', function (t) {
   request(app)
-  .get("/angular/users.list.tpl.html")
+  .get("/angular/test_models.list.tpl.html")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -508,7 +508,7 @@ test('http: get user list template', function (t) {
 
 test('http: get user list controller', function (t) {
   request(app)
-  .get("/angular/users.list.ctrl.js")
+  .get("/angular/test_models.list.ctrl.js")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -523,7 +523,7 @@ test('http: get user list controller', function (t) {
 
 test('http: get user create controller', function (t) {
   request(app)
-  .get("/angular/users.create.ctrl.js")
+  .get("/angular/test_models.create.ctrl.js")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -538,7 +538,7 @@ test('http: get user create controller', function (t) {
 
 test('http: get user update controller', function (t) {
   request(app)
-  .get("/angular/users.update.ctrl.js")
+  .get("/angular/test_models.update.ctrl.js")
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -553,7 +553,7 @@ test('http: get user update controller', function (t) {
 
 test('http: destroy user', function (t) {
   request(app)
-  .delete("/users/" + user_id)
+  .delete("/test_models/" + user_id)
   .expect(204)
   .end(function(err, res) {
     t.error(err);

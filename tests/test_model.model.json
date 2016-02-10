@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "test_model",
   "schema": {
     "id": {
       "label": "ID",
@@ -54,7 +54,7 @@
     }
   },
   "mongoose": {
-    "collection": "users"
+    "collection": "test_model"
   },
   "interface": {
     "id": {

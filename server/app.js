@@ -3,6 +3,13 @@ var express = require('express');
 var join = require('path').join;
 var winston = require('winston');
 
+//timeout for testing purposes
+app.use(function(req, res, next) {
+  setTimeout(function() {
+    next();
+  }, 500);
+});
+
 //app.use('/', express.static(join(__dirname, 'app')));
 //app.use('/', express.static(join(__dirname, 'dist')));
 
@@ -10,6 +17,7 @@ app.use('/', express.static('dist'));
 
 app.use('/', express.static('tmp/instrumented/app'));
 app.use('/', express.static('app'));
+
 
 app.post('/api/users/me', function(req, res, next) {
   // TODO check token
@@ -22,6 +30,7 @@ app.post('/api/users/me', function(req, res, next) {
   }
 
   res.status(200).json({
+    "id": 1,
     "username": "username",
     "permissions": ["do magic"],
     "roles": ["user"],
@@ -49,7 +58,7 @@ var logger = new (winston.Logger)({
   })]
 });
 
-var user_json = require("../tests/user.model.json");
+var user_json = require("./user.model.json");
 var user = remodelado.model(user_json);
 app.use(user.$router);
 

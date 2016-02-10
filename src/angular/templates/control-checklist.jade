@@ -1,0 +1,9 @@
+block content
+  div(class=layout === "horizontal" ? "col-xs-8" : undefined)
+    div.control-wapper.checkbox
+      div(ng-repeat="item in " + control.name + "_options")
+        label
+          input(type="checkbox" checklist-model=model name=control.name + '-{{$index}}' id=control.name + '-{{$index}}' checklist-value="item.id")
+          span {{item.label}}
+        br
+        

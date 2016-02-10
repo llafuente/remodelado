@@ -14,6 +14,7 @@ var constraints = {
 
 var err_messages = {
   required: "Field is required",
+  email: "Field must be a valid email",
   number: "Field is not a valid number",
 };
 
@@ -56,6 +57,11 @@ function schema_angular(meta) {
     if (schema[k].type == "number") {
       schema[k].errors["number"] = err_messages["number"];
     }
+
+    if (schema[k].type == "email") {
+      schema[k].errors["email"] = err_messages["email"];
+    }
+
 
 
     schema[k].container.class = Object.keys(schema[k].constraints);

@@ -1,0 +1,63 @@
+{
+  "name": "user",
+  "schema": {
+    "id": {
+      "label": "ID",
+
+      "type": "number",
+      "create": false,
+      "update": false
+    },
+    "username": {
+      "label": "Username",
+      "type": "string",
+      "required": true,
+      "create": true,
+      "update": true
+    },
+    "password": {
+      "label": "Password",
+      "type": "string",
+      "required": true,
+      "create": true,
+      "update": true
+    },
+    "roles": {
+      "label": "Roles",
+      "type": "array",
+      "array": {
+        "type": "string",
+        "enum": ["admin", "user"]
+      },
+      "create": true,
+      "update": true
+    }
+  },
+  "mongoose": {
+    "collection": "users"
+  },
+  "interface": {
+    "id": {
+      "type": "static",
+      "list": 1,
+      "create": false,
+      "update": true
+    },
+    "username": {
+      "type": "email",
+      "list": 2
+    },
+    "password": {
+      "type": "password",
+      "restricted": true
+    },
+    "roles": {
+      "type": "checklist",
+      "labels": [
+        {"id": "admin", "label": "Admin"},
+        {"id": "user", "label": "User"}
+      ],
+      "list": 5
+    }
+  }
+}

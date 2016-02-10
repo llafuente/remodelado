@@ -45,7 +45,7 @@ angular
 
   $log.log("Token", ipCookie('token'));
 
-  return ($rootScope.auth = {
+  return ($rootScope.Auth = {
 
     /**
      * Authenticate user and save token
