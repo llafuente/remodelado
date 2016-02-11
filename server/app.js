@@ -15,31 +15,6 @@ app.use('/', express.static('dist'));
 app.use('/', express.static('tmp/instrumented/app'));
 app.use('/', express.static('app'));
 
-
-app.post('/api/users/me', function(req, res, next) {
-  // TODO check token
-  if (!req.headers['x-access-token']) {
-    return res.status(401).json({error: "No session"});
-  }
-
-  if (req.headers['x-access-token'] != "1235fd1sdfs6f5sd1f6s") {
-    return res.status(401).json({error: "Invalid session"});
-  }
-
-  res.status(200).json({
-    "id": 1,
-    "username": "username",
-    "permissions": ["do magic"],
-    "roles": ["user"],
-  });
-});
-
-app.post('/api/auth', function(req, res, next) {
-  res.status(200).json({
-    "token": "1235fd1sdfs6f5sd1f6s"
-  });
-});
-
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/ubermodel");
 

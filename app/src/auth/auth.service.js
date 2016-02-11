@@ -12,6 +12,11 @@ angular
   // url that return the token
   this.api_auth = '/api/auth';
   this.state_after_login = 'users';
+  this.token_header = 'X-Access-Token';
+  this.token_prefix = 'Bearer ';
+  this.cookie_name = 'token';
+  // if this header is recieve with an error -> logout the user
+  this.expiration_header = 'X-Session-Expired';
 
   this.$get = function () {
     return this;
@@ -27,23 +32,35 @@ angular
 
   function login_me() {
     $log.info("login_me")
-    var user = $http({
+    $http({
       method: 'POST',
       url: AuthConfig.api_users_data
-    });
-
-    user.then(function(response) {
+    })
+    .then(function(response) {
       setCurrentUser(response.data);
       $rootScope.$emit('$login');
     });
-
   }
 
-  if(ipCookie('token')) {
+  function get_token() {
+    return ipCookie(AuthConfig.cookie_name);
+  }
+  function set_token(data) {
+    ipCookie(AuthConfig.cookie_name, data, {
+      path: '/'
+    });
+  }
+  function remove_token(data) {
+    ipCookie.remove('token', {
+      path: '/'
+    });
+  }
+
+  $log.log("(Auth) Token", get_token());
+  if(get_token()) {
     login_me();
   }
 
-  $log.log("Token", ipCookie('token'));
 
   return ($rootScope.Auth = {
 
@@ -65,9 +82,7 @@ angular
       success(function(data) {
         $log.log("login success", data);
 
-        ipCookie('token', data.token, {
-          path: '/'
-        });
+        set_token(data.token);
 
         login_me();
 
@@ -88,18 +103,16 @@ angular
      */
     logout: function(redirect_to) {
       setCurrentUser({});
-      var token = ipCookie('token');
-      ipCookie.remove('token', {
-        path: '/'
-      });
+      var token = get_token();
+      remove_token();
 
       if (token) {
+        var headers = {};
+        headers[AuthConfig.token_header] = token;
         chainLoading($http({
           method: 'POST',
           url: '/api/logout',
-          headers: {
-            'X-Access-Token': token
-          }
+          headers: headers
         })
         .finally(function(response){
           // TODO review if this is the best site
@@ -177,21 +190,31 @@ angular
     /**
      * Get auth token
      */
-    getToken: function() {
-      return ipCookie('token');
-    }
+    getToken: get_token
   });
 })
-.factory('authInterceptor', function ($rootScope, ipCookie, $injector) {
+.factory('authInterceptor', function ($injector, $q) {
   return {
     // Add authorization token to headers
     request: function (config) {
+      var AuthConfig = $injector.get("AuthConfig");
+      var Auth = $injector.get("Auth");
       config.headers = config.headers || {};
-      var t = ipCookie('token');
+      var t = Auth.getToken();
       if (t) {
-        config.headers['X-Access-Token'] = t;
+        config.headers[AuthConfig.token_header] = AuthConfig.token_prefix + t;
       }
       return config;
+    },
+    responseError: function (response) {
+      var AuthConfig = $injector.get("AuthConfig");
+      var Auth = $injector.get("Auth");
+
+      if (response.headers(AuthConfig.expiration_header)){
+        Auth.logout();
+      }
+
+      return $q.reject(response);
     }
   };
 })

@@ -169,20 +169,11 @@ angular
 
       // manage 4XX & 5XX
       if (response.status >= 400) {
-        if (response.status == 401 && response.headers('X-Session-Expired') == 1) {
-          //If the 401 is for session-expired then we make logout on the angularjs app
-          //This way we can prevent infinity loops
-          expired_session = true;
-          $injector.get('Auth').logout();
-        }
-
         var errors = ErrorFormat(response);
 
         // TODO handle retry
         // TODO modal should be promisable?
-        if (!expired_session) {
-          return ErrorHandler.push(errors, response);
-        }
+        return ErrorHandler.push(errors, response);
       }
 
       return $q.reject(response);
