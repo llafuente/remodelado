@@ -26,13 +26,14 @@ angular
   var currentUser = {};
 
   function setCurrentUser(val) {
+    $log.debug("(Auth) setCurrentUser");
+
     $rootScope.user = val;
     currentUser = val;
   }
 
   function login_me() {
-    $log.info("login_me")
-    $http({
+    return $http({
       method: 'POST',
       url: AuthConfig.api_users_data
     })
@@ -56,7 +57,8 @@ angular
     });
   }
 
-  $log.log("(Auth) Token", get_token());
+  $log.debug("(Auth) Token", get_token());
+
   if(get_token()) {
     login_me();
   }
@@ -68,31 +70,36 @@ angular
      * Authenticate user and save token
      *
      * @param  {Object}   user     - login info
-     * @param  {Function} callback - optional
      * @return {Promise}
      */
-    login: function(username, password, remindme, callback) {
-      var cb = callback || angular.noop;
+    login: function(username, password, remindme) {
+      var promise = $http({
+        method: "POST",
+        url: AuthConfig.api_auth,
+        data: {
+          username: username,
+          password: password,
+          remindme: remindme || false
+        }
+      })
+      .then(function(response) {
+        $log.debug("(Auth) login success", response.data);
 
-      return chainLoading($http.post(AuthConfig.api_auth, {
-        username: username,
-        password: password,
-        remindme: remindme || false
-      }).
-      success(function(data) {
-        $log.log("login success", data);
+        set_token(response.data.token);
 
-        set_token(data.token);
-
-        login_me();
-
-        return cb();
-      }).
-      error(function(err) {
+        return login_me().then(function() {
+          return response;
+        });
+      }, function(response) {
+        $log.debug("(Auth) login err", response);
         this.logout();
 
-        return cb(err);
-      }.bind(this)));
+        return response;
+      }.bind(this));
+
+      chainLoading(promise);
+
+      return promise;
     },
 
     /**
@@ -118,8 +125,9 @@ angular
           // TODO review if this is the best site
           $rootScope.$emit('$logout');
 
-          $log.info('redirect logout', redirect_to);
           if (redirect_to) {
+            $log.debug('redirect logout', redirect_to);
+
             $state.go(redirect_to);
           }
         }));
@@ -148,6 +156,8 @@ angular
      * Waits for currentUser to resolve before checking if user is logged in
      */
     isLoggedInAsync: function(cb) {
+      //$log.debug("(Auth) isLoggedInAsync", currentUser);
+
       if(currentUser.hasOwnProperty('$promise')) {
         currentUser.$promise.then(function() {
           cb(true);

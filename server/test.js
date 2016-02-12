@@ -62,11 +62,19 @@ module.exports = function(app) {
   });
 
   app.use('/api/require-login', function(req, res, next) {
-    var status = parseInt(req.params.status);
-
     if (!req.headers['x-access-token']) {
       return res.status(401).json({
         error: "Url required to be logged"
+      });
+    }
+
+    return res.status(200).json({});
+  });
+
+  app.use('/api/error-if-logged', function(req, res, next) {
+    if (req.headers['x-access-token']) {
+      return res.status(400).json({
+        error: "Force anonymous url!"
       });
     }
 

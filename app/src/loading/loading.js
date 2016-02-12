@@ -32,21 +32,21 @@ angular
   var defer = null;
 
   $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
-    $log.info("$stateChangeStart", toState.name);
+    $log.debug("$stateChangeStart", toState.name);
     if (!defer) {
       defer = chainLoadingQ();
     }
   });
 
   $rootScope.$on("$stateChangePrevented", function(event, toState, toParams, fromState, fromParams) {
-    $log.info("$stateChangePrevented", toState.name);
+    $log.debug("$stateChangePrevented", toState.name);
     if (defer) {
       defer.resolve();
       defer = null;
     }
   });
   $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
-    $log.info("$stateChangeSuccess", toState.name);
+    $log.debug("$stateChangeSuccess", toState.name);
     if (defer) {
       defer.resolve();
       defer = null;
@@ -70,14 +70,14 @@ angular
   });
 })
 .factory('HttpLoadingInterceptor', function ($q, $rootScope, $log, chainLoadingQ) {
-  var numLoadings = 0;
+  var requests = 0;
   var defer = null;
 
   return {
     request: function (config) {
-      numLoadings++;
+      requests++;
 
-      if (numLoadings == 1) {
+      if (requests == 1) {
         defer = chainLoadingQ();
       }
 
@@ -86,7 +86,7 @@ angular
       return config;
     },
     response: function (response) {
-      if ((--numLoadings) === 0) {
+      if ((--requests) === 0) {
         // Hide loader
         $rootScope.$broadcast("$loaded");
         defer.resolve();
@@ -95,7 +95,7 @@ angular
       return response;
     },
     responseError: function (response) {
-      if (!(--numLoadings)) {
+      if (!(--requests)) {
         // Hide loader
         $rootScope.$broadcast("$loaded");
         defer.resolve();

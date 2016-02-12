@@ -2,7 +2,7 @@
 
 angular
 .module('app')
-.controller('LoginCtrl', function ($scope, Auth, $state, $stateParams, AuthConfig) {
+.controller('LoginCtrl', function ($scope, Auth, $state, $stateParams, AuthConfig, $log) {
   $scope.user = {};
   $scope.errors = {};
   $scope.submitted = false;
@@ -14,7 +14,7 @@ angular
       var p;
       try {
         p = JSON.parse($stateParams.redirectToParams);
-      }catch(e) { console.log(e); p = null; }
+      }catch(e) { $log.error(e); p = null; }
 
       $state.go($stateParams.redirectTo, p);
     } else {
@@ -24,6 +24,8 @@ angular
 
   Auth.isLoggedInAsync(function(logged) {
     if (logged) {
+      $log.debug("(LoginCtrl) user is logged just redirect");
+
       return redirect();
     }
     $scope.hidden = false;
@@ -33,12 +35,14 @@ angular
     $scope.submitted = true;
 
     if(form.$valid) {
+      $log.debug("(LoginCtrl) submit form");
+
       Auth.login(
         $scope.user.username,
         $scope.user.password,
         $scope.user.remindme
       )
-      .success(function() {
+      .then(function() {
         return redirect();
       });
     }

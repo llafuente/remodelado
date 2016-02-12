@@ -17,51 +17,19 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-cookie/4.0.10/angular-cookie.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/checklist-model/0.9.0/checklist-model.min.js"></script>
 
-    <script>
-      // app initialization
-      angular
-      .module('app', [
-        'ui.bootstrap',
-        'ui.router',
-        'smart-table',
-        'ipCookie',
-        'cgBusy',
-        'checklist-model'
-      ])
-      .filter('translate', function () {
-        return function(x) { return x; };
-      })
-      .controller('RootCtrl', function ($scope, $state, $http, $timeout) {
-        console.log(angular.toJson($state.get()));
-        $state.go("orders.list");
-
-        $scope.tree = [{
-          name: "Users",
-          state: "users",
-          subtree: [{
-            name: "List",
-            state: "users.list"
-          }]
-        }, {
-          name: "Orders",
-          state: "orders"
-        }];
-        $timeout(function() {
-          console.log("??!!");
-          $http.get("/users");
-        }, 5000);
-      });
-    </script>
+    <script src="/test/app.js"></script>
 
     <script src="/src/auth/auth.service.js"></script>
     <script src="/src/auth/authenticate-route.js"></script>
     <script src="/src/auth/login.controller.js"></script>
+    <script src="/src/auth/redirection.service.js"></script>
     <script src="/src/auth/routes.js"></script>
     <script src="/src/loading/loading.js"></script>
     <script src="/src/error/error.js"></script>
     <script src="/src/navbar/navbar.js"></script>
+    <script src="/src/utils/rewrite-urls.js"></script>
+    <script src="/src/dirty-modal/dirty-modal.js"></script>
 
-    <script src="/test/test.js"></script>
 
     <script src="/angular/users.list.ctrl.js?app=app"></script>
     <script src="/angular/users.create.ctrl.js?app=app"></script>
@@ -101,7 +69,7 @@
 
           <!-- class="navbar-btn" -->
           <li ng-show="Auth.isLoggedIn()">
-            <a id="logout" href="" ng-click="Auth.logout()" translate confirm-if="true" confirm="{{'Are you sure to leave the service?'}}">Logout</a>
+            <a id="logout" href="" ng-click="Auth.logout('login')" translate confirm-if="true" confirm="{{'Are you sure to leave the service?'}}">Logout</a>
           </li>
         </ul>
         </div>

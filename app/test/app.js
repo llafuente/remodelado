@@ -1,7 +1,34 @@
 'use strict';
-
+// app initialization
 angular
-.module('app')
+.module('app', [
+  'ui.bootstrap',
+  'ui.router',
+  'smart-table',
+  'ipCookie',
+  'cgBusy',
+  'checklist-model'
+])
+.filter('translate', function () {
+  return function(x) { return x; };
+})
+.controller('RootCtrl', function ($scope, $state, $http, $timeout) {
+  $scope.tree = [{
+    name: "Users",
+    state: "users",
+    subtree: [{
+      name: "List",
+      state: "users.list"
+    }]
+  }, {
+    name: "Orders",
+    state: "orders"
+  }];
+})
+
+.config(function (RewriteUrlsConfigProvider) {
+  //RewriteUrlsConfigProvider.start_with['/api'] = "/jwt/v1";
+})
 .config(function ($stateProvider, $injector) {
   //var AuthenticateRouteDefer = $injector.get("AuthenticateRouteDefer");
 
@@ -28,16 +55,32 @@ angular
     authenticate: true,
     resolve: {}
   })
-  .state('test.auth_required_defer', {
+  .state('test.auth_required.ko', {
     url: '/auth-defer',
     templateUrl: 'test/auth_ok.tpl.html',
     controller: 'TestCtrl',
-    resolve: {}
+    resolve: {
+      err: ["$http", function($http) {
+        return $http.get("/api/error-if-logged");
+      }]
+    }
+  })
+  .state('test.form', {
+    url: '/form',
+    templateUrl: 'test/form.tpl.html',
+    controller: 'FormCtrl'
   });
+
+
+
 })
 .config(function(ErrorConfigProvider) {
   ErrorConfigProvider.templates.retryable = 'test/error-retryable.tpl.html';
 })
+.controller('FormCtrl', ["$scope", "DirtyModal", function($scope, DirtyModal) {
+  DirtyModal($scope, 'form.$dirty');
+  $scope.entity = {};
+}])
 .controller('TestCtrl', ["$scope", "$http", function($scope, $http) {
   $scope.single_error = function() {
     $http.get('/api/error-single/500')

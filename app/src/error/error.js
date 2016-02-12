@@ -24,9 +24,7 @@ angular
     //deferred
     var i;
     for (i = 0; i < err_data.deferred.length; ++i) {
-      console.log("reject?", err_data.deferred[i]);
       if (err_data.deferred[i]) {
-      console.log(err_data.deferred[i].reject);
         err_data.deferred[i].reject(err_data.response[i]);
       }
     }
@@ -43,7 +41,6 @@ angular
     var err_data = error_list[0];
     for (i = 1; i < error_list.length; ++i) {
       if (!error_list[i].error.type) {
-        console.log("error_list[i].list", error_list[i].error.list);
         err_data.error.list = err_data.error.list.concat(error_list[i].error.list);
         err_data.response.push(error_list[i].response[0]);
         err_data.deferred.push(error_list[i].deferred[0]);
@@ -68,7 +65,8 @@ angular
 
     var $uibModal = $injector.get('$uibModal');
     var $http = $injector.get('$http');
-    var $rootScope = $injector.get('$rootScope');
+    // TODO review why I did this ?
+    // var $rootScope = $injector.get('$rootScope');
 
 
     var err_data = error_list[0];
@@ -82,14 +80,16 @@ angular
     instance = $uibModal.open({
       size: err.type ? 'lg': undefined,
       templateUrl: templateUrl,
-      scope: $rootScope,
+      //scope: $rootScope,
       backdrop: 'static',
       keyboard: false,
       controller: ['$scope', '$uibModalInstance', function ($scope, $ModalInstance) {
         $scope.templateUrl = templateUrl;
         $scope.error = err;
 
-        $scope.retry = function () {
+        // TODO
+        // we should retry the request adding param to query
+        $scope.retry = function (param) {
           //pop_error($q.reject);
         };
 
@@ -140,8 +140,6 @@ angular
       type: null
     };
 
-    console.log("filter", response.data);
-
     if ('string' === typeof response.data) {
       error.list = [response.data];
     } else if (Array.isArray(response.data)) {
@@ -163,7 +161,7 @@ angular
 .factory('ErrorInterceptor', ['$q', '$injector', '$interpolate', '$log', 'ErrorHandler', 'ErrorFormat', function ($q, $injector, $interpolate, $log, ErrorHandler, ErrorFormat) {
   return {
     responseError: function (response) {
-      $log.log('responseError::ErrorInterceptor', response);
+      $log.debug('responseError::ErrorInterceptor', response);
 
       var expired_session = false;
 
