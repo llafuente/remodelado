@@ -8,8 +8,6 @@
       </div>
     </div>
 
-    <pre>{{error | json}}</pre>
-
     <ul ng-if="!template">
         <li ng-repeat="err in error.list track by $index" translate>{{err}}</li>
     </ul>

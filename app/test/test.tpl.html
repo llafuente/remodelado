@@ -1,42 +1,39 @@
-<a id="single-error" class="btn btn-primary" ng-click="single_error()">
-  Call API: return default error</a>
-<br />
-<a id="list-error" class="btn btn-primary" ng-click="list_error()">
-  Call API: return a list of errors</a>
-<br />
-<a id="tpl-error" class="btn btn-primary" ng-click="tpl_error()">
-  Call API: return a custom template/type error</a>
-<br />
-<a id="multiple-errors" class="btn btn-primary" ng-click="single_error(); list_error(); tpl_error();">
-  Various Calls API: return many errors</a>
-<br />
-<a id="required-login" class="btn btn-primary" ng-click="required_login()">
-  Call API: return error if not logged</a>
-<br />
-<a id="session-expired" class="btn btn-primary" ng-click="session_expired()">
-  Call API: return my session has expired</a>
-<br />
+<div class="container">
+  <h3>API errors -> modal</h3>
+  <div class="row">
+    <div class="col-sm-4">
+      <a id="single-error" class="btn btn-primary" ng-click="single_error()">
+        Call API: return default error</a>
+    </div>
+    <div class="col-sm-4">
+      <a id="list-error" class="btn btn-primary" ng-click="list_error()">
+        Call API: return a list of errors</a>
+    </div>
+    <div class="col-sm-4">
+      <a id="tpl-error" class="btn btn-primary" ng-click="tpl_error()">
+        Call API: return a custom template/type error</a>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-sm-4">
+      <a id="multiple-errors" class="btn btn-primary" ng-click="single_error(); list_error(); tpl_error();">
+        Various Calls API: return many errors</a>
+    </div>
+  </div>
+  <h3>API errors, auth</h3>
+  <div class="row">
+    <div class="col-sm-4">
+      <a id="required-login" class="btn btn-primary" ng-click="required_login()">
+        Call Private API: error if not logged</a>
+    </div>
+    <div class="col-sm-4">
+      <a id="session-expired" class="btn btn-primary" ng-click="session_expired()">
+        Call API: return my session has expired (logout here)</a>
+    </div>
+  </div>
 
+  <hr />
 
-<hr />
-<hr />
-
-<a id="login-required-section" class="btn btn-primary" ui-sref="test.auth_required.ok">
-  Check login required section</a>
-<br />
-
-<a id="login-required-section" class="btn btn-primary" ui-sref="test.auth_required.ko">
-  Check login required section (resolve err)</a>
-<br />
-
-<a id="login-required-section" class="btn btn-primary" ui-sref="test.form">
-  Check Form (dirty-modal)</a>
-<br />
-
-
-
-<a id="bootstrap-template" class="btn btn-primary" ui-sref="test.bootstrap">
-  Bootstrap template</a>
-<br />
-
-<ui-view></ui-view>
+  <ui-view></ui-view>
+</div>

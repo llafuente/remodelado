@@ -14,15 +14,25 @@ angular
 })
 .controller('RootCtrl', function ($scope, $state, $http, $timeout) {
   $scope.tree = [{
-    name: "Users",
-    state: "users",
+    name: "Test",
+    state: "test",
     subtree: [{
-      name: "List",
-      state: "users.list"
+      name: "Injectors/modals",
+      state: "test"
+    },{
+      name: "Form (dirty-modal)",
+      state: "test.form"
+    },{
+      name: "Private section",
+      state: "test.auth_required.ok"
+    },{
+      name: "Private section (with err)",
+      state: "test.auth_required.ko"
+    }, {
+      name: "Bootstrap",
+      state: "test.bootstrap"
+
     }]
-  }, {
-    name: "Orders",
-    state: "orders"
   }];
 })
 
@@ -39,7 +49,7 @@ angular
     controller: 'TestCtrl'
   })
   .state('test.bootstrap', {
-    url: '/auth',
+    url: '/bootstrap',
     templateUrl: 'test/bootstrap.tpl.html',
     resolve: {}
   })
@@ -50,13 +60,13 @@ angular
     resolve: {}
   })
   .state('test.auth_required.ok', {
-    url: '/auth',
+    url: '/ok',
     templateUrl: 'test/auth_ok.tpl.html',
     authenticate: true,
     resolve: {}
   })
   .state('test.auth_required.ko', {
-    url: '/auth-defer',
+    url: '/ko',
     templateUrl: 'test/auth_ok.tpl.html',
     controller: 'TestCtrl',
     resolve: {
@@ -77,8 +87,9 @@ angular
 .config(function(ErrorConfigProvider) {
   ErrorConfigProvider.templates.retryable = 'test/error-retryable.tpl.html';
 })
-.controller('FormCtrl', ["$scope", "DirtyModal", function($scope, DirtyModal) {
-  DirtyModal($scope, 'form.$dirty');
+.controller('FormCtrl', ["$scope", "ConfirmStateExit", function($scope, ConfirmStateExit) {
+  ConfirmStateExit($scope, 'form.$dirty');
+
   $scope.entity = {};
 }])
 .controller('TestCtrl', ["$scope", "$http", function($scope, $http) {
