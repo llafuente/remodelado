@@ -12,8 +12,9 @@ angular
 .filter('translate', function () {
   return function(x) { return x; };
 })
-.controller('RootCtrl', function ($scope, $state, $http, $timeout) {
-  $scope.tree = [{
+
+.config(function (NavbarLeftProvider) {
+  NavbarLeftProvider.push(99, {
     name: "Test",
     state: "test",
     subtree: [{
@@ -31,9 +32,13 @@ angular
     }, {
       name: "Bootstrap",
       state: "test.bootstrap"
-
     }]
-  }];
+  });
+})
+.controller('RootCtrl', function ($rootScope, $scope, $state, $http, $timeout, NavbarLeft) {
+  NavbarLeft.sort();
+  console.log(NavbarLeft.tree);
+  $rootScope.tl_navbar = NavbarLeft.tree;
 })
 
 .config(function (RewriteUrlsConfigProvider) {
@@ -80,9 +85,6 @@ angular
     templateUrl: 'test/form.tpl.html',
     controller: 'FormCtrl'
   });
-
-
-
 })
 .config(function(ErrorConfigProvider) {
   ErrorConfigProvider.templates.retryable = 'test/error-retryable.tpl.html';

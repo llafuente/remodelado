@@ -25,9 +25,9 @@ function schema_angular(meta) {
 
   _.forEach(meta.schema, function(o, k) {
     // TODO maybe warning...
-    if (!meta.interface[k]) return;
+    if (!meta.interface.schema[k]) return;
 
-    schema[k] = meta.interface[k];
+    schema[k] = meta.interface.schema[k];
 
 
     schema[k].constraints = schema[k].constraints || {};
@@ -131,7 +131,7 @@ function each_control_sorted (meta, action, cb) {
       return ;
     }
 
-    var client_opt = meta.interface[path];
+    var client_opt = meta.interface.schema[path];
     if (client_opt && client_opt[action]) {
       controls.push(client_opt)
     }
@@ -148,7 +148,7 @@ function each_control (meta, action, cb) {
       return ;
     }
 
-    var client_opt = meta.interface[path];
+    var client_opt = meta.interface.schema[path];
 
     if (!check_action(action, options.options, client_opt)) {
       return;

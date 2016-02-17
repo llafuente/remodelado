@@ -14,10 +14,11 @@ var $angular = require("../schema/angular.js");
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
 var fs = require("fs");
 
+// TODO rename to configuration
 function routes(meta, app_name, base_state, cb) {
   base_state = base_state ? base_state + "." + meta.plural : meta.plural;
 
-  fs.readFile(join(__dirname, "templates/routes.js"), {encoding: "utf-8"}, function(err, js) {
+  fs.readFile(join(__dirname, "templates/configuration.js"), {encoding: "utf-8"}, function(err, js) {
     /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
@@ -25,6 +26,7 @@ function routes(meta, app_name, base_state, cb) {
     var compiled = _.template(js);
     cb(null, compiled({
       app_name: app_name,
+      navbar: meta.interface.navbar,
 
       base_state: base_state,
       id_param: meta.$express.id_param,

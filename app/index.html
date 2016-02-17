@@ -40,6 +40,7 @@
     <script src="/angular/orders.create.ctrl.js?app=app"></script>
     <script src="/angular/orders.update.ctrl.js?app=app"></script>
     <script src="/angular/orders.routes.js?app=app"></script>
+
   </head>
 
   <body ng-app="app" ng-controller="RootCtrl">
@@ -56,7 +57,7 @@
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-          <navbar-tree navbar-tree="tree"></navbar-tree>
+          <navbar-tree navbar-tree="tl_navbar"></navbar-tree>
         <ul class="nav navbar-nav navbar-right">
           <li ng-hide="Auth.isLoggedIn()" ui-sref-active="active">
             <a id="login" ui-sref="login" translate>Login</a>

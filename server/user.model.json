@@ -31,33 +31,61 @@
       },
       "create": true,
       "update": true
+    },
+    "permissions": {
+      "label": "Permissions",
+      "type": "array",
+      "array": {
+        "type": "string",
+        "enum": [
+          "get users",
+          "post users",
+          "patch users",
+          "delete users"
+        ]
+      },
+      "create": true,
+      "update": true
     }
   },
   "mongoose": {
     "collection": "users"
   },
   "interface": {
-    "id": {
-      "type": "static",
-      "list": 1,
-      "create": false,
-      "update": true
-    },
-    "username": {
-      "type": "email",
-      "list": 2
-    },
-    "password": {
-      "type": "password",
-      "restricted": true
-    },
-    "roles": {
-      "type": "checklist",
-      "labels": [
-        {"id": "admin", "label": "Admin"},
-        {"id": "user", "label": "User"}
-      ],
-      "list": 5
+    "navbar": "Users",
+    "schema": {
+      "id": {
+        "type": "static",
+        "list": 1,
+        "create": false,
+        "update": true
+      },
+      "username": {
+        "type": "email",
+        "list": 2
+      },
+      "password": {
+        "type": "password",
+        "restricted": true
+      },
+      "roles": {
+        "type": "checklist",
+        "labels": [
+          {"id": "admin", "label": "Admin"},
+          {"id": "user", "label": "User"}
+        ],
+        "list": 5
+      },
+      "permissions": {
+        "type": "checklist",
+        "labels": [
+          {"id": "get users", "label": "Ver usuarios"},
+          {"id": "post users", "label": "Crear usuarios"},
+          {"id": "patch users", "label": "Modificar usuarios"},
+          {"id": "delete users", "label": "Borrar usuarios"}
+        ],
+        "list": 5
+      }
     }
   }
 }

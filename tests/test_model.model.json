@@ -57,35 +57,37 @@
     "collection": "test_model"
   },
   "interface": {
-    "id": {
-      "type": "static",
-      "list": 1,
-      "create": false,
-      "update": true
-    },
-    "first_name": {
-      "type": "text",
-      "list": 2
-    },
-    "last_name": {
-      "type": "text",
-      "list": 3
-    },
-    "role": {
-      "type": "select",
-      "labels": [
-        {"id": "admin", "label": "Admin"},
-        {"id": "user", "label": "User"}
-      ],
-      "list": 5
-    },
-    "age": {
-      "type": "number",
-      "list": 4
-    },
-    "bio": {
-      "type": "textarea"
+    "navbar": "Users",
+    "schema": {
+      "id": {
+        "type": "static",
+        "list": 1,
+        "create": false,
+        "update": true
+      },
+      "first_name": {
+        "type": "text",
+        "list": 2
+      },
+      "last_name": {
+        "type": "text",
+        "list": 3
+      },
+      "role": {
+        "type": "select",
+        "labels": [
+          {"id": "admin", "label": "Admin"},
+          {"id": "user", "label": "User"}
+        ],
+        "list": 5
+      },
+      "age": {
+        "type": "number",
+        "list": 4
+      },
+      "bio": {
+        "type": "textarea"
+      }
     }
   }
-
 }

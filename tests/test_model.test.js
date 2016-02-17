@@ -25,7 +25,7 @@ test('create user model', function (t) {
   //);
 
   // schema check, ng-required must be a "true" string!
-  t.equal(mdl.interface.first_name.constraints['ng-required'], "true");
+  t.equal(mdl.interface.schema.first_name.constraints['ng-required'], "true");
 
 
   // url check

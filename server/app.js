@@ -34,10 +34,11 @@ var user_json = require("./user.model.json");
 var user = remodelado.model(user_json);
 app.use(user.$router);
 
+/*
 var order_json = require("../tests/order.model.json");
 var order = remodelado.model(order_json);
 app.use(order.$router);
-
+*/
 
 if (!process.argv[1] || process.argv[1].indexOf("mocha") === -1) {
   // Start server

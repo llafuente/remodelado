@@ -2,6 +2,22 @@
 // added permissions
 angular
 .module("app")
+.provider("NavbarLeft", function () {
+  this.tree = [];
+
+  this.$get = function () {
+    return this;
+  };
+  this.push = function (order, data) {
+    data.order = order;
+    this.tree.push(data);
+  };
+  this.sort = function() {
+    this.tree.sort(function(a, b) {
+      return b.index - a.index;
+    });
+  };
+})
 .directive('navbarTree', function () {
   return {
     restrict: 'E',
