@@ -2,6 +2,7 @@ var app = require("./express.js");
 var express = require('express');
 var join = require('path').join;
 var winston = require('winston');
+var _ = require('lodash');
 
 require('./test.js')(app);
 
@@ -14,6 +15,7 @@ app.use('/', express.static('dist'));
 
 app.use('/', express.static('tmp/instrumented/app'));
 app.use('/', express.static('app'));
+app.use('/src', express.static('bower_components/inetsys-angular-seed/src'));
 
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/ubermodel");
@@ -30,9 +32,19 @@ var logger = new (winston.Logger)({
   })]
 });
 
+var permissions = require("./permissions.json");
+
 var user_json = require("./user.model.json");
+user_json.interface.schema.permissions.labels = permissions;
+user_json.schema.permissions.array.enum = _.map(permissions, 'id');
 var user = remodelado.model(user_json);
 app.use(user.$router);
+
+var roles_json = require("./roles.model.json");
+roles_json.interface.schema.permissions.labels = permissions;
+roles_json.schema.permissions.array.enum = _.map(permissions, 'id');
+var roles = remodelado.model(roles_json);
+app.use(roles.$router);
 
 /*
 var order_json = require("../tests/order.model.json");

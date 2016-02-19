@@ -37,12 +37,7 @@
       "type": "array",
       "array": {
         "type": "string",
-        "enum": [
-          "get users",
-          "post users",
-          "patch users",
-          "delete users"
-        ]
+        "enum": null
       },
       "create": true,
       "update": true
@@ -52,7 +47,22 @@
     "collection": "users"
   },
   "interface": {
-    "navbar": "Users",
+    "navbar": {
+      "label": "Users"
+    },
+    "buttons": {
+      "list_create": {
+        "text": "Crear new user"
+      },
+      "update": {
+        "text": "Save user",
+        "inprogress": "Saving"
+      },
+      "create": {
+        "text": "Create user",
+        "inprogress": "Creating"
+      }
+    },
     "schema": {
       "id": {
         "type": "static",
@@ -78,13 +88,8 @@
       },
       "permissions": {
         "type": "checklist",
-        "labels": [
-          {"id": "get users", "label": "Ver usuarios"},
-          {"id": "post users", "label": "Crear usuarios"},
-          {"id": "patch users", "label": "Modificar usuarios"},
-          {"id": "delete users", "label": "Borrar usuarios"}
-        ],
-        "list": 5
+        "labels": null,
+        "list": 4
       }
     }
   }

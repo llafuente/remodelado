@@ -1,33 +1,34 @@
-div.pull-right
-  a.btn.btn-primary(ui-sref=states.create translate="") Create
+section#list
+  div.pull-right
+    a.btn.btn-primary.btn-create(ui-sref=states.create translate="")= button.text
 
-div.clearfix
+  div.clearfix
 
-//pre {{list | json}}
+  //pre {{list | json}}
 
-table.table.table-striped(st-table='' id=name st-pipe="getList" st-delay="1000")
-  thead
-    tr
-      each val in listable_fields
-        th(st-sort=val.name translate="")= val.label
-      th(translate="") Actions
-    tr
-      each val in listable_fields
-        if (val.type == "text")
-          th
-            input.input-sm.form-control(st-search=val.name type="search")
-        else
-          th
-      th
-  tbody
-    tr(ng-repeat='row in list.list')
-      each val in listable_fields
-        td= '{{row.' + val.name + '}}'
-      td
-        a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', title="{{'Edit' | translate}}")
-          i.fa.fa-pencil-square-o.fa-lg
-        a.entity-action.entity-delete(ng-click='delete($index, row)', confirm-if='true', confirm="{{'Are you sure to delete selected row?' | translate}}", title="{{'Remove' | translate}}")
-          i.fa.list.fa-trash-o.fa-lg
-  tfoot
-    tr
-      td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=listable_fields.length+1)
+  table.table.table-striped(st-table='' id=name st-pipe="getList" st-delay="1000")
+    thead
+      tr
+        each val in listable_fields
+          th(st-sort=val.name translate="")= val.label
+        th(translate="") Actions
+      tr
+        each val in listable_fields
+          if (val.type == "text")
+            th
+              input.input-sm.form-control(st-search=val.name type="search")
+          else
+            th
+        th
+    tbody
+      tr(ng-repeat='row in list.list')
+        each val in listable_fields
+          td= '{{row.' + val.name + (val.label_filter ? ' | ' + val.label_filter : '') + '}}'
+        td
+          a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', title="{{'Edit' | translate}}")
+            i.fa.fa-pencil-square-o.fa-lg
+          a.entity-action.entity-delete(ng-click='delete($index, row)', confirm-if='true', confirm="{{'Are you sure to delete selected row?' | translate}}", title="{{'Remove' | translate}}")
+            i.fa.list.fa-trash-o.fa-lg
+    tfoot
+      tr
+        td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=listable_fields.length+1)

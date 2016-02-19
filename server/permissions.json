@@ -1,0 +1,6 @@
+[
+  {"id": "get users", "label": "Ver usuarios"},
+  {"id": "post users", "label": "Crear usuarios"},
+  {"id": "patch users", "label": "Modificar usuarios"},
+  {"id": "delete users", "label": "Borrar usuarios"}
+]

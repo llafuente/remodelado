@@ -1,25 +1,26 @@
-form.form-vertical(novalidate="" autocomplete="off" name=name role="form")
-  fieldset
-    legend(translate="")= legend
-    each c in controls
-      // TODO this should be a div ?
-      span!= c
-    div.clearfix
-      button.btn.btn-primary(type=button ng-click=name + ".$valid ? submit() : null" translate="" ng-hide="submitting" ng-disabled=name + ".$invalid")= button.text
-      span.btn.btn-secondary(translate="" ng-show="submitting")= button.inprogress
-    div.clearfix
-    //pre= '{{' + name + ' | json}}'
-    div.row
-      div.col-xs-4
-        pre= '{{' + name + '.$error | json}}'
-      div.col-xs-1(ng-class="{'bg-danger': " + name + ".$dirty, 'bg-success': !" + name + ".$dirty }")
-        span.btn= 'dirty: {{' + name + '.$dirty | json}}'
-      div.col-xs-1(ng-class="{'bg-danger': !" + name + ".$valid, 'bg-success': " + name + ".$valid }")
-        span.btn= 'valid: {{' + name + '.$valid | json}}'
-      div.col-xs-1(ng-class="{'bg-danger': " + name + ".$submitted, 'bg-success': !" + name + ".$submitted }")
-        span.btn= 'submitted: {{' + name + '.$submitted | json}}'
-      div.col-xs-1(ng-class="{'bg-danger': !submitting, 'bg-success': submitting }")
-        span.btn= 'submitting: {{submitting | json}}'
-      div.col-xs-4
-        pre entity = {{entity | json}}
-        
+section#update
+  form.form-vertical(novalidate="" autocomplete="off" name=name role="form")
+    fieldset
+      legend(translate="")= legend
+      each c in controls
+        // TODO this should be a div ?
+        span!= c
+      div.clearfix
+        button.btn.btn-primary(type=button ng-click=name + ".$valid ? submit() : null" translate="" ng-hide="submitting" ng-disabled=name + ".$invalid")= button.text
+        span.btn.btn-secondary(translate="" ng-show="submitting")= button.inprogress
+      div.clearfix
+      //pre= '{{' + name + ' | json}}'
+      div.row
+        div.col-xs-4
+          pre= '{{' + name + '.$error | json}}'
+        div.col-xs-1(ng-class="{'bg-danger': " + name + ".$dirty, 'bg-success': !" + name + ".$dirty }")
+          span.btn= 'dirty: {{' + name + '.$dirty | json}}'
+        div.col-xs-1(ng-class="{'bg-danger': !" + name + ".$valid, 'bg-success': " + name + ".$valid }")
+          span.btn= 'valid: {{' + name + '.$valid | json}}'
+        div.col-xs-1(ng-class="{'bg-danger': " + name + ".$submitted, 'bg-success': !" + name + ".$submitted }")
+          span.btn= 'submitted: {{' + name + '.$submitted | json}}'
+        div.col-xs-1(ng-class="{'bg-danger': !submitting, 'bg-success': submitting }")
+          span.btn= 'submitting: {{submitting | json}}'
+        div.col-xs-4
+          pre entity = {{entity | json}}
+          

@@ -63,6 +63,12 @@ function schema_angular(meta) {
     }
 
 
+    if (schema[k].labels) {
+      schema[k].label_values = meta.name + '_' + k + '_label_values';
+      schema[k].label_filter = meta.name + '_' + k + '_label_filter';
+    }
+
+
 
     schema[k].container.class = Object.keys(schema[k].constraints);
 
@@ -72,6 +78,20 @@ function schema_angular(meta) {
       if (!schema[k] || Array.isArray(schema[k])) {
         throw new Error("labels are required for select display type.");
       }
+    }
+  });
+  meta.interface.buttons = meta.interface.buttons || {}
+  _.defaults(meta.interface.buttons, {
+    "list_create": {
+      "text": "Create"
+    },
+    "update": {
+      "text": "Save",
+      "inprogress": "Saving"
+    },
+    "create": {
+      "text": "Create",
+      "inprogress": "Creating"
     }
   });
 

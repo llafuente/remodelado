@@ -13,8 +13,8 @@ angular
   return function(x) { return x; };
 })
 
-.config(function (NavbarLeftProvider) {
-  NavbarLeftProvider.push(99, {
+.config(function (navbarLeftProvider) {
+  navbarLeftProvider.push(99, {
     name: "Test",
     state: "test",
     subtree: [{
@@ -35,14 +35,14 @@ angular
     }]
   });
 })
-.controller('RootCtrl', function ($rootScope, $scope, $state, $http, $timeout, NavbarLeft) {
-  NavbarLeft.sort();
-  console.log(NavbarLeft.tree);
-  $rootScope.tl_navbar = NavbarLeft.tree;
+.controller('RootCtrl', function ($rootScope, $scope, $state, $http, $timeout, navbarLeft) {
+  navbarLeft.sort();
+  console.log(navbarLeft.tree);
+  $rootScope.tl_navbar = navbarLeft.tree;
 })
 
-.config(function (RewriteUrlsConfigProvider) {
-  //RewriteUrlsConfigProvider.start_with['/api'] = "/jwt/v1";
+.config(function (rewriteRequestConfigProvider) {
+  //rewriteRequestConfigProvider.start_with['/api'] = "/jwt/v1";
 })
 .config(function ($stateProvider, $injector) {
   //var AuthenticateRouteDefer = $injector.get("AuthenticateRouteDefer");
@@ -86,11 +86,11 @@ angular
     controller: 'FormCtrl'
   });
 })
-.config(function(ErrorConfigProvider) {
-  ErrorConfigProvider.templates.retryable = 'test/error-retryable.tpl.html';
+.config(function(errorConfigProvider) {
+  errorConfigProvider.templates.retryable = 'test/error-retryable.tpl.html';
 })
-.controller('FormCtrl', ["$scope", "ConfirmStateExit", function($scope, ConfirmStateExit) {
-  ConfirmStateExit($scope, 'form.$dirty');
+.controller('FormCtrl', ["$scope", "confirmStateExit", function($scope, confirmStateExit) {
+  confirmStateExit($scope, 'form.$dirty');
 
   $scope.entity = {};
 }])

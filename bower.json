@@ -1,0 +1,29 @@
+{
+  "name": "ubermodel",
+  "version": "0.0.1",
+  "main": [
+    "./dist/ubermodel.css"
+  ],
+  "description": "Mongoose model front-end",
+  "keywords": [
+    "editor",
+    "angular",
+    "wysiwyg"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test*",
+    "demo*",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "~1.4.9",
+    "inetsys-angular-seed": "^0.0.4"
+  },
+  "devDependencies": {},
+  "license": "MIT",
+  "homepage": "https://github.com/llafuente/ubermodel"
+}

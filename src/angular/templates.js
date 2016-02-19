@@ -31,6 +31,7 @@ function list(meta, listable_fields, cb) {
         name: meta.plural,
         id_param: meta.$express.id_param,
         states: meta.$angular.states,
+        button: meta.interface.buttons.list_create,
         listable_fields: listable_fields,
       });
       return cb(null, html);

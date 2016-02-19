@@ -11,14 +11,14 @@ var controllers = require("../angular/controllers.js");
 var templates = require("../angular/templates.js");
 var form = require("../angular/form.js");
 
-function routes_middleware(mdl) {
-  console.log("# routes_middleware", mdl.name);
+function routes_middleware(meta) {
+  console.log("# routes_middleware", meta.name);
 
   return function(req, res, next) {
     var base_state = req.query.base_state || null;
     var app_name = req.query.app || "app";
 
-    controllers.routes(mdl, app_name, base_state, function(err, js_text) {
+    controllers.routes(meta, app_name, base_state, function(err, js_text) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -32,16 +32,22 @@ function routes_middleware(mdl) {
   };
 }
 
-function forms_middleware(mdl) {
-  console.log("# forms_middleware", mdl.name);
+function forms_middleware(meta) {
+  console.log("# forms_middleware", meta.name);
 
   return function(req, res, next) {
-    req.log.silly("create_form", mdl.name);
+    req.log.silly("create_form", meta.name);
     var action = req.query.action || "create";
-    var button = req.query.button || "Create";
     var layout = req.query.layout || "horizontal";
 
-    form(mdl, action, button, layout, "form", "entity", function(err, html) {
+    if (["create", "update"].indexOf(action) === -1) {
+      return res.status(400).json({error: "Invalid action"});
+    }
+
+    var button = meta.interface.buttons[req.query.action];
+    console.log("button", button);
+
+    form(meta, action, button, layout, "form", "entity", function(err, html) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -52,13 +58,13 @@ function forms_middleware(mdl) {
   };
 }
 
-function list_tpl_middleware(mdl) {
-  console.log("# list_tpl_middleware", mdl.name);
+function list_tpl_middleware(meta) {
+  console.log("# list_tpl_middleware", meta.name);
 
   return function(req, res, next) {
-    req.log.silly("list.html", mdl.name);
+    req.log.silly("list.html", meta.name);
 
-    templates.list(mdl, null, function(err, html) {
+    templates.list(meta, null, function(err, html) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -69,14 +75,14 @@ function list_tpl_middleware(mdl) {
   };
 }
 
-function list_ctrl_middleware(mdl) {
-  console.log("# list_ctrl_middleware", mdl.name);
+function list_ctrl_middleware(meta) {
+  console.log("# list_ctrl_middleware", meta.name);
 
   return function(req, res, next) {
-    req.log.silly("list.js", mdl.name);
+    req.log.silly("list.js", meta.name);
     var app_name = req.query.app || "app";
 
-    controllers.list_ctrl(mdl, app_name, function(err, html) {
+    controllers.list_ctrl(meta, app_name, function(err, html) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -87,14 +93,14 @@ function list_ctrl_middleware(mdl) {
   };
 }
 
-function create_ctrl_middleware(mdl) {
-  console.log("# create_ctrl_middleware", mdl.name);
+function create_ctrl_middleware(meta) {
+  console.log("# create_ctrl_middleware", meta.name);
 
   return function(req, res, next) {
-    req.log.silly("create.js", mdl.name);
+    req.log.silly("create.js", meta.name);
     var app_name = req.query.app || "app";
 
-    controllers.create_ctrl(mdl, app_name, function(err, html) {
+    controllers.create_ctrl(meta, app_name, function(err, html) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }
@@ -105,14 +111,14 @@ function create_ctrl_middleware(mdl) {
   };
 }
 
-function update_ctrl_middleware(mdl) {
-  console.log("# update_ctrl_middleware", mdl.name);
+function update_ctrl_middleware(meta) {
+  console.log("# update_ctrl_middleware", meta.name);
 
   return function(req, res, next) {
-    req.log.silly("update.js", mdl.name);
+    req.log.silly("update.js", meta.name);
     var app_name = req.query.app || "app";
 
-    controllers.update_ctrl(mdl, app_name, function(err, html) {
+    controllers.update_ctrl(meta, app_name, function(err, html) {
       /* istanbul ignore next */ if (err) {
         return res.error(err);
       }

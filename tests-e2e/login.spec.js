@@ -9,5 +9,6 @@ describe('login.spec.js', function() {
     $("#login-username").sendKeys('a');
     $("#login-password").sendKeys('b');
     $("#login-submit").click();
+    browser.sleep(5000);
   });
 });

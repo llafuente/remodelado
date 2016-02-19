@@ -1,0 +1,54 @@
+{
+  "name": "role",
+  "schema": {
+    "id": {
+      "label": "ID",
+
+      "type": "number",
+      "create": false,
+      "update": false
+    },
+    "name": {
+      "label": "name",
+      "type": "string",
+      "required": true,
+      "create": true,
+      "update": true
+    },
+    "permissions": {
+      "label": "Permissions",
+      "type": "array",
+      "array": {
+        "type": "string",
+        "enum": null
+      },
+      "create": true,
+      "update": true
+    }
+  },
+  "mongoose": {
+    "collection": "roles"
+  },
+  "interface": {
+    "navbar": {
+      "label": "Roles"
+    },
+    "schema": {
+      "id": {
+        "type": "static",
+        "list": 1,
+        "create": false,
+        "update": true
+      },
+      "name": {
+        "type": "text",
+        "list": 2
+      },
+      "permissions": {
+        "type": "checklist",
+        "labels": null,
+        "list": 4
+      }
+    }
+  }
+}

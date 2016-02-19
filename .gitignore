@@ -6,3 +6,4 @@ node_modules/
 coverage/
 e2e/gen/
 tests/gen/
+bower_components/

@@ -23,10 +23,14 @@ function routes(meta, app_name, base_state, cb) {
       return cb(err, null);
     }
 
+
+
     var compiled = _.template(js);
     cb(null, compiled({
       app_name: app_name,
+      entity_name: meta.plural,
       navbar: meta.interface.navbar,
+      schema: meta.interface.schema,
 
       base_state: base_state,
       id_param: meta.$express.id_param,
