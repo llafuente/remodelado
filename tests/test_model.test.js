@@ -389,6 +389,19 @@ test('http: get user list with first_name=abc', function (t) {
   });
 });
 
+test('http: get user list (err-invalid invalid where)', function (t) {
+  request(app)
+  .get("/test_models?where[noexistentfield]=text")
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:where","message":"not found in schema","type":"invalid-where","value":"noexistentfield"}}}});
+
+    t.end();
+  });
+});
+
 var user_id;
 test('http: get user list age=37', function (t) {
   request(app)

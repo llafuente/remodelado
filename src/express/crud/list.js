@@ -11,7 +11,7 @@ var exutils = require("../utils.js");
 var _ = require("lodash");
 var forEach = _.forEach;
 
-function list(meta, where, sort, limit, offset, populate, error, ok) {
+function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
   var query = meta.$model.find({});
   var qcount = (query.toConstructor())().count();
   var path;
@@ -145,12 +145,26 @@ function list(meta, where, sort, limit, offset, populate, error, ok) {
   }
 
   // where
-  forEach(where, function(val, path) {
-    query = query.where(path).equals(val);
-    qcount = qcount.where(path).equals(val);
-  });
+  for (path in where) {
+    options = meta.$schema.path(path);
+    if (!options) {
+      err = new ValidationError(null);
+      err.errors.populate = {
+        path: "query:where",
+        message: 'not found in schema',
+        type: 'invalid-where',
+        value: path,
+      };
+      return error(400, err);
+    }
+    query = query.where(path).equals(where[path]);
+    qcount = qcount.where(path).equals(where[path]);
+  }
 
-  //console.log(query);
+  // TODO log query
+  //console.log(Object.keys(query));
+  //var utils = require('mongoose/utils');
+  //logger.silly("list query: " + JSON.stringify(util.toObject(query)));
 
   query.exec(function(err, mlist) {
     /* istanbul ignore next */ if (err) {
@@ -171,6 +185,7 @@ function list_middleware(meta) {
   return function(req, res, next) {
     return list(
       meta,
+      req.log,
 
       req.query.where,
       req.query.sort,

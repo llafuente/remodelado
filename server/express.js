@@ -29,6 +29,7 @@ var logger = new (winston.Logger)({
     handleExceptions: true
   })]
 });
+logger.setLevels({ error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5, db: 4 });
 app.use(function(req, res, next) {
   req.log = logger;
   next();
@@ -52,5 +53,15 @@ messages.String.enum = "err-out-of-bounds";
 messages.String.match = "err-match";
 messages.String.minlength = "err-minlength";
 messages.String.maxlength = "err-maxlength";
+
+mongoose.set('debug', function (collection, method, query, doc , options) {
+ logger.db({
+   collection: collection,
+   method: method,
+   query: query,
+   doc: doc,
+   options: options
+ });
+});
 
 module.exports = app;
