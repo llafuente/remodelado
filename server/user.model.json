@@ -12,6 +12,7 @@
       "label": "Username",
       "type": "string",
       "required": true,
+      "maxlength": 254,
       "create": true,
       "update": true
     },

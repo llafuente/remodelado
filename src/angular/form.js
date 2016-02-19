@@ -27,6 +27,8 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
     try {
       var html = compiled({
         //debug: true,
+        render: jade.render,
+
         layout: layout,
 
         form_path: form_path,
@@ -86,7 +88,8 @@ function form(meta, action, button, layout, form_path, base_path, cb) {
             var html = compiled({
               name: form_path,
               button: button,
-              controls: controls
+              controls: controls,
+              render: jade.render
             });
 
             console.log("form generated, returned");

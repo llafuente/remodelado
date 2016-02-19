@@ -12,11 +12,20 @@ var constraints = {
   "match": "ng-pattern"
 };
 
+
+// NOTE each line must be prefixed with "|"
 var err_messages = {
-  required: "Field is required",
-  email: "Field must be a valid email",
-  number: "Field is not a valid number",
+  required: "| #{control.label} is required",
+  email: "| #{control.label} must be a valid email",
+  number: "| #{control.label} is not a valid number",
+  minlength: "| #{control.label} is too short, at least #{control.constraints['ng-minlength']} characters",
+  maxlength: "| #{control.label} is too long, at most #{control.constraints['ng-maxlength']} characters",
+  min: "| #{control.label} is too big, should be less than #{control.constraints.min} characters",
+  max: "| #{control.label} is too small, should at least #{control.constraints.max} characters",
+  required: "| #{control.label} is required",
+  match: "| #{control.label} must match #{control.constraints.ng-pattern}"
 };
+
 
 var _ = require('lodash');
 
