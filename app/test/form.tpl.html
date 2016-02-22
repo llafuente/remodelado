@@ -1,9 +1,0 @@
-<form name="form">
-  <legend>Form</legend>
-  <div class="alert" ng-class="{'alert-danger': form.$dirty, 'alert-success': !form.$dirty}">
-    {{!form.$dirty ? "Form pristine" : "Form dirty"}}
-  </div>
-  <input type="text" name="text" ng-model="entity.text" />
-</form>
-
-<a ui-sref="test.bootstrap">Go to another section</a>
