@@ -6,7 +6,9 @@ section#update
         // TODO this should be a div ?
         span!= c
       div.clearfix
-        button.btn.btn-primary(type=button ng-click=name + ".$valid ? submit() : null" translate="" ng-hide="submitting" ng-disabled=name + ".$invalid")= button.text
+        button.btn.btn-primary.btn-update(type=button ng-click=name + ".$valid ? submit() : null" ng-hide="submitting" ng-disabled=name + ".$invalid")
+          i.fa.fa-save.fa-lg
+          span(translate="")= button.text
         span.btn.btn-secondary(translate="" ng-show="submitting")= button.inprogress
       div.clearfix
       //pre= '{{' + name + ' | json}}'
