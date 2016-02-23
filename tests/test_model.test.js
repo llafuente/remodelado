@@ -25,8 +25,7 @@ test('create user model', function (t) {
   //);
 
   // schema check, ng-required must be a "true" string!
-  t.equal(mdl.interface.schema.first_name.constraints['ng-required'], "true");
-
+  t.equal(mdl.frontend.schema.first_name.constraints['ng-required'], "true");
 
   // url check
   t.equal(mdl.$express.read, "/test_models/:test_model_id");
@@ -511,7 +510,11 @@ test('http: get user list template', function (t) {
     t.equal($("table").toArray().length, 1);
     // 5 fields + actions
     t.equal($("thead tr").first().find("th").toArray().length, 6);
-    t.equal($("thead tr").first().find("th").text(), "IDFirst NameLast nameAgeRoleActions");
+    var headers = $("thead tr").first().find("th").text()
+      .split("\n")
+      .map(function(r) { return r.trim();})
+      .filter(function(r) { return r.length > 0;});
+    t.deepEqual(headers, ["ID", "First Name","Last name","Age","Role","Actions"]);
     t.equal($("thead tr").last().find("th").toArray().length, 6);
     t.equal($("tbody tr td").toArray().length, 6);
 

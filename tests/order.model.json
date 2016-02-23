@@ -1,47 +1,63 @@
 {
-  "name": "order",
-  "schema": {
-    "id": {
-      "label": "ID",
-      "type": "number",
-      "create": false,
-      "update": false
-    },
-    "handled": {
-      "type": "number",
-      "restricted": true,
-      "create": true
-    },
-    "user": {
-      "label": "User",
-      "type": "ObjectId",
-      "ref": "user"
-    },
-    "object": {
-      "label": "Object",
-      "type": "string",
-      "required": true,
-      "create": true,
-      "update": true
+  "singular": "order",
+  "backend": {
+    "schema": {
+      "id": {
+        "label": "ID",
+        "type": "number",
+        "create": false,
+        "update": false
+      },
+      "handled": {
+        "type": "number",
+        "restricted": true,
+        "create": true
+      },
+      "user": {
+        "label": "User",
+        "type": "ObjectId",
+        "ref": "user"
+      },
+      "object": {
+        "label": "Object",
+        "type": "string",
+        "required": true,
+        "create": true,
+        "update": true
+      }
     }
   },
-  "mongoose": {
-    "collection": "orders"
-  },
-  "interface": {
-    "id": {
-      "type": "static",
-      "list": 1,
-      "create": false,
-      "update": true
+  "frontend": {
+    "list": {
+      "id": {
+        "label": "ID",
+        "filter_type": "text",
+        "list": 1,
+      },
+      "object": {
+        "label": "Object",
+        "filter_type": "text",
+        "list": 1
+      }
     },
-    "object": {
-      "label": "Object",
-      "type": "text",
-      "list": 1,
-      "required": true,
-      "create": true,
-      "update": true
+    "view": {
+      "...": "// TODO"
+    },
+    "schema": {
+      "id": {
+        "type": "static",
+        "list": 1,
+        "create": false,
+        "update": true
+      },
+      "object": {
+        "label": "Object",
+        "type": "text",
+        "list": 1,
+        "required": true,
+        "create": true,
+        "update": true
+      }
     }
   }
 

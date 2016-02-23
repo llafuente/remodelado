@@ -2,7 +2,9 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.update_ctrl %>', function ($rootScope, $scope, $http, entity, $state, $stateParams) {
+.controller('<%= controllers.update_ctrl %>', function ($rootScope, $scope, $http, entity, $state, $stateParams, confirmStateExit) {
+  confirmStateExit($scope, "form.$dirty");
+
   $scope.entity = entity;
 
   $scope.submit = function() {

@@ -1,89 +1,93 @@
 {
-  "name": "test_model",
-  "schema": {
-    "id": {
-      "label": "ID",
+  "singular": "test_model",
+  "backend": {
+    "schema": {
+      "id": {
+        "label": "ID",
 
-      "type": "number",
-      "create": false,
-      "update": false
-    },
-    "restricted_field": {
-      "type": "number",
-      "restricted": true,
-      "create": true
-    },
-    "first_name": {
-      "label": "First Name",
+        "type": "number",
+        "create": false,
+        "update": false
+      },
+      "restricted_field": {
+        "label": "",
+        "type": "number",
+        "restricted": true,
+        "create": true
+      },
+      "first_name": {
+        "label": "First Name",
 
-      "type": "string",
-      "required": true,
-      "create": true,
-      "update": true
-    },
-    "last_name": {
-      "label": "Last name",
+        "type": "string",
+        "required": true,
+        "create": true,
+        "update": true
+      },
+      "last_name": {
+        "label": "Last name",
 
-      "type": "string",
-      "required": true,
-      "create": true,
-      "update": true
-    },
-    "role": {
-      "label": "Role",
+        "type": "string",
+        "required": true,
+        "create": true,
+        "update": true
+      },
+      "role": {
+        "label": "Role",
 
-      "type": "string",
-      "enum": ["admin", "user"],
-      "create": true,
-      "update": true
-    },
-    "age": {
-      "label": "Age",
+        "type": "string",
+        "enum": ["admin", "user"],
+        "create": true,
+        "update": true
+      },
+      "age": {
+        "label": "Age",
 
-      "type": "number",
-      "create": true,
-      "update": false
-    },
-    "bio": {
-      "label": "About myself",
+        "type": "number",
+        "create": true,
+        "update": false
+      },
+      "bio": {
+        "label": "About myself",
 
-      "type": "string",
-      "create": true,
-      "update": true,
-      "default": null
+        "type": "string",
+        "create": true,
+        "update": true,
+        "default": null
+      }
     }
   },
-  "mongoose": {
-    "collection": "test_model"
-  },
-  "interface": {
-    "navbar": "Users",
+  "frontend": {
+    "navbar": {
+      "label": "Users"
+    },
+    "list": {
+      "id": {},
+      "first_name": {},
+      "last_name": {},
+      "age": {},
+      "role": {}
+    },
     "schema": {
       "id": {
         "type": "static",
-        "list": 1,
         "create": false,
         "update": true
       },
       "first_name": {
-        "type": "text",
-        "list": 2
+        "type": "text"
       },
       "last_name": {
-        "type": "text",
-        "list": 3
+        "type": "text"
       },
       "role": {
         "type": "select",
         "labels": [
           {"id": "admin", "label": "Admin"},
           {"id": "user", "label": "User"}
-        ],
-        "list": 5
+        ]
       },
       "age": {
-        "type": "number",
-        "list": 4
+        "type": "number"
       },
       "bio": {
         "type": "textarea"

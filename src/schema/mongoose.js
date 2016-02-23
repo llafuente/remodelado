@@ -2,18 +2,18 @@ module.exports = schema_mongoose;
 
 var _ = require('lodash');
 
-function schema_mongoose(json) {
+function schema_mongoose(meta) {
 
   /* istanbul ignore next */
-  if (json.schema.__v) {
+  if (meta.backend.schema.__v) {
     throw new Error("__v is reserved, use another identifier.");
   }
   /* istanbul ignore next */
-  if (json.schema.version) {
+  if (meta.backend.schema.version) {
     throw new Error("version is reserved, use another identifier.");
   }
 
-  json.schema.__v = {
+  meta.backend.schema.__v = {
     type: "number",
     select: false
   };

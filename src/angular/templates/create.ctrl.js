@@ -2,7 +2,9 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state) {
+.controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state, confirmStateExit) {
+  confirmStateExit($scope, "form.$dirty");
+
   $scope.entity = {
   }; // TODO defaults!
 

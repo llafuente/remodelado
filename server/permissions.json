@@ -1,6 +1,14 @@
-[
-  {"id": "get users", "label": "Ver usuarios"},
-  {"id": "post users", "label": "Crear usuarios"},
-  {"id": "patch users", "label": "Modificar usuarios"},
-  {"id": "delete users", "label": "Borrar usuarios"}
-]
+{
+  "enum": [
+    "get users",
+    "post users",
+    "patch users",
+    "delete users"
+  ],
+  "labels": [
+    "Ver usuarios",
+    "Crear usuarios",
+    "Modificar usuarios",
+    "Borrar usuarios"
+  ]
+}

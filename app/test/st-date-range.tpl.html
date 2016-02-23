@@ -1,0 +1,29 @@
+<label translate>before</label>
+<div class="input-group">
+  <input type="text" class="form-control"
+    uib-datepicker-popup="yyyy/MM/dd"
+    ng-model="filter.before"
+    is-open="isBeforeOpen"
+    close-text="Close" />
+
+  <span class="input-group-btn">
+    <button type="button" class="btn btn-default" ng-click="isBeforeOpen = true; isAfterOpen = false;">
+      <i class="glyphicon glyphicon-calendar"></i>
+    </button>
+  </span>
+</div>
+
+<label translate>after</label>
+<div class="input-group">
+  <input type="text" class="form-control"
+    uib-datepicker-popup="yyyy/MM/dd"
+    ng-model="filter.after"
+    is-open="isAfterOpen"
+    close-text="Close" />
+
+  <span class="input-group-btn">
+    <button type="button" class="btn btn-default" ng-click="isBeforeOpen = false; isAfterOpen = true;">
+      <i class="glyphicon glyphicon-calendar"></i>
+    </button>
+  </span>
+</div>

@@ -6,24 +6,29 @@ angular
   $scope.getList = function(tablestate) {
     var pagination = tablestate.pagination;
 
-    var qs = ['limit=20'];
+    var qs = {
+      limit: 20,
+      where: {}
+    };
     if (tablestate.sort && tablestate.sort.predicate) {
-      qs.push("sort=" + (tablestate.sort.reverse ? '-' : '') + tablestate.sort.predicate);
+      qs.sort = (tablestate.sort.reverse ? '-' : '') + tablestate.sort.predicate;
     }
     pagination.start = pagination.start || 0;
-    qs.push('offset=' + pagination.start);
+    qs.offset = pagination.start;
 
+    console.log("(*list)", tablestate.search);
     if (tablestate.search && tablestate.search.predicateObject) {
       for(var i in tablestate.search.predicateObject) {
-        qs.push('where['+i+']=' + tablestate.search.predicateObject[i]);
-
+        console.log(i, tablestate.search.predicateObject[i]);
+        qs.where[i] = tablestate.search.predicateObject[i];
       }
     }
 
 
     return  $http({
       method: 'GET',
-      url: '<%= api.list %>?' + qs.join('&')
+      url: '<%= api.list %>',
+      params: qs
     }).then(function(res) {
       $scope.list = res.data;
       pagination.totalItemCount = res.data.count;

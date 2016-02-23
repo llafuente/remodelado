@@ -5,3 +5,21 @@
 .entity-action {
   margin-right: 4px;
 }
+th[st-sort] {
+  cursor: pointer;
+}
+th[st-sort]:after {
+  font-family: FontAwesome;
+  content: "\f0dc";
+  float: right;
+}
+th.st-sort-ascent[st-sort]:after {
+  font-family: FontAwesome;
+  content: "\f0de";
+  float: right;
+}
+th.st-sort-descent[st-sort]:after {
+  font-family: FontAwesome;
+  content: "\f0dd";
+  float: right;
+}

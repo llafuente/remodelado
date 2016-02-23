@@ -18,7 +18,25 @@ function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
   var options;
 
   // some of theese can be meta.options.xxx
-  where = where || {};
+  if ("string" === typeof where) {
+    try {
+      where = JSON.parse(where);
+    } catch(_) {
+      err = new ValidationError(null);
+      err.errors.offset = {
+        path: "query:where",
+        message: 'invalid where',
+        type: 'invalid-where',
+        value: where,
+        value_type: 'json_string',
+      };
+      return error(400, err);
+    }
+  } else if ("object" === typeof where) {
+    where = where;
+  } else {
+    where = {};
+  }
   sort = sort || "_id";
   limit = limit ? parseInt(limit, 10) : 0;
   offset = offset ? parseInt(offset, 10) : 0;

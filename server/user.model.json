@@ -1,53 +1,54 @@
 {
-  "name": "user",
-  "schema": {
-    "id": {
-      "label": "ID",
+  "singular": "user",
+  "backend": {
+    "collection": "users",
+    "schema": {
+      "id": {
+        "label": "ID",
 
-      "type": "number",
-      "create": false,
-      "update": false
-    },
-    "username": {
-      "label": "Username",
-      "type": "string",
-      "required": true,
-      "maxlength": 254,
-      "create": true,
-      "update": true
-    },
-    "password": {
-      "label": "Password",
-      "type": "string",
-      "required": true,
-      "create": true,
-      "update": true
-    },
-    "roles": {
-      "label": "Roles",
-      "type": "array",
-      "array": {
-        "type": "string",
-        "enum": ["admin", "user"]
+        "type": "number",
+        "create": false,
+        "update": false
       },
-      "create": true,
-      "update": true
-    },
-    "permissions": {
-      "label": "Permissions",
-      "type": "array",
-      "array": {
+      "username": {
+        "label": "Username",
         "type": "string",
-        "enum": null
+        "required": true,
+        "maxlength": 254,
+        "create": true,
+        "update": true
       },
-      "create": true,
-      "update": true
+      "password": {
+        "label": "Password",
+        "type": "string",
+        "required": true,
+        "create": true,
+        "update": true
+      },
+      "roles": {
+        "label": "Roles",
+        "type": "array",
+        "array": {
+          "type": "string",
+          "enum": ["admin", "user"],
+          "labels": ["Admin", "User"]
+        },
+        "create": true,
+        "update": true
+      },
+      "permissions": {
+        "label": "Permissions",
+        "type": "array",
+        "array": {
+          "type": "string",
+          "enum": null
+        },
+        "create": true,
+        "update": true
+      }
     }
   },
-  "mongoose": {
-    "collection": "users"
-  },
-  "interface": {
+  "frontend": {
     "navbar": {
       "label": "Users"
     },
@@ -64,33 +65,38 @@
         "inprogress": "Creating"
       }
     },
+    "list": {
+      "id": {
+        "type": "number"
+      },
+      "username": {
+        "type": "text"
+      },
+      "roles": {
+        "type": "select"
+      },
+      "created_at": {
+        "type": "date-range"
+      }
+    },
     "schema": {
       "id": {
         "type": "static",
-        "list": 1,
         "create": false,
         "update": true
       },
       "username": {
-        "type": "email",
-        "list": 2
+        "type": "email"
       },
       "password": {
         "type": "password",
         "restricted": true
       },
       "roles": {
-        "type": "checklist",
-        "labels": [
-          {"id": "admin", "label": "Admin"},
-          {"id": "user", "label": "User"}
-        ],
-        "list": 5
+        "type": "checklist"
       },
       "permissions": {
-        "type": "checklist",
-        "labels": null,
-        "list": 4
+        "type": "checklist"
       }
     }
   }

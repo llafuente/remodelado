@@ -1,53 +1,60 @@
 {
-  "name": "role",
-  "schema": {
-    "id": {
-      "label": "ID",
+  "singular": "role",
+  "backend": {
+    "collection": "roles",
+    "schema": {
+      "id": {
+        "label": "ID",
 
-      "type": "number",
-      "create": false,
-      "update": false
-    },
-    "name": {
-      "label": "name",
-      "type": "string",
-      "required": true,
-      "create": true,
-      "update": true
-    },
-    "permissions": {
-      "label": "Permissions",
-      "type": "array",
-      "array": {
-        "type": "string",
-        "enum": null
+        "type": "number",
+        "create": false,
+        "update": false
       },
-      "create": true,
-      "update": true
+      "name": {
+        "label": "name",
+        "type": "string",
+        "required": true,
+        "create": true,
+        "update": true
+      },
+      "permissions": {
+        "label": "Permissions",
+        "type": "array",
+        "array": {
+          "type": "string",
+          "enum": null
+        },
+        "create": true,
+        "update": true
+      }
     }
   },
-  "mongoose": {
-    "collection": "roles"
-  },
-  "interface": {
+  "frontend": {
     "navbar": {
       "label": "Roles"
+    },
+    "list": {
+      "id": {
+        "type": "text"
+      },
+      "name": {
+        "type": "text"
+      },
+      "permissions": {
+        "type": "select"
+      }
     },
     "schema": {
       "id": {
         "type": "static",
-        "list": 1,
         "create": false,
         "update": true
       },
       "name": {
-        "type": "text",
-        "list": 2
+        "type": "text"
       },
       "permissions": {
-        "type": "checklist",
-        "labels": null,
-        "list": 4
+        "type": "checklist"
       }
     }
   }

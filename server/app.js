@@ -35,14 +35,14 @@ var logger = new (winston.Logger)({
 var permissions = require("./permissions.json");
 
 var user_json = require("./user.model.json");
-user_json.interface.schema.permissions.labels = permissions;
-user_json.schema.permissions.array.enum = _.map(permissions, 'id');
+user_json.backend.schema.permissions.array.enum = permissions.enum;
+user_json.backend.schema.permissions.array.labels = permissions.labels;
 var user = remodelado.model(user_json);
 app.use(user.$router);
 
 var roles_json = require("./roles.model.json");
-roles_json.interface.schema.permissions.labels = permissions;
-roles_json.schema.permissions.array.enum = _.map(permissions, 'id');
+roles_json.backend.schema.permissions.array.enum = permissions.enum;
+roles_json.backend.schema.permissions.array.labels = permissions.labels;
 var roles = remodelado.model(roles_json);
 app.use(roles.$router);
 

@@ -10,13 +10,12 @@ var default_schema = {
 };
 
 function schema_default(meta) {
-  var t = meta.schema;
-  meta.schema = {};
+  var t = meta.backend.schema;
+  meta.backend.schema = {};
 
   _.forEach(t, function(o, k) {
-    meta.schema[k] = _.defaults(o, default_schema);
+    meta.backend.schema[k] = _.defaults(o, default_schema);
   });
 
-  meta.singular = meta.name;
-  meta.plural = pluralize(meta.name);
+  meta.plural = pluralize(meta.singular);
 }

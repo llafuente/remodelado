@@ -29,68 +29,97 @@ var err_messages = {
 
 var _ = require('lodash');
 
+function __build_labels(meta, be_field, fe_field) {
+  // build labels array
+  switch (fe_field.type) {
+    case "checklist":
+    case "select":
+    var src = be_field;
+    if (be_field.type == "array") {
+      src = be_field.array;
+    }
+
+    fe_field.labels = [];
+    var i;
+    for (i = 0; i < src.enum.length; ++i) {
+      fe_field.labels.push({id: src.enum[i], label: src.labels[i]});
+    }
+
+    fe_field.label_values = meta.singular + '_' + fe_field.name + '_label_values';
+    fe_field.label_filter = meta.singular + '_' + fe_field.name + '_label_filter';
+
+    break;
+  }
+}
+
 function schema_angular(meta) {
-  var schema = {};
+  var field;
 
-  _.forEach(meta.schema, function(o, k) {
-    // TODO maybe warning...
-    if (!meta.interface.schema[k]) return;
+  // list
+  _.forEach(meta.frontend.list, function(field, k) {
+    var be_field = meta.$schema.path(k);
+    if (!be_field) {
+      console.warn(k, "is not found in schema");
+      return;
+    }
+    be_field = be_field.options;
 
-    schema[k] = meta.interface.schema[k];
+    // cp label/name
+    field.label = be_field.label;
+    field.name = k;
+
+    __build_labels(meta, be_field, field);
+  });
+
+  // create/update (schema)
+  _.forEach(meta.backend.schema, function(o, k) {
+    if (!meta.frontend.schema[k]) {
+      console.warn(k, "is not found in schema");
+      return;
+    }
+
+    field = meta.frontend.schema[k];
 
 
-    schema[k].constraints = schema[k].constraints || {};
-    schema[k].container = schema[k].container || {};
-    schema[k].errors = schema[k].errors || {};
+    field.constraints = field.constraints || {};
+    field.container = field.container || {};
+    field.errors = field.errors || {};
 
-    schema[k].label = o.label;
-    schema[k].name = k;
+    // cp label/name
+    field.label = o.label;
+    field.name = k;
 
     _.forEach(o, function(odb, kdb) {
       var kan = constraints[kdb];
+      console.log(k, kdb, kan);
       // overwrite only if not set
       if (kan) {
-        if (schema[k].constraints[kan] === undefined) {
+        if (field.constraints[kan] === undefined) {
           if ("boolean" == typeof odb) {
-            schema[k].constraints[kan] = odb ? "true" : "false";
+            field.constraints[kan] = odb ? "true" : "false";
           } else {
-            schema[k].constraints[kan] = odb;
+            field.constraints[kan] = odb;
           }
         }
         var err_id = kan.substring(3);
-        schema[k].errors[err_id] = err_messages[err_id];
+        field.errors[err_id] = err_messages[err_id];
       }
     });
 
     // add type validation by hand
-    if (schema[k].type == "number") {
-      schema[k].errors["number"] = err_messages["number"];
-    }
-
-    if (schema[k].type == "email") {
-      schema[k].errors["email"] = err_messages["email"];
-    }
-
-
-    if (schema[k].labels) {
-      schema[k].label_values = meta.name + '_' + k + '_label_values';
-      schema[k].label_filter = meta.name + '_' + k + '_label_filter';
-    }
-
-
-
-    schema[k].container.class = Object.keys(schema[k].constraints);
-
-    // angular select
-    if (schema[k].type == "select") {
-      // labels are required
-      if (!schema[k] || Array.isArray(schema[k])) {
-        throw new Error("labels are required for select display type.");
+    ["number", "email"].forEach(function(ty) {
+      if (field.type == ty) {
+        field.errors[ty] = err_messages[ty];
       }
-    }
+    });
+
+    __build_labels(meta, o, field);
+
+    field.container.class = Object.keys(field.constraints);
   });
-  meta.interface.buttons = meta.interface.buttons || {}
-  _.defaults(meta.interface.buttons, {
+
+  meta.buttons = meta.buttons || {}
+  _.defaults(meta.buttons, {
     "list_create": {
       "text": "Create"
     },
@@ -160,7 +189,7 @@ function each_control_sorted (meta, action, cb) {
       return ;
     }
 
-    var client_opt = meta.interface.schema[path];
+    var client_opt = meta.frontend.schema[path];
     if (client_opt && client_opt[action]) {
       controls.push(client_opt)
     }
@@ -177,7 +206,7 @@ function each_control (meta, action, cb) {
       return ;
     }
 
-    var client_opt = meta.interface.schema[path];
+    var client_opt = meta.frontend.schema[path];
 
     if (!check_action(action, options.options, client_opt)) {
       return;

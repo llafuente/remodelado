@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "angular": "~1.4.9",
-    "inetsys-angular-seed": "^0.0.4"
+    "inetsys-angular-seed": "0.0.5"
   },
   "devDependencies": {},
   "license": "MIT",

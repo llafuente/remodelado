@@ -4,11 +4,12 @@
   "description": "Angular + Express + Mongoose REST",
   "main": "index.js",
   "scripts": {
-    "test": "mkdir -p test-e2e/generated/ && tap -b --cov --coverage-report=lcov tests/*.test.js"
+    "test": "mkdir -p test-e2e/generated/ && tap -b tests/*.test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^3.7.1",
     "async": "^1.5.2",
     "body-parser": "^1.14.2",
     "express": "^4.13.4",

@@ -80,6 +80,9 @@ angular
     return values[id].label;
   }
 }])
+.run(function($rootScope, <%= control.label_values %>) {
+  $rootScope['<%= control.label_values %>'] = <%= control.label_values %>();  
+})
 <%
   }
 });

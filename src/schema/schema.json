@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
+  "required": ["singular", "backend"],
+  "additionalProperties": false,
+  "properties": {
+    "singular": {
+      "id": "singular",
+      "type": "string"
+    },
+    "backend": {
+      "id": "backend",
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "collection": {
+          "id": "backend/collection",
+          "type": "string"
+        },
+        "schema": {
+          "id": "backend/schema",
+          "type": "object",
+          "patternProperties": {
+            "[a-z0-9_]": {
+              "type": "object",
+              "required": ["label"],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": ["string", "number", "objectid", "array", "mixed"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "frontend": {
+      "id": "frontend",
+      "type": "object",
+      "required": ["schema", "navbar"],
+      "properties": {
+        "navbar": {
+          "id": "frontend/navbar",
+          "type": "object",
+          "properties": {
+            "label": {
+              "id": "frontend/navbar/label",
+              "type": "string"
+            }
+          }
+        },
+        "schema": {
+          "id": "frontend/schema",
+          "type": "object",
+          "patternProperties": {
+            "[a-z0-9_]": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
