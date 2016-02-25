@@ -1,30 +1,20 @@
 module.exports = router;
 
 var express = require("express");
-var error_handler = require("./error.js");
+var error_handler = require("./error-handler.js");
 
 var read = require("./crud/read.js");
 var list = require("./crud/list.js");
 var create = require("./crud/create.js");
 var update = require("./crud/update.js");
 var destroy = require("./crud/destroy.js");
-
 var angular = require("./angular.js");
 
 function router(meta) {
   var r = express.Router();
 
   //crud
-  r.use(function(req, res, next) {
-    res.error = function(err, message) {
-      if (arguments.length == 2) {
-        err = {status: err, message: message};
-      }
-
-      return error_handler(err, req, res, meta.$schema);
-    };
-    next();
-  });
+  r.use(error_handler.middleware(meta));
 
   // api
 

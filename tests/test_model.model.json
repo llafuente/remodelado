@@ -36,6 +36,7 @@
 
         "type": "string",
         "enum": ["admin", "user"],
+        "labels": ["Admin", "User"],
         "create": true,
         "update": true
       },
@@ -80,11 +81,7 @@
         "type": "text"
       },
       "role": {
-        "type": "select",
-        "labels": [
-          {"id": "admin", "label": "Admin"},
-          {"id": "user", "label": "User"}
-        ]
+        "type": "select"
       },
       "age": {
         "type": "number"

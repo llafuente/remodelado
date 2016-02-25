@@ -2,6 +2,7 @@
 
 module.exports = list_middleware;
 module.exports.list = list;
+module.exports.list_query = list_query;
 
 var mongoose = require("mongoose");
 var ValidationError = mongoose.Error.ValidationError;
@@ -11,7 +12,7 @@ var exutils = require("../utils.js");
 var _ = require("lodash");
 var forEach = _.forEach;
 
-function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
+function list_query(meta, logger, where, sort, limit, offset, populate, error, ok) {
   var query = meta.$model.find({});
   var qcount = (query.toConstructor())().count();
   var path;
@@ -88,7 +89,6 @@ function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
         path: "query:sort",
         message: 'not found in schema',
         type: 'invalid-sort',
-        label: null,
         value: path,
         value_type: "string",
       };
@@ -101,7 +101,6 @@ function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
         path: "query:sort",
         message: 'field is restricted',
         type: 'invalid-sort',
-        label: options.options.label,
         value: path,
         value_type: "string",
       };
@@ -179,24 +178,35 @@ function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
     qcount = qcount.where(path).equals(where[path]);
   }
 
-  // TODO log query
-  //console.log(Object.keys(query));
-  //var utils = require('mongoose/utils');
-  //logger.silly("list query: " + JSON.stringify(util.toObject(query)));
+  return ok(query, qcount, limit, offset);
+}
 
-  query.exec(function(err, mlist) {
-    /* istanbul ignore next */ if (err) {
-      return error(500, err);
+function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
+  list_query(
+    meta,
+    logger,
+    where,
+    sort,
+    limit,
+    offset,
+    populate,
+    error,
+    function build_query_ok(query, qcount, limit, offset) {
+      query.exec(function(err, mlist) {
+        /* istanbul ignore next */ if (err) {
+          return error(500, err);
+        }
+
+        qcount.exec(function(err, count) {
+          /* istanbul ignore next */ if (err) {
+            return error(500, err);
+          }
+
+          return ok(count, offset, limit, mlist);
+        });
+      });
     }
-
-    qcount.exec(function(err, count) {
-      /* istanbul ignore next */ if (err) {
-        return error(500, err);
-      }
-
-      return ok(count, offset, limit, mlist);
-    });
-  });
+  );
 }
 
 function list_middleware(meta) {
@@ -212,7 +222,7 @@ function list_middleware(meta) {
       req.query.populate,
 
       res.error,
-      function(count, offset, limit, mlist) {
+      function list_queries_exec_ok(count, offset, limit, mlist) {
         function mnext() {
           var list = mlist.map(function(d) { return d.toJSON(); });
 

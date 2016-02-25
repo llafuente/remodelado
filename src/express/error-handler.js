@@ -1,4 +1,5 @@
 module.exports = error_handler;
+module.exports.middleware = middleware;
 
 var mongoose = require("mongoose");
 var ValidationError = mongoose.Error.ValidationError;
@@ -6,29 +7,35 @@ var CastError = mongoose.Error.CastError;
 var _ = require('lodash');
 var forEach = _.forEach;
 var clone = _.clone;
+var domain = require('domain');
 
 function mongoose_to_readable(schema, err, path) {
   var value = clone(err);
 
-  if (value.name == "CastError") {
+  if ("CastError" === value.name) {
     value.type = "invalid-type";
     value.message = "cast-failed";
     value.value_constraint = "cast";
-  } else if (value.name == "ValidatorError") {
+  } else if ("ValidatorError" === value.name) {
     value.type = "invalid-value";
     value.value_type = null; // ??
     value.value_constraint = value.properties.kind || value.properties.type;
     delete value.properties;
   }
   var options = schema.path(path);
-  value.label = options.options.label;
+  if (options && options.options) {
+    // remove empty labels
+    if (options.options.label) {
+      value.label = options.options.label;
+    }
 
-  if (!options) {
-    value.value_type = value.value_type === undefined ? null : value.value_type;
-  } else if ("function" === typeof options.options.type){
-    value.value_type = options.options.type.name.toLowerCase();
+    if ("function" === typeof options.options.type){
+      value.value_type = options.options.type.name.toLowerCase();
+    } else {
+      value.value_type = options.options.type;
+    }
   } else {
-    value.value_type = options.options.type;
+    value.value_type = value.value_type === undefined ? null : value.value_type;
   }
 
   delete value.name;
@@ -52,10 +59,12 @@ function error_handler(err, req, res, schema) {
   }
 
   if (err instanceof CastError) {
+    req.log.silly("CastError");
     return res.status(400).json({
       error: mongoose_to_readable(schema, err, err.path)
     });
   } else if (err instanceof ValidationError) {
+    req.log.silly("ValidationError");
     // cleanup error
     var errors = [];
 
@@ -67,8 +76,33 @@ function error_handler(err, req, res, schema) {
   }
 
   if (err.status) {
+    req.log.silly("StatusedError");
     return res.status(err.status).json({error: err.message});
   }
 
+  req.log.silly("Exception");
   return res.status(500).json({error: err.message});
+}
+
+function middleware(meta) {
+  return function(req, res, next) {
+    res.error = function(err, message) {
+      if (arguments.length === 2) {
+        err = {status: err, message: message};
+      }
+
+      return error_handler(err, req, res, meta.$schema);
+    };
+
+    var d = domain.create();
+    d.on('error', function(err) {
+      req.log.silly("(domain error)");
+      err.status = 500;
+      return error_handler(err, req, res, meta.$schema);
+    });
+
+    d.run(function() {
+      next();
+    });
+  };
 }

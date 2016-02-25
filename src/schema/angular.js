@@ -32,11 +32,24 @@ var _ = require('lodash');
 function __build_labels(meta, be_field, fe_field) {
   // build labels array
   switch (fe_field.type) {
-    case "checklist":
-    case "select":
+  case "checklist":
+  case "select":
     var src = be_field;
     if (be_field.type == "array") {
       src = be_field.array;
+    }
+
+    if (!src.enum) {
+      console.error(be_field);
+      throw new Error("enum is not defined");
+    }
+    if (!src.labels) {
+      console.error(be_field);
+      throw new Error("labels is not defined");
+    }
+    if (src.enum.length != src.labels.length) {
+      console.error(be_field);
+      throw new Error("enum and labels must have same length");
     }
 
     fe_field.labels = [];
