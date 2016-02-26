@@ -1,7 +1,9 @@
 {
   "node": true,
   "esnext": true,
+  "strict": "implied",
   "bitwise": true,
+  "unused": true,
   "eqeqeq": true,
   "immed": true,
   "latedef": "nofunc",

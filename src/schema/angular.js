@@ -22,7 +22,6 @@ var err_messages = {
   maxlength: "| #{control.label} is too long, at most #{control.constraints['ng-maxlength']} characters",
   min: "| #{control.label} is too big, should be less than #{control.constraints.min} characters",
   max: "| #{control.label} is too small, should at least #{control.constraints.max} characters",
-  required: "| #{control.label} is required",
   match: "| #{control.label} must match #{control.constraints.ng-pattern}"
 };
 
@@ -35,7 +34,7 @@ function __build_labels(meta, be_field, fe_field) {
   case "checklist":
   case "select":
     var src = be_field;
-    if (be_field.type == "array") {
+    if ("array" === be_field.type) {
       src = be_field.array;
     }
 
@@ -47,7 +46,7 @@ function __build_labels(meta, be_field, fe_field) {
       console.error(be_field);
       throw new Error("labels is not defined");
     }
-    if (src.enum.length != src.labels.length) {
+    if (src.enum.length !== src.labels.length) {
       console.error(be_field);
       throw new Error("enum and labels must have same length");
     }
@@ -108,7 +107,7 @@ function schema_angular(meta) {
       // overwrite only if not set
       if (kan) {
         if (field.constraints[kan] === undefined) {
-          if ("boolean" == typeof odb) {
+          if ("boolean" === typeof odb) {
             field.constraints[kan] = odb ? "true" : "false";
           } else {
             field.constraints[kan] = odb;
@@ -121,7 +120,7 @@ function schema_angular(meta) {
 
     // add type validation by hand
     ["number", "email"].forEach(function(ty) {
-      if (field.type == ty) {
+      if (field.type === ty) {
         field.errors[ty] = err_messages[ty];
       }
     });

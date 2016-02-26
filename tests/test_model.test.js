@@ -1,6 +1,6 @@
 require("./start.js");
 
-var remodelado = require("../src/index.js");
+var api = require("../src/index.js");
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
@@ -15,10 +15,10 @@ var join = require('path').join;
 var check_js = require('syntax-error');
 
 test('create user model', function (t) {
-  remodelado.use(mongoose);
+  api.use(mongoose);
 
   var model = require("./test_model.model.json");
-  var mdl = remodelado.model(model);
+  var mdl = api.model(model);
 
   //console.log(
   //  require("util").inspect(mdl.json, {depth: null, colors: true})
@@ -67,8 +67,6 @@ test('create user model', function (t) {
     .send(u)
     .expect(201)
     .end(function(err, res) {
-      t.error(err);
-
       t.type(res.body.id, "string", "id type");
       t.type(res.body.first_name, "string", "first_name type");
       t.type(res.body.last_name, "string", "last_name type");
@@ -81,6 +79,7 @@ test('create user model', function (t) {
       t.equal(res.body.__v, undefined, "version is not exposed");
       t.equal(res.body.restricted_field, undefined, "restricted_field is not exposed");
 
+      t.error(err);
       t.end();
     });
   });
@@ -92,10 +91,9 @@ test('http: create user (err)', function (t) {
   .send([1,2,3])
   .expect(422)
   .end(function(err, res) {
-    t.error(err);
-
     t.equal(res.body.error, "body is an array");
 
+    t.error(err);
     t.end();
   });
 });
@@ -106,7 +104,6 @@ test('http: create user (err-required)', function (t) {
   .send({})
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
 
     t.deepEqual(res.body, {
       error: [
@@ -128,7 +125,7 @@ test('http: create user (err-required)', function (t) {
       ]
     }, "error structure ok");
 
-
+    t.error(err);
     t.end();
   });
 });
@@ -143,7 +140,6 @@ test('http: create user (err-enum)', function (t) {
   })
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
 
     t.deepEqual(res.body, {
       error: [
@@ -159,6 +155,7 @@ test('http: create user (err-enum)', function (t) {
       ]
     }, "error structure ok");
 
+    t.error(err);
     t.end();
   });
 });
@@ -173,8 +170,6 @@ test('http: create user (err-cast)', function (t) {
   })
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {
       error: [
         {
@@ -189,6 +184,7 @@ test('http: create user (err-cast)', function (t) {
       ]
     }, "error structure ok");
 
+    t.error(err);
     t.end();
   });
 });
@@ -198,11 +194,10 @@ test('http: get create user form', function (t) {
   .get("/angular/test_models.create.tpl.html")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     var $ = cheerio.load(res.text);
     t.equal($(".control-container").toArray().length, 5);
 
+    t.error(err);
     t.end();
   });
 });
@@ -212,12 +207,11 @@ test('http: get update user form', function (t) {
   .get("/angular/test_models.update.tpl.html")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     var $ = cheerio.load(res.text);
     // bio cannot be updated! -1
     t.equal($(".control-container").toArray().length, 5);
 
+    t.error(err);
     t.end();
   });
 });
@@ -227,10 +221,9 @@ test('http: get user routes.js', function (t) {
   .get("/angular/test_models.routes.js")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.ok(res.text.length > 0);
 
+    t.error(err);
     t.end();
   });
 });
@@ -240,10 +233,9 @@ test('http: get user routes.js', function (t) {
   .get("/angular/test_models.routes.js?base_state=root&action=update")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.ok(res.text.length > 0);
 
+    t.error(err);
     t.end();
   });
 });
@@ -254,13 +246,12 @@ test('http: get user list', function (t) {
   .get("/test_models")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.ok(res.body.count > 0);
     t.equal(res.body.count, res.body.list.length);
     t.equal(res.body.limit, 0);
     t.equal(res.body.offset, 0);
 
+    t.error(err);
     t.end();
   });
 });
@@ -270,10 +261,9 @@ test('http: get user list (err-invalid offset)', function (t) {
   .get("/test_models?offset=no")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"offset":{"path":"query:offset","message":"offset must be a number","type":"invalid-offset","value":null,"value_type":"number"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -283,10 +273,9 @@ test('http: get user list (err-invalid offset)', function (t) {
   .get("/test_models?offset=2&limit=no")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"limit":{"path":"query:limit","message":"limit must be a number","type":"invalid-limit","value":null,"value_type":"number"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -296,10 +285,9 @@ test('http: get user list (err-invalid invalid sort)', function (t) {
   .get("/test_models?offset=2&limit=10&sort=noexistentfield")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"sort":{"path":"query:sort","message":"not found in schema","type":"invalid-sort","value":"noexistentfield","value_type":"string"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -309,12 +297,11 @@ test('http: get user list with offset/limit', function (t) {
   .get("/test_models?offset=0&limit=1")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.equal(res.body.list.length, 1);
     t.equal(res.body.limit, 1);
     t.ok(res.body.count > 0);
 
+    t.error(err);
     t.end();
   });
 });
@@ -324,10 +311,9 @@ test('http: get user list (err invalid sort)', function (t) {
   .get("/test_models?sort=-restricted_field")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"sort":{"path":"query:sort","message":"field is restricted","type":"invalid-sort","value":"restricted_field","value_type":"string"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -337,10 +323,9 @@ test('http: get user list (err invalid populate)', function (t) {
   .get("/test_models?populate=telephones")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:populate","message":"is not an array","type":"invalid-populate","value":"telephones"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -350,10 +335,9 @@ test('http: get user list (err invalid populate)', function (t) {
   .get("/test_models?populate[]=telephones")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:populate","message":"not found in schema","type":"invalid-populate","value":"telephones"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -363,11 +347,9 @@ test('http: get user list (err invalid populate)', function (t) {
   .get("/test_models?populate[]=first_name")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-    //console.log(res.text);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:populate","message":"field cannot be populated","type":"invalid-populate","value":"first_name"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -379,11 +361,10 @@ test('http: get user list with first_name=abc', function (t) {
   .get("/test_models?where[first_name]=abc")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.equal(res.body.count, 1);
     t.equal(res.body.list.length, 1);
 
+    t.error(err);
     t.end();
   });
 });
@@ -393,10 +374,9 @@ test('http: get user list (err-invalid invalid where)', function (t) {
   .get("/test_models?where[noexistentfield]=text")
   .expect(400)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"populate":{"path":"query:where","message":"not found in schema","type":"invalid-where","value":"noexistentfield"}}}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -407,12 +387,12 @@ test('http: get user list age=37', function (t) {
   .get("/test_models?where[age]=37&limit=1")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.equal(res.body.count, 2);
     t.equal(res.body.list.length, 1);
 
     user_id = res.body.list[0].id;
+
+    t.error(err);
     t.end();
   });
 });
@@ -425,24 +405,22 @@ test('http: update user', function (t) {
     no_exists: "do not update"
   })
   .expect(200)
-  .end(function(err2, res2) {
-    t.error(err2);
+  .end(function(err, res) {
+    t.equal(res.body.id, user_id);
+    t.equal(res.body.__v, undefined, "version is not exposed");
 
-    t.equal(res2.body.id, user_id);
-    t.equal(res2.body.__v, undefined, "version is not exposed");
-
+    t.error(err);
     request(app)
     .get("/test_models/" + user_id)
     .expect(200)
-    .end(function(err3, res3) {
-      t.error(err3);
+    .end(function(err2, res2) {
+      t.equal(res2.body.id, user_id);
+      t.equal(res2.body.last_name, "last!");
+      t.equal(res2.body.no_exists, undefined);
+      t.isDate(res2.body.created_at);
+      t.equal(res2.body.__v, undefined, "version is not exposed");
 
-      t.equal(res3.body.id, user_id);
-      t.equal(res3.body.last_name, "last!");
-      t.equal(res3.body.no_exists, undefined);
-      t.isDate(res3.body.created_at);
-      t.equal(res3.body.__v, undefined, "version is not exposed");
-
+      t.error(err2);
       t.end();
     });
   });
@@ -476,10 +454,9 @@ test('http: user not found', function (t) {
   .get("/test_models/56b3683ce8b5ab05535c0e3f")
   .expect(404)
   .end(function(err, res) {
-    t.error(err);
-
     t.deepEqual(res.body, {"error":"Not found"});
 
+    t.error(err);
     t.end();
   });
 });
@@ -491,10 +468,9 @@ test('http: get user not-found', function (t) {
   .get("/test_models/123")
   .expect(400)
   .end(function(err, res) {
-    //t.error(err);
-
     t.deepEqual(res.body, {"error":{"message":"cast-failed","value":"123","path":"_id","type":"invalid-type","value_constraint":"cast","value_type":"objectid"}});
 
+    t.error(err);
     t.end();
   });
 });
@@ -504,7 +480,6 @@ test('http: get user list template', function (t) {
   .get("/angular/test_models.list.tpl.html")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
 
     var $ = cheerio.load(res.text);
     t.equal($("table").toArray().length, 1);
@@ -521,6 +496,7 @@ test('http: get user list template', function (t) {
     t.equal($("thead tr").last().find("th").toArray().length, 6);
     t.equal($("tbody tr td").toArray().length, 6);
 
+    t.error(err);
     t.end();
   });
 });
@@ -530,12 +506,11 @@ test('http: get user list controller', function (t) {
   .get("/angular/test_models.list.ctrl.js")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.ok(res.text.indexOf(".controller") != -1);
 
     t.equal(check_js(res.text), undefined);
 
+    t.error(err);
     t.end();
   });
 });
@@ -545,12 +520,11 @@ test('http: get user create controller', function (t) {
   .get("/angular/test_models.create.ctrl.js")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.ok(res.text.indexOf(".controller") != -1);
 
     t.equal(check_js(res.text), undefined);
 
+    t.error(err);
     t.end();
   });
 });
@@ -560,12 +534,11 @@ test('http: get user update controller', function (t) {
   .get("/angular/test_models.update.ctrl.js")
   .expect(200)
   .end(function(err, res) {
-    t.error(err);
-
     t.ok(res.text.indexOf(".controller") != -1);
 
     t.equal(check_js(res.text), undefined);
 
+    t.error(err);
     t.end();
   });
 });

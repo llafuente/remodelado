@@ -81,7 +81,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   var ss = sort.split(" ");
   var i;
   for (i = 0; i < ss.length; ++i) {
-    path = ss[i][0] == "-" ? ss[i].substring(1) : ss[i];
+    path = ss[i][0] === "-" ? ss[i].substring(1) : ss[i];
     options = meta.$schema.path(path);
     if (!options) {
       err = new ValidationError(null);

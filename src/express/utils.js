@@ -8,8 +8,7 @@ function type_can_be_populated(type) {
     return 'ObjectId' !== type.schemaName;
   }
 
-  if (Array.isArray(type) &&
-    type.length == 1) {
+  if (Array.isArray(type) && type.length === 1) {
       type = type[0];
       if ("function" === typeof type) {
         return 'ObjectId' !== type.schemaName;

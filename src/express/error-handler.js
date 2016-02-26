@@ -47,8 +47,7 @@ function mongoose_to_readable(schema, err, path) {
 }
 
 function error_handler(err, req, res, schema) {
-  req.log.info("ERROR:", JSON.stringify(err));
-  req.log.silly(err.stack);
+  req.log.info(err);
 
   if (Array.isArray(err)) {
     return res.status(500).json({

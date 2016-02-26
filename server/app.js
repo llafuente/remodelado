@@ -23,15 +23,6 @@ mongoose.connect("mongodb://localhost/ubermodel");
 var remodelado = require("../src/index.js");
 remodelado.use(mongoose);
 
-
-var logger = new (winston.Logger)({
-  transports: [new (winston.transports.Console)({
-    prettyPrint: true,
-    level: 'silly',
-    handleExceptions: true
-  })]
-});
-
 var permissions = require("./permissions.json");
 
 var user_json = require("./user.model.json");
