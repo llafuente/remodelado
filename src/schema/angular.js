@@ -76,8 +76,10 @@ function schema_angular(meta) {
     }
     be_field = be_field.options;
 
-    // cp label/name
-    field.label = be_field.label;
+    // cp label/name if needed
+    if (!field.label) {
+      field.label = be_field.label;
+    }
     field.name = k;
 
     __build_labels(meta, be_field, field);
@@ -130,18 +132,23 @@ function schema_angular(meta) {
     field.container.class = Object.keys(field.constraints);
   });
 
-  meta.buttons = meta.buttons || {}
-  _.defaults(meta.buttons, {
+  meta.frontend.buttons = meta.frontend.buttons || {}
+  meta.frontend.buttons = _.defaults(meta.frontend.buttons, {
     "list_create": {
       "text": "Create"
     },
     "update": {
       "text": "Save",
+      "tooltip": "Edit row",
       "inprogress": "Saving"
     },
     "create": {
       "text": "Create",
       "inprogress": "Creating"
+    },
+    "delete": {
+      "tooltip": "Remove row",
+      "alert": "Are you sure to delete selected row?"
     }
   });
 

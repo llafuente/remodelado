@@ -3,7 +3,7 @@ section#list
   div.pull-right
     a.btn.btn-primary.btn-create(ui-sref=states.create)
       i.fa.fa-plus.fa-lg
-      span(translate="")= button.text
+      span(translate="")= buttons.list_create.text
 
   div.clearfix
 
@@ -36,9 +36,9 @@ section#list
         each val in listable_fields
           td= '{{row.' + val.name + (val.label_filter ? ' | ' + val.label_filter : '') + '}}'
         td
-          a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', title="{{'Edit' | translate}}")
+          a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', uib-tooltip="{{'" + buttons.update.tooltip + "' | translate}}")
             i.fa.fa-pencil-square-o.fa-lg
-          a.entity-action.entity-delete(ng-click='delete($index, row)', confirm-if='true', confirm="{{'Are you sure to delete selected row?' | translate}}", title="{{'Remove' | translate}}")
+          a.entity-action.entity-delete(ng-click='delete($index, row)', confirm="{{'" + buttons.delete.alert + "' | translate}}", uib-tooltip="{{'" + buttons.delete.tooltip + "' | translate}}")
             i.fa.list.fa-trash-o.fa-lg
     tfoot
       tr

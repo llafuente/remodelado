@@ -2,12 +2,12 @@ $scope.datepickers = $scope.datepickers || {};
 $scope.datepickers['<%= id%>_opended'] = false;
 
 $scope['<%= id%>_close'] = function ($event) {
-  console.log("close", $scope.datepickers);
+  $log.debug("close", $scope.datepickers);
     $scope.datepickers['<%= id%>_opended'] = false;
 };
 
 $scope['<%= id%>_open'] = function ($event) {
-  console.log("open", $scope.datepickers);
+  $log.debug("open", $scope.datepickers);
     //only prevent if sent
     if ($event) {
         $event.preventDefault();

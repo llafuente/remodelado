@@ -58,11 +58,16 @@
       },
       "update": {
         "text": "Save user",
+        "tooltip": "Edit user",
         "inprogress": "Saving"
       },
       "create": {
         "text": "Create user",
         "inprogress": "Creating"
+      },
+      "delete": {
+        "tooltip": "Remove user",
+        "alert": "Are you sure to delete selected user?"
       }
     },
     "list": {
@@ -76,6 +81,7 @@
         "type": "select"
       },
       "created_at": {
+        "label": "Created at",
         "type": "date-range"
       }
     },

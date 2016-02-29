@@ -7,7 +7,8 @@ angular
   'smart-table',
   'ipCookie',
   'cgBusy',
-  'checklist-model'
+  'checklist-model',
+  'angular-confirm'
 ])
 .filter('translate', function () {
   return function(x) { return x; };

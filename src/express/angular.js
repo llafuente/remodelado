@@ -44,8 +44,7 @@ function forms_middleware(meta) {
       return res.status(400).json({error: "Invalid action"});
     }
 
-    var button = meta.buttons[req.query.action];
-    console.log("button", button);
+    var button = meta.frontend.buttons[req.query.action];
 
     form(meta, action, button, layout, "form", "entity", function(err, html) {
       /* istanbul ignore next */ if (err) {

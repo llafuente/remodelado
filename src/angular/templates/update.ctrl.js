@@ -2,10 +2,12 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.update_ctrl %>', function ($rootScope, $scope, $http, entity, $state, $stateParams, confirmStateExit) {
-  confirmStateExit($scope, "form.$dirty");
+.controller('<%= controllers.update_ctrl %>', function ($rootScope, $scope, $http, entity, $state, $stateParams, confirmStateExit, $log) {
+  confirmStateExit($scope, "form.$dirty && !submitted");
 
   $scope.entity = entity;
+  $scope.submitted = false;
+  $scope.submitting = false;
 
   $scope.submit = function() {
     if ($scope.submitting) return;
@@ -18,6 +20,7 @@ angular
       url: '<%= api.update %>/'.replace(':<%= id_param %>', $stateParams['<%= id_param %>']),
       data: $scope.entity,
     }).then(function() {
+      $scope.submitted = true;
       $state.go("^.list");
     })
     .finally(function() {

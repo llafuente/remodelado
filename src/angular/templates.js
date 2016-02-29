@@ -33,7 +33,7 @@ function list(meta, listable_fields, cb) {
         name: meta.plural,
         id_param: meta.$express.id_param,
         states: meta.$angular.states,
-        button: meta.buttons.list_create,
+        buttons: meta.frontend.buttons,
         listable_fields: listable_fields,
       });
       return cb(null, html);

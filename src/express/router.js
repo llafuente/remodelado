@@ -18,7 +18,6 @@ function router(meta) {
 
   // api
 
-  //console.log(meta);
   r.get(meta.$express.list, list(meta));
   r.get(meta.$express.read, read(meta));
   r.post(meta.$express.create, create(meta));

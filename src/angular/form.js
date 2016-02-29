@@ -10,9 +10,7 @@ var fs = require("fs");
 
 // TODO cache compiled
 function gen_control(control, path, form_path, base_path, layout, cb) {
-  //console.log("control", control);
-
-  var file = join(__dirname, "templates", "control-" + control.type + ".jade");
+  var file = join(__dirname, "controls", "control-" + control.type + ".jade");
   fs.readFile(file, {encoding: "utf-8"}, function(err, data) {
     /* istanbul ignore next */ if (err) {
       return cb(err, null);
@@ -92,7 +90,6 @@ function form(meta, action, button, layout, form_path, base_path, cb) {
               render: jade.render
             });
 
-            console.log("form generated, returned");
             return cb(null, html);
           } catch(e) {
             return cb(e, null);

@@ -2,12 +2,13 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state, confirmStateExit) {
-  confirmStateExit($scope, "form.$dirty");
+.controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state, confirmStateExit, $log) {
+  confirmStateExit($scope, "form.$dirty && !submitted");
 
   $scope.entity = {
   }; // TODO defaults!
 
+  $scope.submitted = false;
   $scope.submitting = false;
 
   $scope.submit = function() {
@@ -19,6 +20,7 @@ angular
       url: '<%= api.create %>',
       data: $scope.entity,
     }).then(function() {
+      $scope.submitted = true;
       $state.go("^.list");
     })
     .finally(function() {

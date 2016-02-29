@@ -2,7 +2,7 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.list_ctrl %>', function ($rootScope, $scope, $http) {
+.controller('<%= controllers.list_ctrl %>', function ($rootScope, $scope, $http, $log) {
   $scope.getList = function(tablestate) {
     var pagination = tablestate.pagination;
 
@@ -16,10 +16,10 @@ angular
     pagination.start = pagination.start || 0;
     qs.offset = pagination.start;
 
-    console.log("(*list)", tablestate.search);
+    $log.debug("(*list)", tablestate.search);
     if (tablestate.search && tablestate.search.predicateObject) {
       for(var i in tablestate.search.predicateObject) {
-        console.log(i, tablestate.search.predicateObject[i]);
+        $log.debug(i, tablestate.search.predicateObject[i]);
         qs.where[i] = tablestate.search.predicateObject[i];
       }
     }
