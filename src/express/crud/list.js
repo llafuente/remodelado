@@ -226,9 +226,7 @@ function list_middleware(meta) {
         function mnext() {
           var list = mlist.map(function(d) { return d.toJSON(); });
 
-          // TODO rename
-          //list = meta.before_send("list", list);
-          meta.$express.before_send("list", list, function(err, output_list) {
+          meta.$express.before_send(req, "list", list, function(err, output_list) {
             /* istanbul ignore next */ if (err) {
               return res.error(err);
             }

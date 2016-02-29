@@ -1,12 +1,13 @@
 module.exports = {
   use: use,
-  model: model
+  model: model,
+  swagger: swagger
 };
 
 var _ = require('lodash');
+var util = require('util');
 var router = require("./express/router.js");
-var Ajv = require('ajv');
-var ajv = Ajv({allErrors: true});
+var ajv = require('ajv')({allErrors: true});
 
 var mongoose = null;
 var timestamps = require('mongoose-timestamp');
@@ -25,8 +26,8 @@ function model(meta) {
   // validate
   var valid = ajv.validate(schema, meta);
   if (!valid) {
-    console.log(ajv.errors);
-    console.log(meta);
+    console.error(ajv.errors);
+    console.error(util.inspect(meta, {depth:null, colors: true}));
     process.exit(100);
   }
 
@@ -43,7 +44,58 @@ function model(meta) {
   schema_angular(meta);
 
   schema_express(meta);
+
+  meta.dump = function() {
+    var obj = {};
+    var self = this;
+    Object.keys(this).forEach(function(k) {
+      if (k[0] != '$') {
+        obj[k] = self[k];
+      }
+    });
+
+    return obj;
+  };
+
+  console.error(util.inspect(meta.dump(), {depth: null, colors: true}));
   meta.$router = router(meta);
 
+
   return meta;
+}
+// https://github.com/OAI/OpenAPI-Specification/blob/master/examples/v2.0/yaml/petstore-expanded.yaml
+function swagger(cfg) {
+/*
+  {
+    "title": "Swagger Sample App",
+    "description": "This is a sample server Petstore server.",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "API Support",
+      "url": "http://www.swagger.io/support",
+      "email": "support@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+  }
+    "version": "0.0.1",
+
+  cfg.basePath = ["/api"];
+  cfg.schemes = ["http"];
+  cfg.consumes = [
+    // uploads
+    "application/x-www-form-urlencoded",
+    // default
+    "application/json"
+  ];
+
+  cfg.produces = [
+    "application/json",
+    "application/xml"
+  ];
+
+  cfg.paths = {};
+*/
 }

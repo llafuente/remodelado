@@ -65,7 +65,7 @@ function get_controls_js(meta, action, cb) {
   var controls_js = [];
   $angular.each_control(meta, action, function(client_opt, path) {
     todo++;
-    fs.readFile(join(__dirname, "templates/control-" + client_opt.type + ".js"), {encoding: "utf-8"}, function(err, js) {
+    fs.readFile(join(__dirname, "controls/control-" + client_opt.type + ".js"), {encoding: "utf-8"}, function(err, js) {
       --todo;
       // TODO do not ignore not found
       // this should be whitelisted

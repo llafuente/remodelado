@@ -2,7 +2,7 @@
 
 angular
 .module('<%= app_name %>')
-.controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state, confirmStateExit, $log) {
+.controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state, confirmStateExit, $log, $injector) {
   confirmStateExit($scope, "form.$dirty && !submitted");
 
   $scope.entity = {

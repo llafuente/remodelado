@@ -31,7 +31,7 @@ function schema_express(meta) {
   // remove __v
   // remove restricted
   var before_send = meta.express.before_send;
-  meta.$express.before_send = function before_send_cb (method, output, cb) {
+  meta.$express.before_send = function before_send_cb (req, method, output, cb) {
     switch(method) {
     case "update":
     case "create":
@@ -53,7 +53,7 @@ function schema_express(meta) {
     output = mongoosemask.mask(output, blacklist);
 
     if (before_send) {
-      return before_send(method, output, cb);
+      return before_send(req, method, output, cb);
     }
 
     cb(null, output);

@@ -18,7 +18,7 @@ function read_middleware(meta) {
 
       var data = mdata.toJSON();
 
-      meta.$express.before_send("read", data, function(err, output) {
+      meta.$express.before_send(req, "read", data, function(err, output) {
         /* istanbul ignore next */ if (err) {
           return res.error(err);
         }

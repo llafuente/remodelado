@@ -46,7 +46,7 @@ function create_middleware(meta) {
 
       var data = mdata.toJSON();
 
-      meta.$express.before_send("create", data, function(err, output) {
+      meta.$express.before_send(req, "create", data, function(err, output) {
         /* istanbul ignore next */ if (err) {
           return res.error(err);
         }

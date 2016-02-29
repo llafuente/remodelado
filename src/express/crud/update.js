@@ -56,7 +56,7 @@ function update_middleware(meta) {
       }
 
       return update(meta, row, req.body, blacklist, res.error, function(saved_row) {
-        meta.$express.before_send("update", saved_row.toJSON(), function(err, output) {
+        meta.$express.before_send(req, "update", saved_row.toJSON(), function(err, output) {
           /* istanbul ignore next */ if (err) {
             return res.error(err);
           }
