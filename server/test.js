@@ -1,29 +1,5 @@
 
 module.exports = function(app) {
-  app.post('/api/users/me', function(req, res, next) {
-    // TODO check token
-    if (!req.headers['x-access-token']) {
-      return res.status(401).json({error: "No session"});
-    }
-
-    if (req.headers['x-access-token'] != "Bearer 1235fd1sdfs6f5sd1f6s") {
-      return res.status(401).json({error: "Invalid session"});
-    }
-
-    res.status(200).json({
-      "id": 1,
-      "username": "username",
-      "permissions": ["do magic"],
-      "roles": ["user"],
-    });
-  });
-
-  app.post('/api/auth', function(req, res, next) {
-    res.status(200).json({
-      "token": "1235fd1sdfs6f5sd1f6s"
-    });
-  });
-
   //timeout for testing purposes
   app.use(function(req, res, next) {
     setTimeout(function() {

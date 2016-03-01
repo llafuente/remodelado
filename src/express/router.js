@@ -25,7 +25,6 @@ function router(meta) {
   r.delete(meta.$express.delete, destroy(meta));
 
   // angular
-  // internal: r.get(meta.$angular.templates.forms, angular.forms(meta));
   r.get(meta.$angular.routes, angular.routes(meta));
 
   r.get(meta.$angular.templates.list, angular.list_tpl(meta));

@@ -6,8 +6,6 @@ var _ = require('lodash');
 
 require('./test.js')(app);
 
-
-
 //app.use('/', express.static(join(__dirname, 'app')));
 //app.use('/', express.static(join(__dirname, 'dist')));
 
@@ -17,25 +15,13 @@ app.use('/', express.static('tmp/instrumented/app'));
 app.use('/', express.static('app'));
 app.use('/src', express.static('bower_components/inetsys-angular-seed/src'));
 
-var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/ubermodel");
-
 var remodelado = require("../src/index.js");
-remodelado.use(mongoose);
+remodelado.use(app.mongoose);
 
-var permissions = require("./permissions.json");
 
-var user_json = require("./user.model.json");
-user_json.backend.schema.permissions.array.enum = permissions.enum;
-user_json.backend.schema.permissions.array.labels = permissions.labels;
-var user = remodelado.model(user_json);
-app.use(user.$router);
+require("./models/user.model.js")(app);
+require("./models/roles.model.js")(app);
 
-var roles_json = require("./roles.model.json");
-roles_json.backend.schema.permissions.array.enum = permissions.enum;
-roles_json.backend.schema.permissions.array.labels = permissions.labels;
-var roles = remodelado.model(roles_json);
-app.use(roles.$router);
 
 /*
 var order_json = require("../tests/order.model.json");

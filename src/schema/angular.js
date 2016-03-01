@@ -160,8 +160,8 @@ function schema_angular(meta) {
       create: meta.plural + ".create",
       update: meta.plural + ".update",
     },
+
     templates: {
-      forms: '/angular/' + meta.plural + '.forms.tpl.html',
       create: '/angular/' + meta.plural + '.create.tpl.html',
       update: '/angular/' + meta.plural + '.update.tpl.html',
       list: '/angular/' + meta.plural + '.list.tpl.html',

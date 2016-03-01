@@ -42,7 +42,14 @@
                 },
                 "type": {
                   "id": "backend/schema/type",
-                  "enum": ["string", "number", "objectid", "array", "mixed"]
+                  "enum": [
+                    "string",
+                    "number",
+                    "objectid",
+                    "array",
+                    "mixed",
+                    "owner"
+                  ]
                 },
                 "required": {
                   "id": "backend/schema/required",
@@ -94,7 +101,12 @@
                 "array": {
                   "id": "backend/schema/array",
                   "type": "object"
+                },
+                "required": {
+                  "id": "backend/schema/required",
+                  "type": "boolean"
                 }
+
               }
             }
           }

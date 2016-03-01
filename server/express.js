@@ -2,10 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var mongoose = require("mongoose");
-var ValidationError = mongoose.Error.ValidationError;
-var forEach = require('lodash.foreach');
+var config = require('./config/index.js');
 require('./winston-readable-console.js');
-
 //
 // express initialization
 //
@@ -38,6 +36,7 @@ app.use(function(req, res, next) {
   });
   next();
 });
+logger.info(config);
 
 //
 // mongoose errors
@@ -72,13 +71,69 @@ mongoose.set('debug', function (name, i) {
       util.inspect(args[3], {depth: true, colors: true})
     )
   );
-  /*
- {
-   collection: collection,
-   method: method,
-   query: query,
-   doc: doc,
-   options: options
- });
- */
+});
+
+
+var mongoose = require("mongoose");
+mongoose.connect(config.mongo.uri);
+app.mongoose = mongoose;
+app.use(function (req, res, next) {
+  req.mongoose = mongoose;
+  if (mongoose.connection.readyState === 1) {
+    return next();
+  }
+  // too fast, wait a little!
+  mongoose.connection.on('open', function () {
+    next()
+  });
+});
+
+//
+// jwt
+//
+var ex_jwt = require('express-jwt');
+app.use(ex_jwt({
+  secret: config.auth.secret,
+  credentialsRequired: false,
+  getToken: function fromHeaderOrQuerystring (req) {
+    console.log(req.headers.authorization);
+    if (req.headers.authorization) {
+      var x = req.headers.authorization.split(' ');
+      if (x[0] === 'Bearer') {
+        return x[1];
+      }
+    } else if (req.query && req.query.access_token) {
+      return req.query.access_token;
+    }
+    return null;
+  }
+}));
+
+
+//
+// TODO properly handle user-login, regenerate session(/me).
+//
+app.post('/api/users/me', function(req, res, next) {
+  // TODO check token
+  if (!req.headers.authorization) {
+    return res.status(401).json({error: "No session"});
+  }
+
+  if (!req.user) {
+    return res.status(401).json({error: "Invalid session"});
+  }
+
+  res.status(200).json({
+    "id": 1,
+    "username": "username",
+    "permissions": ["do magic"],
+    "roles": ["user"],
+  });
+});
+
+var jwt = require('express-jwt/node_modules/jsonwebtoken');
+app.post('/api/auth', function(req, res, next) {
+  res.status(200).json({
+    "token": jwt.sign({id: 1}, config.auth.secret)
+  });
 });

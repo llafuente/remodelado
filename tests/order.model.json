@@ -9,14 +9,14 @@
         "update": false
       },
       "handled": {
+        "label": "Handled",
         "type": "number",
         "restricted": true,
         "create": true
       },
       "user": {
         "label": "User",
-        "type": "ObjectId",
-        "ref": "user"
+        "type": "owner"
       },
       "object": {
         "label": "Object",
@@ -28,20 +28,18 @@
     }
   },
   "frontend": {
+    "navbar": {
+      "label": "Order"
+    },
     "list": {
       "id": {
         "label": "ID",
-        "filter_type": "text",
-        "list": 1,
+        "type": "text"
       },
       "object": {
         "label": "Object",
-        "filter_type": "text",
-        "list": 1
+        "type": "text"
       }
-    },
-    "view": {
-      "...": "// TODO"
     },
     "schema": {
       "id": {

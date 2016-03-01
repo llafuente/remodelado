@@ -55,6 +55,8 @@ function update_middleware(meta) {
         return res.status(404).json({error: "Not found"}); // todo err message
       }
 
+      row.setRequest(req);
+
       return update(meta, row, req.body, blacklist, res.error, function(saved_row) {
         meta.$express.before_send(req, "update", saved_row.toJSON(), function(err, output) {
           /* istanbul ignore next */ if (err) {

@@ -7,12 +7,3 @@ tap.Test.prototype.addAssert('isDate', 1, function (str, message, extra) {
 
   return this.ok(!isNaN(Date.parse(str)), message, extra);
 });
-
-// our first test is always...
-test('connect to mongodb', function (t) {
-  mongoose.connect("mongodb://localhost/ubermodel");
-
-  mongoose.connection.on('open', function (ref) {
-    t.end();
-  });
-});

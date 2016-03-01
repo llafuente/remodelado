@@ -19,6 +19,7 @@ test('create user model', function (t) {
 
   var model = require("./test_model.model.json");
   var mdl = api.model(model);
+  mdl.init();
 
   //console.log(
   //  require("util").inspect(mdl.json, {depth: null, colors: true})

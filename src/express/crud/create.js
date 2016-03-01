@@ -4,12 +4,15 @@ module.exports.create = create;
 var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
 
-function create(meta, blacklist, data, error, ok) {
+function create(meta, req, blacklist, data, error, ok) {
   clean_body(meta, data);
   delete data.__v;
   data = mongoosemask.mask(data, blacklist);
 
-  return meta.$model.create(data, function(err, mdata) {
+  var entity = new meta.$model(data);
+  entity.setRequest(req);
+
+  return entity.save(function(err, mdata) {
     if (err) {
       return error(err);
     }
@@ -41,7 +44,7 @@ function create_middleware(meta) {
       return res.error(422, "body is an array");
     }
 
-    return create(meta, blacklist, req.body, res.error, function(mdata) {
+    return create(meta, req, blacklist, req.body, res.error, function(mdata) {
       req.log.info("created ok");
 
       var data = mdata.toJSON();

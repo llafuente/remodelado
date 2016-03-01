@@ -23,4 +23,7 @@ angular
 })
 .config(function(errorConfigProvider) {
   //errorConfigProvider.templates.retryable = 'test/error-retryable.tpl.html';
+})
+.config(function(errorConfigProvider, authConfigProvider, rewriteRequestConfigProvider) {
+  authConfigProvider.token_header = 'Authorization';
 });
