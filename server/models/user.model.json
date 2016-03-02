@@ -15,6 +15,7 @@
         "type": "string",
         "required": true,
         "maxlength": 254,
+        "restricted": true,
         "create": true,
         "update": true
       },
@@ -24,6 +25,11 @@
         "required": true,
         "create": true,
         "update": true
+      },
+      "salt": {
+        "label": "",
+        "type": "string",
+        "restricted": true
       },
       "roles": {
         "label": "Roles",

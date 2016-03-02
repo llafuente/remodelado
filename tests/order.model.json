@@ -8,21 +8,34 @@
         "create": false,
         "update": false
       },
+      "description": {
+        "label": "Dandled",
+        "type": "string",
+        "create": true,
+        "update": true
+      },
       "handled": {
         "label": "Handled",
         "type": "number",
         "restricted": true,
         "create": true
       },
-      "user": {
-        "label": "User",
-        "type": "owner"
-      },
-      "object": {
-        "label": "Object",
-        "type": "string",
-        "required": true,
+      "created_by": {
+        "label": "Created by",
+        "type": "ObjectId",
+        "ref": "users",
+        "default": null,
+        "set_current_user": true,
         "create": true,
+        "update": false
+      },
+      "last_update_by": {
+        "label": "last update by",
+        "type": "ObjectId",
+        "ref": "users",
+        "default": null,
+        "set_current_user": true,
+        "create": false,
         "update": true
       }
     }

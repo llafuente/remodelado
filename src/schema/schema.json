@@ -45,10 +45,9 @@
                   "enum": [
                     "string",
                     "number",
-                    "objectid",
+                    "ObjectId",
                     "array",
-                    "mixed",
-                    "owner"
+                    "mixed"
                   ]
                 },
                 "required": {
@@ -105,8 +104,15 @@
                 "required": {
                   "id": "backend/schema/required",
                   "type": "boolean"
+                },
+                "ref": {
+                  "id": "backend/schema/ref",
+                  "type": "string"
+                },
+                "set_current_user": {
+                  "id": "backend/schema/set_current_user",
+                  "type": "boolean"
                 }
-
               }
             }
           }

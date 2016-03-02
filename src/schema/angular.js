@@ -71,7 +71,7 @@ function schema_angular(meta) {
   _.forEach(meta.frontend.list, function(field, k) {
     var be_field = meta.$schema.path(k);
     if (!be_field) {
-      console.warn(k, "is not found in schema");
+      console.warn(meta.singular, "[", k, "] is not found in schema");
       return;
     }
     be_field = be_field.options;
@@ -88,7 +88,7 @@ function schema_angular(meta) {
   // create/update (schema)
   _.forEach(meta.backend.schema, function(o, k) {
     if (!meta.frontend.schema[k]) {
-      console.warn(k, "is not found in schema");
+      console.warn(meta.singular, "[", k, "] is not found in schema");
       return;
     }
 
@@ -105,7 +105,6 @@ function schema_angular(meta) {
 
     _.forEach(o, function(odb, kdb) {
       var kan = constraints[kdb];
-      console.log(k, kdb, kan);
       // overwrite only if not set
       if (kan) {
         if (field.constraints[kan] === undefined) {

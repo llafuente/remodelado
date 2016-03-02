@@ -96,7 +96,6 @@ app.use(ex_jwt({
   secret: config.auth.secret,
   credentialsRequired: false,
   getToken: function fromHeaderOrQuerystring (req) {
-    console.log(req.headers.authorization);
     if (req.headers.authorization) {
       var x = req.headers.authorization.split(' ');
       if (x[0] === 'Bearer') {
@@ -123,17 +122,48 @@ app.post('/api/users/me', function(req, res, next) {
     return res.status(401).json({error: "Invalid session"});
   }
 
-  res.status(200).json({
-    "id": 1,
-    "username": "username",
-    "permissions": ["do magic"],
-    "roles": ["user"],
-  });
+  api.models.user.$model.findOne(req.user._id, function(err, user) {
+    // TODO res.error doesn't exist!
+    if (err) {
+      return res.error(err);
+    }
+
+    if (!user) {
+      return res.error(401, "User not found");
+    }
+
+    res.status(200).json(user.toJSON());
+  })
+
 });
 
 var jwt = require('express-jwt/node_modules/jsonwebtoken');
 app.post('/api/auth', function(req, res, next) {
-  res.status(200).json({
-    "token": jwt.sign({id: 1}, config.auth.secret)
-  });
+  console.log(api.models.user);
+  api.models.user.$model.findOne({
+    username: req.body.username
+  }, function(err, user) {
+    // TODO res.error doesn't exist!
+    if (err) {
+      return res.error(err);
+    }
+
+    if (!user || !user.authenticate(req.body.password)) {
+      return res.error(404, "User not found or invalid pasword");
+    }
+
+    res.status(200).json({
+      "token": jwt.sign(user.toJSON(), config.auth.secret)
+    });
+  })
 });
+
+//
+// models
+//
+var api = require("../src/index.js");
+api.use(app.mongoose);
+
+
+require("./models/user.model.js")(app);
+require("./models/roles.model.js")(app);

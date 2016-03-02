@@ -1,6 +1,7 @@
 module.exports = {
   use: use,
   model: model,
+  models: {},
   swagger: swagger
 };
 
@@ -50,9 +51,11 @@ function model(meta) {
     return obj;
   };
 
-  console.error(util.inspect(meta.dump(), {depth: null, colors: true}));
+  //console.error(util.inspect(meta.dump(), {depth: null, colors: true}));
   meta.$router = router(meta);
 
+  module.exports.models[meta.singular] = meta;
+  module.exports.models[meta.plural] = meta;
 
   return meta;
 }
