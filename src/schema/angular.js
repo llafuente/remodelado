@@ -38,23 +38,25 @@ function __build_labels(meta, be_field, fe_field) {
       src = be_field.array;
     }
 
-    if (!src.enum) {
-      console.error(be_field);
-      throw new Error("enum is not defined");
-    }
-    if (!src.labels) {
-      console.error(be_field);
-      throw new Error("labels is not defined");
-    }
-    if (src.enum.length !== src.labels.length) {
-      console.error(be_field);
-      throw new Error("enum and labels must have same length");
-    }
+    if (src.source_url) {
+      if (!src.enum) {
+        console.error(be_field);
+        throw new Error("enum is not defined");
+      }
+      if (!src.labels) {
+        console.error(be_field);
+        throw new Error("labels is not defined");
+      }
+      if (src.enum.length !== src.labels.length) {
+        console.error(be_field);
+        throw new Error("enum and labels must have same length");
+      }
 
-    fe_field.labels = [];
-    var i;
-    for (i = 0; i < src.enum.length; ++i) {
-      fe_field.labels.push({id: src.enum[i], label: src.labels[i]});
+      fe_field.labels = [];
+      var i;
+      for (i = 0; i < src.enum.length; ++i) {
+        fe_field.labels.push({id: src.enum[i], label: src.labels[i]});
+      }
     }
 
     fe_field.label_values = meta.singular + '_' + fe_field.name + '_label_values';

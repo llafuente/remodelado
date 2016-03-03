@@ -69,20 +69,43 @@ angular
 .constant('<%= control.label_values %>', function() {
   return <%= JSON.stringify(_.keyBy(control.labels, 'id')) %>;
 })
+.run(function($rootScope, <%= control.label_values %>) {
+  $rootScope['<%= control.label_values %>'] = <%= control.label_values %>();
+})
+<%
+}
+if (control.source_url) {
+%>
+.factory('<%= control.label_values %>', function($http, $rootScope) {
+  var values;
+  $http(<%= JSON.stringify(control.source_url) %>)
+  .then(function(response) {
+    values = response.data.list;
+    $rootScope['<%= control.label_values %>'] = response.data.list;
+  });
+  return function() {
+    return values;
+  }
+})
+<%
+}
+if (control.labels || control.source_url) {
+%>
 .filter('<%= control.label_filter %>', ['<%= control.label_values %>', function(values_fn) {
-  var values = values_fn(); // just need to be called once, it's constant
   return function(id) {
+    var values = values_fn();
+    if (!values) return ''; // w8 a bit more...
+
     if (Array.isArray(id)) {
       return id.map(function(k) {
-        return values[k].label;
+        var v = _.find(values, {id: k});
+        return v ? v.label : '??';
       }).join(", ");
     }
-    return values[id].label;
+    var v = _.find(values, {id: id})
+    return v ? v.label : '??';
   }
 }])
-.run(function($rootScope, <%= control.label_values %>) {
-  $rootScope['<%= control.label_values %>'] = <%= control.label_values %>();  
-})
 <%
   }
 });

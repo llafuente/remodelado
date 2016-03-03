@@ -23,6 +23,10 @@
           "id": "backend/ignore_perm_err",
           "type": "boolean"
         },
+        "prefix": {
+          "id": "backend/prefix",
+          "type": "string"
+        },
         "collection": {
           "id": "backend/collection",
           "type": "string"

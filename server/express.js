@@ -131,8 +131,9 @@ app.post('/api/users/me', function(req, res, next) {
     if (!user) {
       return res.error(401, "User not found");
     }
-
-    res.status(200).json(user.toJSON());
+    user = user.toJSON();
+    user.id = user._id;
+    res.status(200).json(user);
   })
 
 });
@@ -165,5 +166,6 @@ var api = require("../src/index.js");
 api.use(app.mongoose);
 
 
+require("./models/permissions.model.js")(app);
 require("./models/user.model.js")(app);
 require("./models/roles.model.js")(app);

@@ -2,6 +2,7 @@ module.exports = {
   use: use,
   model: model,
   models: {},
+  permissions: [],
   swagger: swagger
 };
 
@@ -34,7 +35,7 @@ function model(meta) {
 
   // always have the full metadata available
   schema_default(meta);
-  schema_mongoose(meta, mongoose);
+  schema_mongoose(meta, mongoose, module.exports.models);
   schema_angular(meta);
 
   schema_express(meta);

@@ -2,20 +2,24 @@ module.exports = schema_express;
 
 var _ = require('lodash');
 var mongoosemask = require('mongoosemask');
+var j = require('path').join;
 
 function schema_express(meta) {
   meta.express = meta.express || {};
+
+  meta.backend.prefix = meta.backend.prefix || "";
 
   // url staff
   var id_param = meta.singular + '_id';
   meta.$express = {
     id_param: id_param,
-    list: '/' + meta.plural,
-    create: '/' + meta.plural,
-    read: '/' + meta.plural + '/:' + id_param,
-    update: '/' + meta.plural + '/:' + id_param,
-    delete: '/' + meta.plural + '/:' + id_param,
+    list: j('/', meta.backend.prefix, meta.plural),
+    create: j('/', meta.backend.prefix, meta.plural),
+    read: j('/', meta.backend.prefix, meta.plural + '/:' + id_param),
+    update: j('/', meta.backend.prefix, meta.plural + '/:' + id_param),
+    delete: j('/', meta.backend.prefix, meta.plural + '/:' + id_param),
   };
+  console.log(meta.$express);
 
   // common cleanup before send
   var blacklist = [];

@@ -2,6 +2,7 @@
   "singular": "user",
   "backend": {
     "collection": "users",
+    "prefix": "/api",
     "permissions": {
       "read": "Ver usuarios",
       "list": "Listar usuarios",
@@ -54,8 +55,8 @@
         "label": "Permissions",
         "type": "array",
         "array": {
-          "type": "string",
-          "enum": null
+          "type": "ObjectId",
+          "ref": "permissions"
         },
         "create": true,
         "update": true
@@ -113,10 +114,18 @@
         "restricted": true
       },
       "roles": {
-        "type": "checklist"
+        "type": "checklist",
+        "source_url": {
+          "method": "GET",
+          "url": "/api/roles"
+        }
       },
       "permissions": {
-        "type": "checklist"
+        "type": "checklist",
+        "source_url": {
+          "method": "GET",
+          "url": "/api/permissions"
+        }
       }
     }
   }

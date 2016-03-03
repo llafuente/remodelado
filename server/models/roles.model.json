@@ -2,6 +2,7 @@
   "singular": "role",
   "backend": {
     "collection": "roles",
+    "prefix": "/api",
     "permissions": {
       "read": "Ver roles",
       "list": "Listar roles",
@@ -17,8 +18,8 @@
         "create": false,
         "update": false
       },
-      "name": {
-        "label": "name",
+      "label": {
+        "label": "Label",
         "type": "string",
         "required": true,
         "create": true,
@@ -28,8 +29,8 @@
         "label": "Permissions",
         "type": "array",
         "array": {
-          "type": "string",
-          "enum": null
+          "type": "ObjectId",
+          "ref": "permissions"
         },
         "create": true,
         "update": true
@@ -44,7 +45,7 @@
       "id": {
         "type": "text"
       },
-      "name": {
+      "label": {
         "type": "text"
       },
       "permissions": {
@@ -57,11 +58,15 @@
         "create": false,
         "update": true
       },
-      "name": {
+      "label": {
         "type": "text"
       },
       "permissions": {
-        "type": "checklist"
+        "type": "checklist",
+        "source_url": {
+          "method": "GET",
+          "url": "/api/permissions"
+        }
       }
     }
   }
