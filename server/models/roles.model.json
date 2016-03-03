@@ -2,6 +2,13 @@
   "singular": "role",
   "backend": {
     "collection": "roles",
+    "permissions": {
+      "read": "Ver roles",
+      "list": "Listar roles",
+      "create": "Crear roles",
+      "update": "Modificar roles",
+      "delete": "Borrar roles"
+    },
     "schema": {
       "id": {
         "label": "ID",

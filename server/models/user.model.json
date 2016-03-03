@@ -2,6 +2,14 @@
   "singular": "user",
   "backend": {
     "collection": "users",
+    "permissions": {
+      "read": "Ver usuarios",
+      "list": "Listar usuarios",
+      "create": "Crear usuarios",
+      "update": "Modificar usuarios",
+      "delete": "Borrar usuarios"
+    },
+
     "schema": {
       "id": {
         "label": "ID",

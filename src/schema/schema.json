@@ -17,7 +17,7 @@
     "backend": {
       "id": "backend",
       "type": "object",
-      "required": ["schema"],
+      "required": ["schema", "permissions"],
       "properties": {
         "ignore_perm_err": {
           "id": "backend/ignore_perm_err",
@@ -26,6 +26,28 @@
         "collection": {
           "id": "backend/collection",
           "type": "string"
+        },
+        "permissions": {
+          "id": "backend/permissions",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "read": {
+              "type": ["string", "boolean"]
+            },
+            "list": {
+              "type": ["string", "boolean"]
+            },
+            "create": {
+              "type": ["string", "boolean"]
+            },
+            "update": {
+              "type": ["string", "boolean"]
+            },
+            "delete": {
+              "type": ["string", "boolean"]
+            }
+          }
         },
         "schema": {
           "id": "backend/schema",

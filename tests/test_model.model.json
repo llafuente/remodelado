@@ -1,6 +1,13 @@
 {
   "singular": "test_model",
   "backend": {
+    "permissions": {
+      "read": "Ver test",
+      "list": "Listar tests",
+      "create": "Crear test",
+      "update": "Modificar test",
+      "delete": "Borrar test"
+    },
     "schema": {
       "id": {
         "label": "ID",

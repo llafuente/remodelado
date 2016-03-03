@@ -1,6 +1,13 @@
 {
   "singular": "order",
   "backend": {
+    "permissions": {
+      "read": "Ver pedido",
+      "list": "Listar pedidos",
+      "create": "Crear pedido",
+      "update": "Modificar pedido",
+      "delete": "Borrar pedido"
+    },
     "schema": {
       "id": {
         "label": "ID",
