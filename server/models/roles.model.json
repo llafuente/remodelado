@@ -49,7 +49,11 @@
         "type": "text"
       },
       "permissions": {
-        "type": "select"
+        "type": "select",
+        "source_url": {
+          "method": "GET",
+          "url": "/api/permissions"
+        }
       }
     },
     "schema": {

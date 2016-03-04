@@ -67,7 +67,7 @@ angular
   if (control.labels) {
 %>
 .constant('<%= control.label_values %>', function() {
-  return <%= JSON.stringify(_.keyBy(control.labels, 'id')) %>;
+  return <%= JSON.stringify(control.labels) %>;
 })
 .run(function($rootScope, <%= control.label_values %>) {
   $rootScope['<%= control.label_values %>'] = <%= control.label_values %>();

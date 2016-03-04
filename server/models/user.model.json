@@ -24,7 +24,6 @@
         "type": "string",
         "required": true,
         "maxlength": 254,
-        "restricted": true,
         "create": true,
         "update": true
       },
@@ -32,6 +31,7 @@
         "label": "Password",
         "type": "string",
         "required": true,
+        "restricted": true,
         "create": true,
         "update": true
       },
@@ -59,6 +59,14 @@
           "ref": "permissions"
         },
         "create": true,
+        "update": true
+      },
+      "state": {
+        "label": "Estado",
+        "type": "string",
+        "enum": ["active", "banned"],
+        "labels": ["Active", "Banned"],
+        "default": "active",
         "update": true
       }
     }
@@ -95,6 +103,10 @@
       "roles": {
         "type": "select"
       },
+      "state": {
+        "label": "Estado",
+        "type": "select"
+      },
       "created_at": {
         "label": "Created at",
         "type": "date-range"
@@ -112,6 +124,11 @@
       "password": {
         "type": "password",
         "restricted": true
+      },
+      "state": {
+        "label": "Estado",
+        "type": "select",
+        "create": false
       },
       "roles": {
         "type": "checklist",

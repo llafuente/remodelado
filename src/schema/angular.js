@@ -28,63 +28,68 @@ var err_messages = {
 
 var _ = require('lodash');
 
-function __build_labels(meta, be_field, fe_field) {
+function __build_labels(meta, back_field, front_field) {
   // build labels array
-  switch (fe_field.type) {
+  switch (front_field.type) {
   case "checklist":
   case "select":
-    var src = be_field;
-    if ("array" === be_field.type) {
-      src = be_field.array;
+    var src = back_field;
+
+    if ("array" === src.type) {
+      src = src.array;
+      if ("ObjectId" === src.type) {
+        if (!front_field.source_url) {
+          console.error(front_field);
+          throw new Error("source_url must be defined");
+        }
+      }
     }
 
-    if (src.source_url) {
+    if (!front_field.source_url) {
       if (!src.enum) {
-        console.error(be_field);
+        console.error(back_field);
         throw new Error("enum is not defined");
       }
       if (!src.labels) {
-        console.error(be_field);
+        console.error(back_field);
         throw new Error("labels is not defined");
       }
       if (src.enum.length !== src.labels.length) {
-        console.error(be_field);
+        console.error(back_field);
         throw new Error("enum and labels must have same length");
       }
 
-      fe_field.labels = [];
+      front_field.labels = [];
       var i;
       for (i = 0; i < src.enum.length; ++i) {
-        fe_field.labels.push({id: src.enum[i], label: src.labels[i]});
+        front_field.labels.push({id: src.enum[i], label: src.labels[i]});
       }
     }
 
-    fe_field.label_values = meta.singular + '_' + fe_field.name + '_label_values';
-    fe_field.label_filter = meta.singular + '_' + fe_field.name + '_label_filter';
+    front_field.label_values = meta.singular + '_' + front_field.name + '_label_values';
+    front_field.label_filter = meta.singular + '_' + front_field.name + '_label_filter';
 
     break;
   }
 }
 
 function schema_angular(meta) {
-  var field;
-
   // list
-  _.forEach(meta.frontend.list, function(field, k) {
-    var be_field = meta.$schema.path(k);
-    if (!be_field) {
+  _.forEach(meta.frontend.list, function(front_field, k) {
+    var back_field = meta.$schema.path(k);
+    if (!back_field) {
       console.warn(meta.singular, "[", k, "] is not found in schema");
       return;
     }
-    be_field = be_field.options;
+    back_field = back_field.options;
 
     // cp label/name if needed
-    if (!field.label) {
-      field.label = be_field.label;
+    if (!front_field.label) {
+      front_field.label = back_field.label;
     }
-    field.name = k;
+    front_field.name = k;
 
-    __build_labels(meta, be_field, field);
+    __build_labels(meta, back_field, front_field);
   });
 
   // create/update (schema)
@@ -94,43 +99,41 @@ function schema_angular(meta) {
       return;
     }
 
-    field = meta.frontend.schema[k];
-
-
-    field.constraints = field.constraints || {};
-    field.container = field.container || {};
-    field.errors = field.errors || {};
+    var front_field = meta.frontend.schema[k];
+    front_field.constraints = front_field.constraints || {};
+    front_field.container = front_field.container || {};
+    front_field.errors = front_field.errors || {};
 
     // cp label/name
-    field.label = o.label;
-    field.name = k;
+    front_field.label = o.label;
+    front_field.name = k;
 
     _.forEach(o, function(odb, kdb) {
       var kan = constraints[kdb];
       // overwrite only if not set
       if (kan) {
-        if (field.constraints[kan] === undefined) {
+        if (front_field.constraints[kan] === undefined) {
           if ("boolean" === typeof odb) {
-            field.constraints[kan] = odb ? "true" : "false";
+            front_field.constraints[kan] = odb ? "true" : "false";
           } else {
-            field.constraints[kan] = odb;
+            front_field.constraints[kan] = odb;
           }
         }
         var err_id = kan.substring(3);
-        field.errors[err_id] = err_messages[err_id];
+        front_field.errors[err_id] = err_messages[err_id];
       }
     });
 
     // add type validation by hand
     ["number", "email"].forEach(function(ty) {
-      if (field.type === ty) {
-        field.errors[ty] = err_messages[ty];
+      if (front_field.type === ty) {
+        front_field.errors[ty] = err_messages[ty];
       }
     });
 
-    __build_labels(meta, o, field);
+    __build_labels(meta, o, front_field);
 
-    field.container.class = Object.keys(field.constraints);
+    front_field.container.class = Object.keys(front_field.constraints);
   });
 
   meta.frontend.buttons = meta.frontend.buttons || {}
@@ -200,10 +203,10 @@ function check_action(action, model_opt, client_opt) {
 }
 
 // TODO fallback to api?!
-function each_control_sorted (meta, action, cb) {
+function each_control_sorted (meta, action) {
   var controls = [];
 
-  meta.$schema.eachPath(function(path, options) {
+  meta.$schema.eachPath(function(path) {
     // ignore private
     if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
       return ;
