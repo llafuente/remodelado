@@ -29,12 +29,11 @@ test('create user model', function (t) {
   t.equal(mdl.frontend.schema.first_name.constraints['ng-required'], "true");
 
   // url check
-  t.equal(mdl.$express.read, "/test_models/:test_model_id");
-  t.equal(mdl.$express.delete, "/test_models/:test_model_id");
-  t.equal(mdl.$express.update, "/test_models/:test_model_id");
-
-  t.equal(mdl.$express.create, "/test_models");
-  t.equal(mdl.$express.list, "/test_models");
+  t.equal(mdl.$express.urls.read, "/test_models/:test_model_id");
+  t.equal(mdl.$express.urls.delete, "/test_models/:test_model_id");
+  t.equal(mdl.$express.urls.update, "/test_models/:test_model_id");
+  t.equal(mdl.$express.urls.create, "/test_models");
+  t.equal(mdl.$express.urls.list, "/test_models");
 
   app.use(mdl.$router);
 
@@ -219,7 +218,7 @@ test('http: get update user form', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/angular/test_models.routes.js")
+  .get("/angular/test_models.configuration.js")
   .expect(200)
   .end(function(err, res) {
     t.ok(res.text.length > 0);
@@ -231,7 +230,7 @@ test('http: get user routes.js', function (t) {
 
 test('http: get user routes.js', function (t) {
   request(app)
-  .get("/angular/test_models.routes.js?base_state=root&action=update")
+  .get("/angular/test_models.configuration.js?base_state=root&action=update")
   .expect(200)
   .end(function(err, res) {
     t.ok(res.text.length > 0);

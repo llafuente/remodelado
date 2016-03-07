@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = clean_body;
 
 // clean req.body from data that never must be created/updated

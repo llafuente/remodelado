@@ -17,7 +17,7 @@ angular
     $scope.submitting = true;
     $http({
       method: 'POST',
-      url: '<%= api.create %>',
+      url: '<%= api.urls.create %>',
       data: $scope.entity,
     }).then(function() {
       $scope.submitted = true;

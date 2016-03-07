@@ -1,22 +1,24 @@
+'use strict';
+
 module.exports = form;
 
-var assert = require("assert");
-var jade = require("jade");
-var join = require("path").join;
-var $angular = require("../schema/angular.js");
+var assert = require('assert');
+var jade = require('jade');
+var join = require('path').join;
+var $angular = require('../schema/angular.js');
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
-var fs = require("fs");
+var fs = require('fs');
 
 // TODO cache compiled
 function gen_control(control, path, form_path, base_path, layout, cb) {
-  var file = join(__dirname, "controls", "control-" + control.type + ".jade");
-  fs.readFile(file, {encoding: "utf-8"}, function(err, data) {
+  var file = join(__dirname, 'controls', 'control-' + control.type + '.jade');
+  fs.readFile(file, {encoding: 'utf-8'}, function(err, data) {
     /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
 
-    var file_str = "extends ./tpl-control-" + layout + ".jade\n\n" + data;
+    var file_str = 'extends ./tpl-control-' + layout + '.jade\n\n' + data;
     var compiled = jade.compile(file_str, {
       filename: file,
       pretty: true
@@ -30,24 +32,24 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
         layout: layout,
 
         form_path: form_path,
-        control_path: form_path + "." + control.name,
-        model: base_path + "." + control.name,
+        control_path: form_path + '.' + control.name,
+        model: base_path + '.' + control.name,
 
         control: control
       });
       return cb(null, html);
-    } catch(e) {
+    } catch (e) {
       return cb(e, null);
     }
   });
 }
 
 function form(meta, action, button, layout, form_path, base_path, cb) {
-  assert.ok(["create", "update"].indexOf(action) !== -1);
-  assert.ok(["vertical", "horizontal", "inline"].indexOf(layout) !== -1);
+  assert.ok(['create', 'update'].indexOf(action) !== -1);
+  assert.ok(['vertical', 'horizontal', 'inline'].indexOf(layout) !== -1);
 
-  form_path = form_path || "form";
-  base_path = base_path || "entity";
+  form_path = form_path || 'form';
+  base_path = base_path || 'entity';
 
   var controls = [];
   var errors = [];
@@ -70,8 +72,8 @@ function form(meta, action, button, layout, form_path, base_path, cb) {
           return cb(errors, null);
         }
 
-        var file = join(__dirname, "templates", "form.jade");
-        fs.readFile(file, {encoding: "utf-8"}, function(err, form_jade) {
+        var file = join(__dirname, 'templates', 'form.jade');
+        fs.readFile(file, {encoding: 'utf-8'}, function(err, form_jade) {
           if (err) {
             return cb(err, null);
           }
@@ -91,7 +93,7 @@ function form(meta, action, button, layout, form_path, base_path, cb) {
             });
 
             return cb(null, html);
-          } catch(e) {
+          } catch (e) {
             return cb(e, null);
           }
         });

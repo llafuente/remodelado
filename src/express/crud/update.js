@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = update_middleware;
 
 var mongoosemask = require('mongoosemask');
@@ -17,7 +19,7 @@ function update(meta, row, data, blacklist, error, ok) {
 
     /* istanbul ignore next */
     if (!saved_row) {
-      return error(422, "database don't return data");
+      return error(422, 'database don\'t return data');
     }
 
     return ok(saved_row);
@@ -33,13 +35,13 @@ function update_middleware(meta) {
     }
   });
 
-  console.log("# update middleware", meta.name, " blacklist", blacklist);
+  console.log('# update middleware', meta.name, ' blacklist', blacklist);
 
   return function(req, res, next) {
     req.log.info(req.body);
 
     if (Array.isArray(req.body)) {
-      return res.error(422, "body is an array");
+      return res.error(422, 'body is an array');
     }
 
     var id = req.params[meta.$express.id_param];
@@ -52,13 +54,13 @@ function update_middleware(meta) {
 
       /* istanbul ignore next */
       if (!row) {
-        return res.status(404).json({error: "Not found"}); // todo err message
+        return res.status(404).json({error: 'Not found'}); // todo err message
       }
 
       row.setRequest(req);
 
       return update(meta, row, req.body, blacklist, res.error, function(saved_row) {
-        meta.$express.before_send(req, "update", saved_row.toJSON(), function(err, output) {
+        meta.$express.before_send(req, 'update', saved_row.toJSON(), function(err, output) {
           /* istanbul ignore next */ if (err) {
             return res.error(err);
           }

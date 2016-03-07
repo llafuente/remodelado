@@ -1,7 +1,9 @@
+'use strict';
+
 module.exports = error_handler;
 module.exports.middleware = middleware;
 
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 var ValidationError = mongoose.Error.ValidationError;
 var CastError = mongoose.Error.CastError;
 var _ = require('lodash');
@@ -12,12 +14,12 @@ var domain = require('domain');
 function mongoose_to_readable(schema, err, path) {
   var value = clone(err);
 
-  if ("CastError" === value.name) {
-    value.type = "invalid-type";
-    value.message = "cast-failed";
-    value.value_constraint = "cast";
-  } else if ("ValidatorError" === value.name) {
-    value.type = "invalid-value";
+  if ('CastError' === value.name) {
+    value.type = 'invalid-type';
+    value.message = 'cast-failed';
+    value.value_constraint = 'cast';
+  } else if ('ValidatorError' === value.name) {
+    value.type = 'invalid-value';
     value.value_type = null; // ??
     value.value_constraint = value.properties.kind || value.properties.type;
     delete value.properties;
@@ -29,7 +31,7 @@ function mongoose_to_readable(schema, err, path) {
       value.label = options.options.label;
     }
 
-    if ("function" === typeof options.options.type){
+    if ('function' === typeof options.options.type) {
       value.value_type = options.options.type.name.toLowerCase();
     } else {
       value.value_type = options.options.type;
@@ -58,12 +60,12 @@ function error_handler(err, req, res, schema) {
   }
 
   if (err instanceof CastError) {
-    req.log.silly("CastError");
+    req.log.silly('CastError');
     return res.status(400).json({
       error: mongoose_to_readable(schema, err, err.path)
     });
   } else if (err instanceof ValidationError) {
-    req.log.silly("ValidationError");
+    req.log.silly('ValidationError');
     // cleanup error
     var errors = [];
 
@@ -75,11 +77,11 @@ function error_handler(err, req, res, schema) {
   }
 
   if (err.status) {
-    req.log.silly("StatusedError");
+    req.log.silly('StatusedError');
     return res.status(err.status).json({error: err.message});
   }
 
-  req.log.silly("Exception");
+  req.log.silly('Exception');
   return res.status(500).json({error: err.message});
 }
 
@@ -95,7 +97,7 @@ function middleware(meta) {
 
     var d = domain.create();
     d.on('error', function(err) {
-      req.log.silly("(domain error)");
+      req.log.silly('(domain error)');
       err.status = 500;
       return error_handler(err, req, res, meta.$schema);
     });

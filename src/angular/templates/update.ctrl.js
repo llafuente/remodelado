@@ -17,7 +17,7 @@ angular
     $scope.submitting = true;
     $http({
       method: 'PATCH',
-      url: '<%= api.update %>/'.replace(':<%= id_param %>', $stateParams['<%= id_param %>']),
+      url: '<%= api.urls.update %>/'.replace(':<%= api.id_param %>', $stateParams['<%= api.id_param %>']),
       data: $scope.entity,
     }).then(function() {
       $scope.submitted = true;

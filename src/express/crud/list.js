@@ -1,16 +1,13 @@
-"use strict";
+'use strict';
 
 module.exports = list_middleware;
 module.exports.list = list;
 module.exports.list_query = list_query;
 
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 var ValidationError = mongoose.Error.ValidationError;
 
-var exutils = require("../utils.js");
-
-var _ = require("lodash");
-var forEach = _.forEach;
+var exutils = require('../utils.js');
 
 function list_query(meta, logger, where, sort, limit, offset, populate, error, ok) {
   var query = meta.$model.find({});
@@ -19,13 +16,13 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   var options;
 
   // some of theese can be meta.options.xxx
-  if ("string" === typeof where) {
+  if ('string' === typeof where) {
     try {
       where = JSON.parse(where);
-    } catch(_) {
+    } catch (_) {
       err = new ValidationError(null);
       err.errors.offset = {
-        path: "query:where",
+        path: 'query:where',
         message: 'invalid where',
         type: 'invalid-where',
         value: where,
@@ -33,12 +30,12 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
       };
       return error(400, err);
     }
-  } else if ("object" === typeof where) {
+  } else if ('object' === typeof where) {
     where = where;
   } else {
     where = {};
   }
-  sort = sort || "_id";
+  sort = sort || '_id';
   limit = limit ? parseInt(limit, 10) : 0;
   offset = offset ? parseInt(offset, 10) : 0;
   populate = populate || [];
@@ -47,7 +44,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   if (isNaN(offset)) {
     err = new ValidationError(null);
     err.errors.offset = {
-      path: "query:offset",
+      path: 'query:offset',
       message: 'offset must be a number',
       type: 'invalid-offset',
       value: offset,
@@ -63,11 +60,11 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   if (isNaN(limit)) {
     err = new ValidationError(null);
     err.errors.limit = {
-      path: "query:limit",
+      path: 'query:limit',
       message: 'limit must be a number',
       type: 'invalid-limit',
       value: limit,
-      value_type: "number",
+      value_type: 'number',
     };
     return error(400, err);
   }
@@ -78,19 +75,19 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   }
   // http://mongoosejs.com/docs/api.html#query_Query-sort
   // validate sort
-  var ss = sort.split(" ");
+  var ss = sort.split(' ');
   var i;
   for (i = 0; i < ss.length; ++i) {
-    path = ss[i][0] === "-" ? ss[i].substring(1) : ss[i];
+    path = ss[i][0] === '-' ? ss[i].substring(1) : ss[i];
     options = meta.$schema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.sort = {
-        path: "query:sort",
+        path: 'query:sort',
         message: 'not found in schema',
         type: 'invalid-sort',
         value: path,
-        value_type: "string",
+        value_type: 'string',
       };
       return error(400, err);
     }
@@ -98,11 +95,11 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
     if (options.options.restricted) {
       err = new ValidationError(null);
       err.errors.sort = {
-        path: "query:sort",
+        path: 'query:sort',
         message: 'field is restricted',
         type: 'invalid-sort',
         value: path,
-        value_type: "string",
+        value_type: 'string',
       };
       return error(400, err);
     }
@@ -114,7 +111,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   if (!Array.isArray(populate)) {
     err = new ValidationError(null);
     err.errors.populate = {
-      path: "query:populate",
+      path: 'query:populate',
       message: 'is not an array',
       type: 'invalid-populate',
       value: populate,
@@ -128,7 +125,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
-        path: "query:populate",
+        path: 'query:populate',
         message: 'not found in schema',
         type: 'invalid-populate',
         value: path,
@@ -139,7 +136,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
     if (!exutils.type_can_be_populated(options.options.type)) {
       err = new ValidationError(null);
       err.errors.populate = {
-        path: "query:populate",
+        path: 'query:populate',
         message: 'field cannot be populated',
         type: 'invalid-populate',
         value: path,
@@ -150,7 +147,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
     if (options.options.restricted) {
       err = new ValidationError(null);
       err.errors.populate = {
-        path: "query:populate",
+        path: 'query:populate',
         message: 'field is restricted',
         type: 'invalid-populate',
         value: path,
@@ -167,7 +164,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
-        path: "query:where",
+        path: 'query:where',
         message: 'not found in schema',
         type: 'invalid-where',
         value: path,
@@ -210,7 +207,7 @@ function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
 }
 
 function list_middleware(meta) {
-  return function(req, res, next) {
+  return function(req, res/*, next*/) {
     return list(
       meta,
       req.log,
@@ -226,7 +223,7 @@ function list_middleware(meta) {
         function mnext() {
           var list = mlist.map(function(d) { return d.toJSON(); });
 
-          meta.$express.before_send(req, "list", list, function(err, output_list) {
+          meta.$express.before_send(req, 'list', list, function(err, output_list) {
             /* istanbul ignore next */ if (err) {
               return res.error(err);
             }

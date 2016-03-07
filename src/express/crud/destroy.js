@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = destroy_middleware;
 module.exports.destroy = destroy;
 

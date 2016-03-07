@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular
 .module('<%= app_name %>')
@@ -16,7 +16,7 @@ angular
     pagination.start = pagination.start || 0;
     qs.offset = pagination.start;
 
-    $log.debug("(*list)", tablestate.search);
+    $log.debug('(*list)', JSON.stringify(tablestate));
     if (tablestate.search && tablestate.search.predicateObject) {
       for(var i in tablestate.search.predicateObject) {
         $log.debug(i, tablestate.search.predicateObject[i]);
@@ -27,7 +27,7 @@ angular
 
     return  $http({
       method: 'GET',
-      url: '<%= api.list %>',
+      url: '<%= api.urls.list %>',
       params: qs
     }).then(function(res) {
       $scope.list = res.data;
@@ -43,7 +43,7 @@ angular
   $scope.delete = function(idx, row) {
     $http({
       method: 'DELETE',
-      url: '<%= api.delete %>/'.replace(':<%= id_param %>', row.id)
+      url: '<%= api.urls.delete %>/'.replace(':<%= api.id_param %>', row.id)
     }).then(function() {
       $scope.list.list.splice(idx, 1);
       --$scope.list.count;

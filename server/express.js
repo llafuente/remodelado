@@ -150,7 +150,7 @@ app.post('/api/auth', function(req, res, next) {
     }
 
     if (!user || !user.authenticate(req.body.password)) {
-      return res.error(404, "User not found or invalid pasword");
+      return res.error(422, "User not found or invalid pasword");
     }
 
     res.status(200).json({

@@ -1,10 +1,12 @@
+'use strict';
+
 module.exports = schema_default;
 
 var _ = require('lodash');
 var pluralize = require('pluralize');
 
 var default_schema = {
-  type: "string",
+  type: 'string',
   create: false,
   update: false
 };

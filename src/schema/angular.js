@@ -1,28 +1,30 @@
+'use strict';
+
 module.exports = schema_angular;
 module.exports.each_control = each_control;
 module.exports.each_control_sorted = each_control_sorted;
 
 var constraints = {
-  "required": "ng-required",
-  "min": "ng-min",
-  "max": "ng-max",
-  //"enum": "ng-enum",
-  "minlength": "ng-minlength",
-  "maxlength": "ng-maxlength",
-  "match": "ng-pattern"
+  'required': 'ng-required',
+  'min': 'ng-min',
+  'max': 'ng-max',
+  //'enum': 'ng-enum',
+  'minlength': 'ng-minlength',
+  'maxlength': 'ng-maxlength',
+  'match': 'ng-pattern'
 };
 
 
-// NOTE each line must be prefixed with "|"
+// NOTE each line must be prefixed with '|'
 var err_messages = {
-  required: "| #{control.label} is required",
-  email: "| #{control.label} must be a valid email",
-  number: "| #{control.label} is not a valid number",
-  minlength: "| #{control.label} is too short, at least #{control.constraints['ng-minlength']} characters",
-  maxlength: "| #{control.label} is too long, at most #{control.constraints['ng-maxlength']} characters",
-  min: "| #{control.label} is too big, should be less than #{control.constraints.min} characters",
-  max: "| #{control.label} is too small, should at least #{control.constraints.max} characters",
-  match: "| #{control.label} must match #{control.constraints.ng-pattern}"
+  required: '| #{control.label} is required',
+  email: '| #{control.label} must be a valid email',
+  number: '| #{control.label} is not a valid number',
+  minlength: '| #{control.label} is too short, at least #{control.constraints[\'ng-minlength\']} characters',
+  maxlength: '| #{control.label} is too long, at most #{control.constraints[\'ng-maxlength\']} characters',
+  min: '| #{control.label} is too big, should be less than #{control.constraints.min} characters',
+  max: '| #{control.label} is too small, should at least #{control.constraints.max} characters',
+  match: '| #{control.label} must match #{control.constraints.ng-pattern}'
 };
 
 
@@ -31,16 +33,16 @@ var _ = require('lodash');
 function __build_labels(meta, back_field, front_field) {
   // build labels array
   switch (front_field.type) {
-  case "checklist":
-  case "select":
+  case 'checklist':
+  case 'select':
     var src = back_field;
 
-    if ("array" === src.type) {
+    if ('array' === src.type) {
       src = src.array;
-      if ("ObjectId" === src.type) {
+      if ('ObjectId' === src.type) {
         if (!front_field.source_url) {
           console.error(front_field);
-          throw new Error("source_url must be defined");
+          throw new Error('source_url must be defined');
         }
       }
     }
@@ -48,15 +50,15 @@ function __build_labels(meta, back_field, front_field) {
     if (!front_field.source_url) {
       if (!src.enum) {
         console.error(back_field);
-        throw new Error("enum is not defined");
+        throw new Error('enum is not defined');
       }
       if (!src.labels) {
         console.error(back_field);
-        throw new Error("labels is not defined");
+        throw new Error('labels is not defined');
       }
       if (src.enum.length !== src.labels.length) {
         console.error(back_field);
-        throw new Error("enum and labels must have same length");
+        throw new Error('enum and labels must have same length');
       }
 
       front_field.labels = [];
@@ -78,7 +80,7 @@ function schema_angular(meta) {
   _.forEach(meta.frontend.list, function(front_field, k) {
     var back_field = meta.$schema.path(k);
     if (!back_field) {
-      console.warn(meta.singular, "[", k, "] is not found in schema");
+      console.warn(meta.singular, '[', k, '] is not found in schema');
       return;
     }
     back_field = back_field.options;
@@ -95,7 +97,7 @@ function schema_angular(meta) {
   // create/update (schema)
   _.forEach(meta.backend.schema, function(o, k) {
     if (!meta.frontend.schema[k]) {
-      console.warn(meta.singular, "[", k, "] is not found in schema");
+      console.warn(meta.singular, '[', k, '] is not found in schema');
       return;
     }
 
@@ -113,8 +115,8 @@ function schema_angular(meta) {
       // overwrite only if not set
       if (kan) {
         if (front_field.constraints[kan] === undefined) {
-          if ("boolean" === typeof odb) {
-            front_field.constraints[kan] = odb ? "true" : "false";
+          if ('boolean' === typeof odb) {
+            front_field.constraints[kan] = odb ? 'true' : 'false';
           } else {
             front_field.constraints[kan] = odb;
           }
@@ -125,7 +127,7 @@ function schema_angular(meta) {
     });
 
     // add type validation by hand
-    ["number", "email"].forEach(function(ty) {
+    ['number', 'email'].forEach(function(ty) {
       if (front_field.type === ty) {
         front_field.errors[ty] = err_messages[ty];
       }
@@ -136,33 +138,33 @@ function schema_angular(meta) {
     front_field.container.class = Object.keys(front_field.constraints);
   });
 
-  meta.frontend.buttons = meta.frontend.buttons || {}
+  meta.frontend.buttons = meta.frontend.buttons || {};
   meta.frontend.buttons = _.defaults(meta.frontend.buttons, {
-    "list_create": {
-      "text": "Create"
+    'list_create': {
+      'text': 'Create'
     },
-    "update": {
-      "text": "Save",
-      "tooltip": "Edit row",
-      "inprogress": "Saving"
+    'update': {
+      'text': 'Save',
+      'tooltip': 'Edit row',
+      'inprogress': 'Saving'
     },
-    "create": {
-      "text": "Create",
-      "inprogress": "Creating"
+    'create': {
+      'text': 'Create',
+      'inprogress': 'Creating'
     },
-    "delete": {
-      "tooltip": "Remove row",
-      "alert": "Are you sure to delete selected row?"
+    'delete': {
+      'tooltip': 'Remove row',
+      'alert': 'Are you sure to delete selected row?'
     }
   });
 
   meta.$angular = {
-    routes: '/angular/' + meta.plural + '.routes.js',
+    configuration: '/angular/' + meta.plural + '.configuration.js',
     states: {
       root: meta.plural,
-      list: meta.plural + ".list",
-      create: meta.plural + ".create",
-      update: meta.plural + ".update",
+      list: meta.plural + '.list',
+      create: meta.plural + '.create',
+      update: meta.plural + '.update',
     },
 
     templates: {
@@ -203,18 +205,18 @@ function check_action(action, model_opt, client_opt) {
 }
 
 // TODO fallback to api?!
-function each_control_sorted (meta, action) {
+function each_control_sorted(meta, action) {
   var controls = [];
 
   meta.$schema.eachPath(function(path) {
     // ignore private
-    if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
+    if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;
     }
 
     var client_opt = meta.frontend.schema[path];
     if (client_opt && client_opt[action]) {
-      controls.push(client_opt)
+      controls.push(client_opt);
     }
   });
 
@@ -222,10 +224,10 @@ function each_control_sorted (meta, action) {
     return a[action] - b[action];
   });
 }
-function each_control (meta, action, cb) {
+function each_control(meta, action, cb) {
   meta.$schema.eachPath(function(path, options) {
     // ignore private
-    if (["_id", "__v", "created_at", "updated_at"].indexOf(path) !== -1) {
+    if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;
     }
 

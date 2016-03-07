@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = create_middleware;
 module.exports.create = create;
 
@@ -19,7 +21,7 @@ function create(meta, req, blacklist, data, error, ok) {
 
     /* istanbul ignore next */
     if (!mdata) {
-      return error(500, "database don't return data");
+      return error(500, 'database don\'t return data');
     }
 
     ok(mdata);
@@ -35,21 +37,21 @@ function create_middleware(meta) {
     }
   });
 
-  console.log("# create middleware", meta.name, " blacklist", blacklist);
+  console.log('# create middleware', meta.name, ' blacklist', blacklist);
 
   return function(req, res, next) {
     req.log.info(req.body);
 
     if (Array.isArray(req.body)) {
-      return res.error(422, "body is an array");
+      return res.error(422, 'body is an array');
     }
 
     return create(meta, req, blacklist, req.body, res.error, function(mdata) {
-      req.log.info("created ok");
+      req.log.info('created ok');
 
       var data = mdata.toJSON();
 
-      meta.$express.before_send(req, "create", data, function(err, output) {
+      meta.$express.before_send(req, 'create', data, function(err, output) {
         /* istanbul ignore next */ if (err) {
           return res.error(err);
         }

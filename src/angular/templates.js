@@ -1,24 +1,25 @@
+'use strict';
+
 module.exports = {
   list: list
 };
 
-var assert = require("assert");
-var jade = require("jade");
-var join = require("path").join;
+var jade = require('jade');
+var join = require('path').join;
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
-var fs = require("fs");
-var $angular = require("../schema/angular.js");
+var fs = require('fs');
+var $angular = require('../schema/angular.js');
 
 function list(meta, listable_fields, cb) {
   if (!listable_fields) {
-    listable_fields = $angular.each_control_sorted(meta, "list");
+    listable_fields = $angular.each_control_sorted(meta, 'list');
   }
 
   listable_fields = meta.frontend.list;
 
-  var file = join(__dirname, "templates", "list.jade");
-  fs.readFile(file, {encoding: "utf-8"}, function(err, file_str) {
+  var file = join(__dirname, 'templates', 'list.jade');
+  fs.readFile(file, {encoding: 'utf-8'}, function(err, file_str) {
     /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
@@ -37,7 +38,7 @@ function list(meta, listable_fields, cb) {
         listable_fields: listable_fields,
       });
       return cb(null, html);
-    } catch(e) {
+    } catch (e) {
       return cb(e, null);
     }
   });

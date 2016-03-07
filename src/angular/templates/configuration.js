@@ -45,14 +45,14 @@ angular
     resolve: {},
   })
   .state('<%= states.update %>', {
-    url: '/update/:<%= id_param %>',
+    url: '/update/:<%= api.id_param %>',
     templateUrl: '<%= templates.update %>',
     controller: '<%= controllers.update_ctrl %>',
     resolve: {
       entity: ['$http', '$state', '$stateParams', function($http, $state, $stateParams) {
         return $http({
           method: 'GET',
-          url: '<%= api.read %>/'.replace(':<%= id_param %>', $stateParams['<%= id_param %>'])
+          url: '<%= api.urls.read %>/'.replace(':<%= api.id_param %>', $stateParams['<%= api.id_param %>'])
         }).then(function(res) {
           return res.data;
         });

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = schema_mongoose;
 
 var _ = require('lodash');
@@ -7,15 +9,15 @@ function schema_mongoose(meta, mongoose, models) {
 
   /* istanbul ignore next */
   if (meta.backend.schema.__v) {
-    throw new Error("__v is reserved, use another identifier.");
+    throw new Error('__v is reserved, use another identifier.');
   }
   /* istanbul ignore next */
   if (meta.backend.schema.version) {
-    throw new Error("version is reserved, use another identifier.");
+    throw new Error('version is reserved, use another identifier.');
   }
 
   meta.backend.schema.__v = {
-    type: "number",
+    type: 'number',
     select: false
   };
 
@@ -33,13 +35,13 @@ function schema_mongoose(meta, mongoose, models) {
     // search for a user!
     // request must be set!
     if (!this.$req) {
-      throw new Error("setRequest must be called before save");
+      throw new Error('setRequest must be called before save');
     }
 /*
     meta.$schema.eachPath(function(path, options) {
       if (options.options.set_current_user) {
         if (!this.$req.user) {
-          throw new Error("Url required auth");
+          throw new Error('Url required auth');
         }
 
         if (this.isNew && options.options.create) {
@@ -69,7 +71,7 @@ function schema_mongoose(meta, mongoose, models) {
           label: v
         }, {
           upsert: true
-        }, function(err, data) {
+        }, function(err/*, data*/) {
           if (err) {
             throw err;
           }
@@ -77,7 +79,7 @@ function schema_mongoose(meta, mongoose, models) {
       }
     });
 
-  }
+  };
 
   // TODO add a version plugin
 }

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   use: use,
   model: model,
@@ -6,14 +8,12 @@ module.exports = {
   swagger: swagger
 };
 
-var _ = require('lodash');
 var util = require('util');
-var router = require("./express/router.js");
+var router = require('./express/router.js');
 var ajv = require('ajv')({allErrors: true});
 
 var mongoose = null;
 
-var schema = require('./mongoose/owner.type.js');
 var schema = require('./schema/schema.json');
 var schema_default = require('./schema/default.js');
 var schema_angular = require('./schema/angular.js');
@@ -44,7 +44,7 @@ function model(meta) {
     var obj = {};
     var self = this;
     Object.keys(this).forEach(function(k) {
-      if (k[0] != '$') {
+      if ('$' !== k[0]) {
         obj[k] = self[k];
       }
     });
@@ -61,7 +61,7 @@ function model(meta) {
   return meta;
 }
 // https://github.com/OAI/OpenAPI-Specification/blob/master/examples/v2.0/yaml/petstore-expanded.yaml
-function swagger(cfg) {
+function swagger(/*cfg*/) {
 /*
   {
     "title": "Swagger Sample App",
