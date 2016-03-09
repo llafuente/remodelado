@@ -1,6 +1,9 @@
 {
   "singular": "test_model",
   "backend": {
+    "options": {
+      "collection": "test_model"
+    },
     "permissions": {
       "read": "Ver test",
       "list": "Listar tests",

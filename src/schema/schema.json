@@ -27,9 +27,14 @@
           "id": "backend/prefix",
           "type": "string"
         },
-        "collection": {
-          "id": "backend/collection",
-          "type": "string"
+        "options": {
+          "type": "object",
+          "properties": {
+            "collection": {
+              "id": "backend/collection",
+              "type": "string"
+            }
+          }
         },
         "permissions": {
           "id": "backend/permissions",

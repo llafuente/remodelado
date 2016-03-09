@@ -1,7 +1,9 @@
 {
   "singular": "permission",
   "backend": {
-    "collection": "permissions",
+    "options": {
+      "collection": "permissions"
+    },
     "prefix": "/api",
     "permissions": {
       "read": "Ver permisos",
@@ -11,6 +13,13 @@
       "delete": "Borrar permisos"
     },
     "schema": {
+      "_id": {
+        "label": "ID",
+        "type": "string",
+        "required": true,
+        "create": true,
+        "update": true
+      },
       "id": {
         "label": "ID",
         "type": "string",

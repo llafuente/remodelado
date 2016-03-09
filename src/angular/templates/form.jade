@@ -13,6 +13,8 @@ section#update
       div.clearfix
       //pre= '{{' + name + ' | json}}'
       div.row
+      div.col-xs-4
+        pre= '{{' + name + ' | json}}'
         div.col-xs-4
           pre= '{{' + name + '.$error | json}}'
         div.col-xs-1(ng-class="{'bg-danger': " + name + ".$dirty, 'bg-success': !" + name + ".$dirty }")

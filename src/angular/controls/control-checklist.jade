@@ -3,7 +3,8 @@ block content
     div.control-wapper.checkbox
       div(ng-repeat="item in " + control.label_values)
         label
-          input(type="checkbox" checklist-model=model name=control.name + '-{{$index}}' id=control.name + '-{{$index}}' checklist-value="item.id")
+          //input(type="checkbox" checklist-model=model name=control.name + '-{{$index}}' id=control.name + '-{{$index}}' checklist-value="item.id")
+          input(type="checkbox" checklist-model=model name=control.name id=control.name + '-{{$index}}' checklist-value="item.id")
           span {{item.label}}
         br
         

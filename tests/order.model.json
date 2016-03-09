@@ -1,6 +1,9 @@
 {
   "singular": "order",
   "backend": {
+    "options": {
+      "collection": "test_order"
+    },
     "permissions": {
       "read": "Ver pedido",
       "list": "Listar pedidos",

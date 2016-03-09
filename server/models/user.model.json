@@ -1,7 +1,9 @@
 {
   "singular": "user",
   "backend": {
-    "collection": "users",
+    "options": {
+      "collection": "users"
+    },
     "prefix": "/api",
     "permissions": {
       "read": "Ver usuarios",

@@ -1,7 +1,9 @@
 {
   "singular": "role",
   "backend": {
-    "collection": "roles",
+    "options": {
+      "collection": "roles"
+    },
     "prefix": "/api",
     "permissions": {
       "read": "Ver roles",

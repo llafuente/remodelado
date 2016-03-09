@@ -21,7 +21,7 @@ function schema_mongoose(meta, mongoose, models) {
     select: false
   };
 
-  meta.$schema = new mongoose.Schema(meta.backend.schema, meta.mongoose);
+  meta.$schema = new mongoose.Schema(meta.backend.schema, meta.backend.options);
 
   /*
   meta.$schema.virtual('id').get(function() {
@@ -71,9 +71,9 @@ function schema_mongoose(meta, mongoose, models) {
         var id = `permission/${meta.singular}/${k}`;
 
         models.permissions.$model.update({
-          id: id
+          _id: id
         }, {
-          id: id,
+          _id: id,
           label: v
         }, {
           upsert: true

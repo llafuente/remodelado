@@ -319,11 +319,7 @@ test('http: get user list xml', function (t) {
   .set('Accept', 'text/xml')
   .expect(200)
   .end(function(err, res) {
-    console.log(res.text);
-    process.exit();
-    t.equal(res.text.split("\r\n").length, 4); // 4 + headers + last
-    t.equal(res.text.split(",").length, 1);
-    t.equal(res.text.split(";").length, 19);
+    t.equal(res.text.split("\n").length, 25); // 4 + headers + last
 
     t.error(err);
     t.end();
