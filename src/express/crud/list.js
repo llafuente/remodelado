@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports = list_middleware;
-module.exports.list = list;
 module.exports.list_query = list_query;
 
 var mongoose = require('mongoose');
 var ValidationError = mongoose.Error.ValidationError;
-
+var csv_writer = require('csv-write-stream');
+var easyxml = require('easyxml');
 var exutils = require('../utils.js');
 
 function list_query(meta, logger, where, sort, limit, offset, populate, error, ok) {
@@ -178,37 +178,10 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
   return ok(query, qcount, limit, offset);
 }
 
-function list(meta, logger, where, sort, limit, offset, populate, error, ok) {
-  list_query(
-    meta,
-    logger,
-    where,
-    sort,
-    limit,
-    offset,
-    populate,
-    error,
-    function build_query_ok(query, qcount, limit, offset) {
-      query.exec(function(err, mlist) {
-        /* istanbul ignore next */ if (err) {
-          return error(500, err);
-        }
-
-        qcount.exec(function(err, count) {
-          /* istanbul ignore next */ if (err) {
-            return error(500, err);
-          }
-
-          return ok(count, offset, limit, mlist);
-        });
-      });
-    }
-  );
-}
-
-function list_middleware(meta) {
-  return function(req, res/*, next*/) {
-    return list(
+function list_query_builder_middleware(meta) {
+  return function(req, res, next) {
+    req.log.silly("list_query_builder_middleware");
+    list_query(
       meta,
       req.log,
 
@@ -219,31 +192,150 @@ function list_middleware(meta) {
       req.query.populate,
 
       res.error,
-      function list_queries_exec_ok(count, offset, limit, mlist) {
-        function mnext() {
-          var list = mlist.map(function(d) { return d.toJSON(); });
-
-          meta.$express.before_send(req, 'list', list, function(err, output_list) {
-            /* istanbul ignore next */ if (err) {
-              return res.error(err);
-            }
-
-            res.status(200).json({
-              count: count,
-              offset: offset,
-              limit: limit,
-              list: output_list
-            });
-          });
-        }
-
-        // TODO
-        //if (opts.after_fetch) {
-        //  return opts.after_fetch(mlist, req, res, mnext);
-        //}
-
-        mnext();
+      function build_query_ok(query, qcount, limit, offset) {
+        req.log.silly("build_query_ok");
+        req.list = {
+          query: query,
+          qcount: qcount,
+          limit: limit,
+          offset: offset,
+        };
+        next();
       }
     );
   };
+}
+
+function json_list_query_middleware(meta) {
+  return function(req, res/*, next*/) {
+    req.log.silly("json_list_query_middleware");
+    req.list.query.exec(function(err, mlist) {
+      /* istanbul ignore next */ if (err) {
+        return res.error(500, err);
+      }
+
+      req.list.qcount.exec(function(err, count) {
+        /* istanbul ignore next */ if (err) {
+          return res.error(500, err);
+        }
+
+        var list = mlist.map(function(d) { return d.toJSON(); });
+
+        meta.$express.before_send(req, 'list', list, function(err, output_list) {
+          /* istanbul ignore next */ if (err) {
+            return res.error(err);
+          }
+
+          res.status(200).json({
+            count: count,
+            offset: req.list.offset,
+            limit: req.list.limit,
+            list: output_list
+          });
+        });
+
+      });
+    });
+  }
+}
+// TODO labels
+function csv_list_query_middleware(meta) {
+  return function(req, res, next) {
+    req.log.silly("Headers: Accept" + req.headers.accept);
+    //example: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+    if (req.headers.accept && req.headers.accept.indexOf("text/csv") !== -1) {
+      res.set('content-type', 'text/csv; charset=utf-8');
+      // TODO doc: strict means exactly current page!
+      if (!req.query.strict) {
+        req.list.query.limit(0);
+        req.list.query.skip(0);
+      }
+      req.list.query.lean(true);
+
+      var newline = "\n";
+      switch(req.query.newline) {
+      case 'win': newline = "\r\n"; break;
+      case 'linux': newline = "\n"; break;
+      case 'max': newline = "\r"; break;
+      }
+
+      var writer = csv_writer({
+        sendHeaders: true,
+        separator: req.query.separator || ',',
+        newline: newline
+      });
+      writer.pipe(res);
+
+      return req.list.query
+      .stream()
+      .on('data', function(d) {
+        meta.$express.before_send(req, 'read', d, function(err, fd) {
+          writer.write(fd);
+        });
+      })
+      .on('error', function() {
+        writer.end();
+      })
+      .on('close', function() {
+        writer.end();
+      });
+    }
+    next();
+  }
+}
+
+//TODO FIXME permissions - list issues
+function xml_list_query_middleware(meta) {
+  return function(req, res, next) {
+    req.log.silly("xml_list_query_middleware");
+    if (req.headers.accept && req.headers.accept.indexOf("text/xml") !== -1) {
+      res.set('content-type', 'text/xml; charset=utf-8');
+      // TODO doc: strict means exactly current page!
+      if (!req.query.strict) {
+        req.list.query.limit(0);
+        req.list.query.skip(0);
+      }
+      req.list.query.lean(true);
+
+      var serializer = new easyxml({
+          singularize: false,
+          rootElement: meta.plural,
+          //rootArray: meta.plural,
+          dateFormat: 'ISO',
+          manifest: true,
+          indent: 0,
+          //filterNulls: true
+      });
+
+      return req.list.query
+      .stream()
+      .on('data', function(d) {
+        meta.$express.before_send(req, 'read', d, function(err, fd) {
+          var obj = {};
+          // properly handled id as string
+          obj[meta.singular] = JSON.parse(JSON.stringify(fd));
+
+          res.write(serializer.render(obj));
+
+          res.write('\n');
+        });
+      })
+      .on('error', function() {
+        res.end();
+      })
+      .on('close', function() {
+        res.end();
+      });
+    }
+    next();
+  }
+}
+
+function list_middleware(meta) {
+  return  [
+    list_query_builder_middleware(meta),
+    csv_list_query_middleware(meta),
+    xml_list_query_middleware(meta),
+    json_list_query_middleware(meta),
+  ];
 }

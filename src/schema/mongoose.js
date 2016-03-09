@@ -23,6 +23,12 @@ function schema_mongoose(meta, mongoose, models) {
 
   meta.$schema = new mongoose.Schema(meta.backend.schema, meta.mongoose);
 
+  /*
+  meta.$schema.virtual('id').get(function() {
+    return this._id.toString();
+  });
+  */
+
   meta.$schema.plugin(timestamps, {
     createdAt: 'created_at',
     updatedAt: 'updated_at'

@@ -42,4 +42,15 @@ section#list
             i.fa.list.fa-trash-o.fa-lg
     tfoot
       tr
-        td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=listable_fields.length+1)
+        //td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=columns)
+        td(colspan=columns)
+          span(st-pagination="", st-items-by-page="list.limit")
+          span.btn.btn-secondary(ng-click="download('text/csv')")
+            i.fa.fa-download
+            span Descargar SCV
+          span.btn.btn-secondary(ng-click="download('text/xml')")
+            i.fa.fa-download
+            span Descargar XML
+          span.btn.btn-secondary
+            i.fa.fa-download
+            span Descargar EXCEL-XML

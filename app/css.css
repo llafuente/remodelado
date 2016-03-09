@@ -5,6 +5,10 @@
 .entity-action {
   margin-right: 4px;
 }
+/* give some space after each icon */
+i.fa + span {
+  margin-left: 4px;
+}
 th[st-sort] {
   cursor: pointer;
 }

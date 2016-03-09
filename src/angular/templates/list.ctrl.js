@@ -3,20 +3,24 @@
 angular
 .module('<%= app_name %>')
 .controller('<%= controllers.list_ctrl %>', function ($rootScope, $scope, $http, $log) {
-  $scope.getList = function(tablestate) {
+  var last_tablestate;
+
+  function build_qs(tablestate) {
     var pagination = tablestate.pagination;
+    //pagination.start = pagination.start || 0;
+    $log.debug('(*list)', JSON.stringify(tablestate));
 
     var qs = {
-      limit: 20,
+      limit: 10,
       where: {}
     };
+
     if (tablestate.sort && tablestate.sort.predicate) {
       qs.sort = (tablestate.sort.reverse ? '-' : '') + tablestate.sort.predicate;
     }
-    pagination.start = pagination.start || 0;
-    qs.offset = pagination.start;
 
-    $log.debug('(*list)', JSON.stringify(tablestate));
+    qs.offset = pagination.start || 0;
+
     if (tablestate.search && tablestate.search.predicateObject) {
       for(var i in tablestate.search.predicateObject) {
         $log.debug(i, tablestate.search.predicateObject[i]);
@@ -24,6 +28,13 @@ angular
       }
     }
 
+    return qs;
+  }
+
+  $scope.getList = function(tablestate) {
+    last_tablestate = tablestate;
+    var qs = build_qs(tablestate);
+    var pagination = tablestate.pagination;
 
     return  $http({
       method: 'GET',
@@ -39,6 +50,21 @@ angular
       pagination.numberOfPages = res.data.count / res.data.limit;
     });
   };
+
+  $scope.download = function(type) {
+    var qs = build_qs(last_tablestate);
+
+    return  $http({
+      method: 'GET',
+      url: '<%= api.urls.list %>',
+      params: qs,
+      headers: {
+        'Accept': type
+      }
+    }).then(function(res) {
+      console.log(res.data);
+    });
+  }
 
   $scope.delete = function(idx, row) {
     $http({

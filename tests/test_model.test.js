@@ -256,6 +256,81 @@ test('http: get user list', function (t) {
   });
 });
 
+test('http: get user list', function (t) {
+  request(app)
+  .get("/test_models")
+  .set('Accept', 'text/csv')
+  .expect(200)
+  .end(function(err, res) {
+    t.equal(res.text.split("\n").length, 6); // 4 + headers + last
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list', function (t) {
+  request(app)
+  .get("/test_models?strict=true&limit=2")
+  .set('Accept', 'text/csv')
+  .expect(200)
+  .end(function(err, res) {
+    t.equal(res.text.split("\n").length, 4); // 4 + headers + last
+    t.equal(res.text.split(",").length, 19);
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list (separator)', function (t) {
+  request(app)
+  .get("/test_models?strict=true&limit=2&separator=;")
+  .set('Accept', 'text/csv')
+  .expect(200)
+  .end(function(err, res) {
+    t.equal(res.text.split("\n").length, 4); // 4 + headers + last
+    t.equal(res.text.split(",").length, 1);
+    t.equal(res.text.split(";").length, 19);
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list (win newline)', function (t) {
+  request(app)
+  .get("/test_models?strict=true&limit=2&separator=;&newline=win")
+  .set('Accept', 'text/csv')
+  .expect(200)
+  .end(function(err, res) {
+    t.equal(res.text.split("\r\n").length, 4); // 4 + headers + last
+    t.equal(res.text.split(",").length, 1);
+    t.equal(res.text.split(";").length, 19);
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list xml', function (t) {
+  request(app)
+  .get("/test_models?strict=true&limit=2")
+  .set('Accept', 'text/xml')
+  .expect(200)
+  .end(function(err, res) {
+    console.log(res.text);
+    process.exit();
+    t.equal(res.text.split("\r\n").length, 4); // 4 + headers + last
+    t.equal(res.text.split(",").length, 1);
+    t.equal(res.text.split(";").length, 19);
+
+    t.error(err);
+    t.end();
+  });
+});
+
+
 test('http: get user list (err-invalid offset)', function (t) {
   request(app)
   .get("/test_models?offset=no")
