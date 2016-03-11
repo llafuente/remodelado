@@ -35,7 +35,7 @@ module.exports = function(test) {
           username: "reader@admin.com",
           password: "admin",
           permissions: perms_ids.filter(function(v) {
-            return v.indexOf("/read") !==- 1
+            return v.indexOf("/read") !==- 1 || v.indexOf("/list") !==- 1;
           })
         }], create_user, function(err) {
           t.error(err);

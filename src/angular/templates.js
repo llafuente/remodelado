@@ -36,6 +36,7 @@ function list(meta, listable_fields, cb) {
         states: meta.$angular.states,
         buttons: meta.frontend.buttons,
         listable_fields: listable_fields,
+        api: meta.$express,
         columns: Object.keys(listable_fields).length
       });
       return cb(null, html);

@@ -11,6 +11,7 @@ var create = require('./crud/create.js');
 var update = require('./crud/update.js');
 var destroy = require('./crud/destroy.js');
 var angular = require('./angular.js');
+var auth = require('./authorization.js');
 
 function router(meta) {
   var r = express.Router();
@@ -21,17 +22,26 @@ function router(meta) {
   // api
 
   if (meta.backend.permissions.list) {
-    r.get(meta.$express.urls.list, list(meta));
+    r.get(meta.$express.urls.list, [
+      auth.has_permission(meta.$express.permissions.list),
+      list(meta)
+    ]);
     r.get(meta.$angular.templates.list, angular.list_tpl(meta));
     r.get(meta.$angular.controllers.list, angular.list_ctrl(meta));
   }
 
   if (meta.backend.permissions.read) {
-    r.get(meta.$express.urls.read, read(meta));
+    r.get(meta.$express.urls.read, [
+      auth.has_permission(meta.$express.permissions.read),
+      read(meta)
+    ]);
   }
 
   if (meta.backend.permissions.create) {
-    r.post(meta.$express.urls.create, create(meta));
+    r.post(meta.$express.urls.create, [
+      auth.has_permission(meta.$express.permissions.create),
+      create(meta)
+    ]);
     r.get(meta.$angular.controllers.create, angular.create_ctrl(meta));
     r.get(meta.$angular.templates.create, function(req, res, next) {
       req.query.action = 'create';
@@ -44,7 +54,10 @@ function router(meta) {
       throw new Error(`${meta.singular} invalid permissions: update require read`);
     }
 
-    r.patch(meta.$express.urls.update, update(meta));
+    r.patch(meta.$express.urls.update, [
+      auth.has_permission(meta.$express.permissions.update),
+      update(meta)
+    ]);
     r.get(meta.$angular.controllers.update, angular.update_ctrl(meta));
     r.get(meta.$angular.templates.update, function(req, res, next) {
       req.query.action = 'update';
@@ -53,7 +66,10 @@ function router(meta) {
   }
 
   if (meta.backend.permissions.delete) {
-    r.delete(meta.$express.urls.delete, destroy(meta));
+    r.delete(meta.$express.urls.delete, [
+      auth.has_permission(meta.$express.permissions.delete),
+      destroy(meta)
+    ]);
   }
 
   // angular

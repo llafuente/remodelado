@@ -122,7 +122,9 @@ app.post('/api/users/me', function(req, res, next) {
     return res.status(401).json({error: "Invalid session"});
   }
 
-  api.models.user.$model.findOne(req.user._id, function(err, user) {
+  api.models.user.$model.findOne({
+    _id: req.user._id
+  }, function(err, user) {
     // TODO res.error doesn't exist!
     if (err) {
       return res.error(err);
@@ -140,7 +142,7 @@ app.post('/api/users/me', function(req, res, next) {
 
 var jwt = require('express-jwt/node_modules/jsonwebtoken');
 app.post('/api/auth', function(req, res, next) {
-  console.log(api.models.user);
+
   api.models.user.$model.findOne({
     username: req.body.username
   }, function(err, user) {
@@ -152,7 +154,8 @@ app.post('/api/auth', function(req, res, next) {
     if (!user || !user.authenticate(req.body.password)) {
       return res.error(422, "User not found or invalid pasword");
     }
-
+    // TODO do not save the entire user, just _id
+    // TODO load from the _id the user
     res.status(200).json({
       "token": jwt.sign(user.toJSON(), config.auth.secret)
     });

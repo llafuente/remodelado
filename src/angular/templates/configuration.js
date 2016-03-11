@@ -9,7 +9,7 @@ angular
   <% if (navbar) { %>
   navbarLeftProvider.push(1, {
     name: "<%= navbar.label %>",
-    permissions: "<%= navbar.permissions || null %>",
+    permissions: ["<%= api.permissions.list %>", "<%= navbar.permissions || null %>"],
     roles: "<%= navbar.roles || null %>",
     state: "<%= states.root %>",
   });

@@ -21,7 +21,7 @@ function login(app, username, pwd, callback) {
 
       logged[username] = "Bearer " + res.body.token;
 
-      return callback(null, res.body.token);
+      return callback(null, res.body);
     });
 }
 

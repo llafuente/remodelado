@@ -77,8 +77,11 @@ function error_handler(err, req, res, schema) {
   }
 
   if (err.status) {
-    req.log.silly('StatusedError');
-    return res.status(err.status).json({error: err.message});
+    req.log.silly('StatusedError: ' +  err.message);
+    return res.status(err.status).json({
+      error: err.message,
+      trace: err.stack
+    });
   }
 
   req.log.silly('Exception');
@@ -89,6 +92,10 @@ function middleware(meta) {
   return function(req, res, next) {
     res.error = function(err, message) {
       if (arguments.length === 2) {
+        if (message instanceof Error) {
+          message.status = err;
+          return error_handler(message, req, res, meta.$schema);
+        }
         err = {status: err, message: message};
       }
 

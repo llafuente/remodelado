@@ -1,7 +1,7 @@
 //pre= JSON.stringify(listable_fields, null, 2)
 section#list
   div.pull-right
-    a.btn.btn-primary.btn-create(ui-sref=states.create)
+    a.btn.btn-primary.btn-create.ng-hide(ui-sref=states.create ng-show="$root.Auth.hasPermissions('" + api.permissions.create + "')")
       i.fa.fa-plus.fa-lg
       span(translate="")= buttons.list_create.text
 
@@ -36,9 +36,9 @@ section#list
         each val in listable_fields
           td= '{{row.' + val.name + (val.label_filter ? ' | ' + val.label_filter : '') + '}}'
         td
-          a.entity-action.entity-update(ui-sref='^.update({' + id_param + ': row.id})', uib-tooltip="{{'" + buttons.update.tooltip + "' | translate}}")
+          a.entity-action.entity-update.ng-hide(ui-sref='^.update({' + id_param + ': row.id})', uib-tooltip="{{'" + buttons.update.tooltip + "' | translate}}", ng-show="$root.Auth.hasPermissions('" + api.permissions.update + "')")
             i.fa.fa-pencil-square-o.fa-lg
-          a.entity-action.entity-delete(ng-click='delete($index, row)', confirm="{{'" + buttons.delete.alert + "' | translate}}", uib-tooltip="{{'" + buttons.delete.tooltip + "' | translate}}")
+          a.entity-action.entity-delete.ng-hide(ng-click='delete($index, row)', confirm="{{'" + buttons.delete.alert + "' | translate}}", uib-tooltip="{{'" + buttons.delete.tooltip + "' | translate}}", ng-show="$root.Auth.hasPermissions('" + api.permissions.delete + "')")
             i.fa.list.fa-trash-o.fa-lg
     tfoot
       tr
