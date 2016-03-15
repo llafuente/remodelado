@@ -1,4 +1,3 @@
-var remodelado = require("../../src/index.js");
 var user_json = require("./user.model.json");
 var crypto = require('crypto');
 
@@ -15,8 +14,8 @@ function encryptPassword(password, salt) {
   return crypto.pbkdf2Sync(password, salt_buff, 10000, 64).toString('base64');
 }
 
-module.exports = function(app) {
-  var user = remodelado.model(user_json);
+module.exports = function(modelador, app) {
+  var user = modelador.model(user_json);
   user.$schema.pre('save', function update_password_hash(next) {
 
     if (this.isModified('password')) {
@@ -35,5 +34,6 @@ module.exports = function(app) {
   };
 
   user.init();
-  app.use(user.$router);
+
+  return user;
 }

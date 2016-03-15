@@ -43,7 +43,7 @@ section#list
     tfoot
       tr
         //td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=columns)
-        td(colspan=columns)
+        td(colspan=columns + 1)
           span(st-pagination="", st-items-by-page="list.limit")
           span.btn.btn-secondary(ng-click="download('text/csv')")
             i.fa.fa-download

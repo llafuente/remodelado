@@ -27,6 +27,8 @@ angular
 })
 .config(function(errorConfigProvider, authConfigProvider, rewriteRequestConfigProvider) {
   authConfigProvider.token_header = 'Authorization';
+  authConfigProvider.api_users_data = '/users/me';
+  authConfigProvider.api_auth = '/auth';
 })
 .directive('ngBindHtmlAndCompile', ['$compile', '$parse', '$sce', '$timeout', function ($compile, $parse, $sce, $timeout) {
   return {

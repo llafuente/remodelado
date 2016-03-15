@@ -1,8 +1,9 @@
 var tap = require('tap');
 var mongoose = require("mongoose");
 var _ = require("lodash");
-var api = require("../src/index.js");
+var modelador = require("../src/index.js");
 var _async = require("async");
+var api = null;
 
 tap.Test.prototype.addAssert('isDate', 1, function (str, message, extra) {
   message = message || 'should be a Date compatible type';
@@ -14,14 +15,18 @@ function create_user(data, next) {
   var admin = new api.models.user.$model(data);
   admin.setRequest({});
   admin.save(function(err, saved) {
-    console.log("saved", saved);
+    //console.log("saved", saved);
     next(err, saved);
   });
 }
 
-module.exports = function(test) {
+module.exports = function(test, app, config) {
+  if (!api) {
+    api = new modelador(config, mongoose);
+    app.use(api.$router);
+  }
+
   test('fixtures', function (t) {
-    api.use(mongoose);
 
     api.models.permissions.$model.find({}, function(err, perms) {
       var perms_ids = _.map(perms, '_id');
@@ -42,9 +47,8 @@ module.exports = function(test) {
           t.end();
         });
       });
-
-
-
     });
   });
+
+  return api;
 }

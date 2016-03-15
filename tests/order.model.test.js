@@ -1,4 +1,3 @@
-var app = require("../server/express.js");
 var api = require("../src/index.js");
 var cheerio = require("cheerio");
 
@@ -9,7 +8,9 @@ var fs = require('fs');
 var join = require('path').join;
 var tutils = require('./utils');
 
-var start = require("./start.js")(test);
+var app = require("../server/express.js");
+var config = require("../server/config/index.js");
+var api = require("./start.js")(test, app, config);
 
 test('create user model', function (t) {
   var model = require("./order.model.json");

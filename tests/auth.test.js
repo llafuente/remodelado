@@ -1,5 +1,3 @@
-var app = require("../server/express.js");
-var api = require("../src/index.js");
 var cheerio = require("cheerio");
 
 // test
@@ -9,7 +7,9 @@ var fs = require('fs');
 var join = require('path').join;
 var tutils = require('./utils');
 
-var start = require("./start.js")(test);
+var app = require("../server/express.js");
+var config = require("../server/config/index.js");
+var api = require("./start.js")(test, app, config);
 
 test('login as admin', function (t) {
   tutils.login(app, "admin@admin.com", "admin", function(err, data) {
@@ -29,7 +29,7 @@ test('login as reader', function (t) {
 
 test('/users/me admin', function (t) {
   request(app)
-  .post("/api/users/me")
+  .post("/users/me")
   .use(tutils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
@@ -42,7 +42,7 @@ test('/users/me admin', function (t) {
 
 test('/users/me reader', function (t) {
   request(app)
-  .post("/api/users/me")
+  .post("/users/me")
   .use(tutils.authorization("reader@admin.com"))
   .expect(200)
   .end(function(err, res) {

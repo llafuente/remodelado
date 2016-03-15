@@ -68,7 +68,6 @@ function error_handler(err, req, res, schema) {
     req.log.silly('ValidationError');
     // cleanup error
     var errors = [];
-
     forEach(err.errors, function(err, path) {
       errors.push(mongoose_to_readable(schema, err, path));
     });

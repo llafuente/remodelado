@@ -1,18 +1,10 @@
 'use strict';
 
-module.exports = {
-  use: use,
-  model: model,
-  models: {},
-  permissions: [],
-  swagger: swagger
-};
+module.exports = Modelador;
 
 var util = require('util');
 var router = require('./express/router.js');
 var ajv = require('ajv')({allErrors: true});
-
-var mongoose = null;
 
 var schema = require('./schema/schema.json');
 var schema_default = require('./schema/default.js');
@@ -20,8 +12,99 @@ var schema_angular = require('./schema/angular.js');
 var schema_mongoose = require('./schema/mongoose.js');
 var schema_express = require('./schema/express.js');
 
-function use(_mongoose) {
-  mongoose = _mongoose;
+var jwt = require('express-jwt/node_modules/jsonwebtoken');
+var ex_jwt = require('express-jwt');
+var express = require('express');
+
+function Modelador(config, _mongoose) {
+  this.mongoose = _mongoose;
+  this.permissions = [];
+  this.models = {};
+  this.model = model;
+  this.swagger = swagger;
+
+  var permissions = require("./models/permissions.model.js")(this);
+  var user = require("./models/user.model.js")(this);
+  var roles = require("./models/roles.model.js")(this);
+
+
+  this.$router = express.Router();
+  //
+  // jwt
+  //
+  this.$router.use(ex_jwt({
+    secret: config.auth.secret,
+    credentialsRequired: false,
+    getToken: function fromHeaderOrQuerystring (req) {
+      if (req.headers.authorization) {
+        var x = req.headers.authorization.split(' ');
+        if (x[0] === 'Bearer') {
+          return x[1];
+        }
+      } else if (req.query && req.query.access_token) {
+        return req.query.access_token;
+      }
+      return null;
+    }
+  }));
+
+
+  this.$router.use(permissions.$router);
+  this.$router.use(user.$router);
+  this.$router.use(roles.$router);
+
+  var api = this;
+  //
+  // TODO properly handle user-login, regenerate session(/me).
+  //
+  this.$router.post('/users/me', function(req, res/*, next*/) {
+    // TODO check token
+    if (!req.headers.authorization) {
+      return res.status(401).json({error: "No session"});
+    }
+
+    if (!req.user) {
+      return res.status(401).json({error: "Invalid session"});
+    }
+
+    // TODO handle permissions
+    api.models.user.$model.findOne({
+      _id: req.user._id
+    }, function(err, user) {
+      // TODO res.error doesn't exist!
+      if (err) {
+        return res.error(err);
+      }
+
+      if (!user) {
+        return res.error(401, "User not found");
+      }
+      user = user.toJSON();
+      user.id = user._id;
+      res.status(200).json(user);
+    })
+  });
+
+  this.$router.post('/auth', function(req, res/*, next*/) {
+
+    api.models.user.$model.findOne({
+      username: req.body.username
+    }, function(err, user) {
+      // TODO res.error doesn't exist!
+      if (err) {
+        return res.error(err);
+      }
+
+      if (!user || !user.authenticate(req.body.password)) {
+        return res.error(422, "User not found or invalid pasword");
+      }
+      // TODO do not save the entire user, just _id
+      // TODO load from the _id the user
+      res.status(200).json({
+        "token": jwt.sign(user.toJSON(), config.auth.secret)
+      });
+    })
+  });
 }
 
 function model(meta) {
@@ -35,7 +118,7 @@ function model(meta) {
 
   // always have the full metadata available
   schema_default(meta);
-  schema_mongoose(meta, mongoose, module.exports.models);
+  schema_mongoose(meta, this.mongoose, this.models);
   schema_angular(meta);
 
   schema_express(meta);
@@ -55,8 +138,8 @@ function model(meta) {
   //console.error(util.inspect(meta.dump(), {depth: null, colors: true}));
   meta.$router = router(meta);
 
-  module.exports.models[meta.singular] = meta;
-  module.exports.models[meta.plural] = meta;
+  this.models[meta.singular] = meta;
+  this.models[meta.plural] = meta;
 
   return meta;
 }

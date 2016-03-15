@@ -6,7 +6,7 @@ module.exports.list_query = list_query;
 var mongoose = require('mongoose');
 var ValidationError = mongoose.Error.ValidationError;
 var csv_writer = require('csv-write-stream');
-var easyxml = require('easyxml');
+var jsontoxml = require('jsontoxml');
 var exutils = require('../utils.js');
 
 function list_query(meta, logger, where, sort, limit, offset, populate, error, ok) {
@@ -284,7 +284,8 @@ function csv_list_query_middleware(meta) {
   }
 }
 
-//TODO FIXME permissions - list issues
+//TODO FIXME XML - array issues
+// use: arrayMap: {nicknames: "name"}
 function xml_list_query_middleware(meta) {
   return function(req, res, next) {
     req.log.silly("xml_list_query_middleware");
@@ -297,16 +298,7 @@ function xml_list_query_middleware(meta) {
       }
       req.list.query.lean(true);
 
-      var serializer = new easyxml({
-          singularize: false,
-          rootElement: meta.plural,
-          //rootArray: meta.plural,
-          dateFormat: 'ISO',
-          manifest: true,
-          indent: 0,
-          //filterNulls: true
-      });
-
+      res.write(`<${meta.plural}>`);
       return req.list.query
       .stream()
       .on('data', function(d) {
@@ -315,15 +307,22 @@ function xml_list_query_middleware(meta) {
           // properly handled id as string
           obj[meta.singular] = JSON.parse(JSON.stringify(fd));
 
-          res.write(serializer.render(obj));
+          res.write(jsontoxml (obj, {
+            escape:true,
+            //xmlHeader: true,
+            prettyPrint: true,
+            indent: ' '
+          }));
 
           res.write('\n');
         });
       })
       .on('error', function() {
+        res.write(`</${meta.plural}>`);
         res.end();
       })
       .on('close', function() {
+        res.write(`</${meta.plural}>`);
         res.end();
       });
     }

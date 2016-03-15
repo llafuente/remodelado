@@ -15,6 +15,13 @@ app.use('/', express.static('tmp/instrumented/app'));
 app.use('/', express.static('app'));
 app.use('/src', express.static('bower_components/inetsys-angular-seed/src'));
 
+var modelador = require("../src/index.js");
+var mongoose = require("mongoose");
+var config = require('./config/index.js');
+var api = new modelador(config, mongoose);
+app.use(api.$router);
+
+
 /*
 var order_json = require("../tests/order.model.json");
 var order = remodelado.model(order_json);

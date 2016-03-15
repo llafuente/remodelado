@@ -9,7 +9,7 @@ var logged = {};
 
 function login(app, username, pwd, callback) {
   request(app)
-    .post('/api/auth')
+    .post('/auth')
     .send({
       username: username,
       password: pwd

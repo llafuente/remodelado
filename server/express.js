@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var mongoose = require("mongoose");
 var config = require('./config/index.js');
+var util = require('util');
 require('./winston-readable-console.js');
 //
 // express initialization
@@ -42,7 +43,6 @@ logger.info(config);
 // mongoose errors
 //
 
-var mongoose = require('mongoose');
 var messages = mongoose.Error.messages;
 
 // TODO access model.errors and override this default values!
@@ -56,7 +56,7 @@ messages.String.enum = "err-out-of-bounds";
 messages.String.match = "err-match";
 messages.String.minlength = "err-minlength";
 messages.String.maxlength = "err-maxlength";
-var util = require('util');
+
 mongoose.set('debug', function (name, i) {
   var args = Array.prototype.slice.call(arguments, 2);
 
@@ -73,8 +73,6 @@ mongoose.set('debug', function (name, i) {
   );
 });
 
-
-var mongoose = require("mongoose");
 mongoose.connect(config.mongo.uri);
 app.mongoose = mongoose;
 app.use(function (req, res, next) {
@@ -87,88 +85,3 @@ app.use(function (req, res, next) {
     next()
   });
 });
-
-//
-// jwt
-//
-var ex_jwt = require('express-jwt');
-app.use(ex_jwt({
-  secret: config.auth.secret,
-  credentialsRequired: false,
-  getToken: function fromHeaderOrQuerystring (req) {
-    if (req.headers.authorization) {
-      var x = req.headers.authorization.split(' ');
-      if (x[0] === 'Bearer') {
-        return x[1];
-      }
-    } else if (req.query && req.query.access_token) {
-      return req.query.access_token;
-    }
-    return null;
-  }
-}));
-
-
-//
-// TODO properly handle user-login, regenerate session(/me).
-//
-app.post('/api/users/me', function(req, res, next) {
-  // TODO check token
-  if (!req.headers.authorization) {
-    return res.status(401).json({error: "No session"});
-  }
-
-  if (!req.user) {
-    return res.status(401).json({error: "Invalid session"});
-  }
-
-  api.models.user.$model.findOne({
-    _id: req.user._id
-  }, function(err, user) {
-    // TODO res.error doesn't exist!
-    if (err) {
-      return res.error(err);
-    }
-
-    if (!user) {
-      return res.error(401, "User not found");
-    }
-    user = user.toJSON();
-    user.id = user._id;
-    res.status(200).json(user);
-  })
-
-});
-
-var jwt = require('express-jwt/node_modules/jsonwebtoken');
-app.post('/api/auth', function(req, res, next) {
-
-  api.models.user.$model.findOne({
-    username: req.body.username
-  }, function(err, user) {
-    // TODO res.error doesn't exist!
-    if (err) {
-      return res.error(err);
-    }
-
-    if (!user || !user.authenticate(req.body.password)) {
-      return res.error(422, "User not found or invalid pasword");
-    }
-    // TODO do not save the entire user, just _id
-    // TODO load from the _id the user
-    res.status(200).json({
-      "token": jwt.sign(user.toJSON(), config.auth.secret)
-    });
-  })
-});
-
-//
-// models
-//
-var api = require("../src/index.js");
-api.use(app.mongoose);
-
-
-require("./models/permissions.model.js")(app);
-require("./models/user.model.js")(app);
-require("./models/roles.model.js")(app);
