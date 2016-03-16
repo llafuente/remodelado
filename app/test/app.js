@@ -5,7 +5,7 @@ angular
   'ui.bootstrap',
   'ui.router',
   'smart-table',
-  'ipCookie',
+  'ngCookies',
   'cgBusy',
   'checklist-model',
   'angular-confirm',

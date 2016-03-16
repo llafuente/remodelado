@@ -1,13 +1,10 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+'use strict';
 
 var cheerio = require("cheerio");
 
 // test
 var request = require('supertest');
 var test = require('tap').test;
-var fs = require('fs');
-var join = require('path').join;
 var check_js = require('syntax-error');
 var tutils = require('./utils');
 
@@ -15,7 +12,7 @@ var app = require("../server/express.js");
 var config = require("../server/config/index.js");
 var api = require("./start.js")(test, app, config);
 
-test('create user model', function (t) {
+test('create user model', function(t) {
   var model = require("./test_model.model.json");
   var mdl = api.model(model);
   mdl.init();
@@ -41,7 +38,7 @@ test('create user model', function (t) {
   });
 });
 
-test('login as admin', function (t) {
+test('login as admin', function(t) {
   tutils.login(app, "admin@admin.com", "admin", function(err, data) {
     console.log(data);
     t.error(err);
@@ -68,7 +65,7 @@ test('login as admin', function (t) {
   restricted_field: 101
 }].forEach(function(u) {
 
-  test('http: create user', function (t) {
+  test('http: create user', function(t) {
     request(app)
     .post("/test_models")
     .use(tutils.authorization("admin@admin.com"))
@@ -93,7 +90,7 @@ test('login as admin', function (t) {
   });
 });
 
-test('http: create user (err)', function (t) {
+test('http: create user (err)', function(t) {
   request(app)
   .post("/test_models")
   .send([1,2,3])
@@ -107,7 +104,7 @@ test('http: create user (err)', function (t) {
   });
 });
 
-test('http: create user (err-required)', function (t) {
+test('http: create user (err-required)', function(t) {
   request(app)
   .post("/test_models")
   .use(tutils.authorization("admin@admin.com"))
@@ -140,7 +137,7 @@ test('http: create user (err-required)', function (t) {
   });
 });
 
-test('http: create user (err-enum)', function (t) {
+test('http: create user (err-enum)', function(t) {
   request(app)
   .post("/test_models")
   .use(tutils.authorization("admin@admin.com"))
@@ -171,7 +168,7 @@ test('http: create user (err-enum)', function (t) {
   });
 });
 
-test('http: create user (err-cast)', function (t) {
+test('http: create user (err-cast)', function(t) {
   request(app)
   .post("/test_models")
   .use(tutils.authorization("admin@admin.com"))
@@ -201,7 +198,7 @@ test('http: create user (err-cast)', function (t) {
   });
 });
 
-test('http: get create user form', function (t) {
+test('http: get create user form', function(t) {
   request(app)
   .get("/angular/test_models.create.tpl.html")
   .expect(200)
@@ -214,7 +211,7 @@ test('http: get create user form', function (t) {
   });
 });
 
-test('http: get update user form', function (t) {
+test('http: get update user form', function(t) {
   request(app)
   .get("/angular/test_models.update.tpl.html")
   .expect(200)
@@ -228,7 +225,7 @@ test('http: get update user form', function (t) {
   });
 });
 
-test('http: get user routes.js', function (t) {
+test('http: get user routes.js', function(t) {
   request(app)
   .get("/angular/test_models.configuration.js")
   .expect(200)
@@ -240,7 +237,7 @@ test('http: get user routes.js', function (t) {
   });
 });
 
-test('http: get user routes.js', function (t) {
+test('http: get user routes.js', function(t) {
   request(app)
   .get("/angular/test_models.configuration.js?base_state=root&action=update")
   .expect(200)
@@ -253,7 +250,7 @@ test('http: get user routes.js', function (t) {
 });
 
 
-test('http: get user list', function (t) {
+test('http: get user list', function(t) {
   request(app)
   .get("/test_models")
   .use(tutils.authorization("admin@admin.com"))
@@ -269,7 +266,7 @@ test('http: get user list', function (t) {
   });
 });
 
-test('http: get user list', function (t) {
+test('http: get user list', function(t) {
   request(app)
   .get("/test_models")
   .use(tutils.authorization("admin@admin.com"))
@@ -283,7 +280,7 @@ test('http: get user list', function (t) {
   });
 });
 
-test('http: get user list', function (t) {
+test('http: get user list', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2")
   .use(tutils.authorization("admin@admin.com"))
@@ -298,7 +295,7 @@ test('http: get user list', function (t) {
   });
 });
 
-test('http: get user list (separator)', function (t) {
+test('http: get user list (separator)', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2&separator=;")
   .use(tutils.authorization("admin@admin.com"))
@@ -314,7 +311,7 @@ test('http: get user list (separator)', function (t) {
   });
 });
 
-test('http: get user list (win newline)', function (t) {
+test('http: get user list (win newline)', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2&separator=;&newline=win")
   .use(tutils.authorization("admin@admin.com"))
@@ -330,7 +327,7 @@ test('http: get user list (win newline)', function (t) {
   });
 });
 
-test('http: get user list xml', function (t) {
+test('http: get user list xml', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2")
   .use(tutils.authorization("admin@admin.com"))
@@ -345,7 +342,7 @@ test('http: get user list xml', function (t) {
 });
 
 
-test('http: get user list (err-invalid offset)', function (t) {
+test('http: get user list (err-invalid offset)', function(t) {
   request(app)
   .get("/test_models?offset=no")
   .use(tutils.authorization("admin@admin.com"))
@@ -359,7 +356,7 @@ test('http: get user list (err-invalid offset)', function (t) {
   });
 });
 
-test('http: get user list (err-invalid offset)', function (t) {
+test('http: get user list (err-invalid offset)', function(t) {
   request(app)
   .get("/test_models?offset=2&limit=no")
   .use(tutils.authorization("admin@admin.com"))
@@ -372,7 +369,7 @@ test('http: get user list (err-invalid offset)', function (t) {
   });
 });
 
-test('http: get user list (err-invalid invalid sort)', function (t) {
+test('http: get user list (err-invalid invalid sort)', function(t) {
   request(app)
   .get("/test_models?offset=2&limit=10&sort=noexistentfield")
   .use(tutils.authorization("admin@admin.com"))
@@ -385,7 +382,7 @@ test('http: get user list (err-invalid invalid sort)', function (t) {
   });
 });
 
-test('http: get user list with offset/limit', function (t) {
+test('http: get user list with offset/limit', function(t) {
   request(app)
   .get("/test_models?offset=0&limit=1")
   .use(tutils.authorization("admin@admin.com"))
@@ -400,7 +397,7 @@ test('http: get user list with offset/limit', function (t) {
   });
 });
 
-test('http: get user list (err invalid sort)', function (t) {
+test('http: get user list (err invalid sort)', function(t) {
   request(app)
   .get("/test_models?sort=-restricted_field")
   .use(tutils.authorization("admin@admin.com"))
@@ -413,7 +410,7 @@ test('http: get user list (err invalid sort)', function (t) {
   });
 });
 
-test('http: get user list (err invalid populate)', function (t) {
+test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate=telephones")
   .use(tutils.authorization("admin@admin.com"))
@@ -426,7 +423,7 @@ test('http: get user list (err invalid populate)', function (t) {
   });
 });
 
-test('http: get user list (err invalid populate)', function (t) {
+test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate[]=telephones")
   .use(tutils.authorization("admin@admin.com"))
@@ -439,7 +436,7 @@ test('http: get user list (err invalid populate)', function (t) {
   });
 });
 
-test('http: get user list (err invalid populate)', function (t) {
+test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate[]=first_name")
   .use(tutils.authorization("admin@admin.com"))
@@ -454,7 +451,7 @@ test('http: get user list (err invalid populate)', function (t) {
 
 // TODO test a valid populate that it's restricted
 
-test('http: get user list with first_name=abc', function (t) {
+test('http: get user list with first_name=abc', function(t) {
   request(app)
   .get("/test_models?where[first_name]=abc")
   .use(tutils.authorization("admin@admin.com"))
@@ -468,7 +465,7 @@ test('http: get user list with first_name=abc', function (t) {
   });
 });
 
-test('http: get user list (err-invalid invalid where)', function (t) {
+test('http: get user list (err-invalid invalid where)', function(t) {
   request(app)
   .get("/test_models?where[noexistentfield]=text")
   .use(tutils.authorization("admin@admin.com"))
@@ -482,7 +479,7 @@ test('http: get user list (err-invalid invalid where)', function (t) {
 });
 
 var user_id;
-test('http: get user list age=37', function (t) {
+test('http: get user list age=37', function(t) {
   request(app)
   .get("/test_models?where[age]=37&limit=1")
   .use(tutils.authorization("admin@admin.com"))
@@ -498,7 +495,7 @@ test('http: get user list age=37', function (t) {
   });
 });
 
-test('http: update user', function (t) {
+test('http: update user', function(t) {
   request(app)
   .patch("/test_models/" + user_id)
   .use(tutils.authorization("admin@admin.com"))
@@ -529,7 +526,7 @@ test('http: update user', function (t) {
   });
 });
 
-test('http: update user (err)', function (t) {
+test('http: update user (err)', function(t) {
   request(app)
   .patch("/test_models/" + user_id)
   .use(tutils.authorization("admin@admin.com"))
@@ -542,7 +539,7 @@ test('http: update user (err)', function (t) {
   });
 });
 
-test('http: destroy user that don\'t exists (noerr?)', function (t) {
+test('http: destroy user that don\'t exists (noerr?)', function(t) {
   request(app)
   .delete("/test_models/56b3683ce8b5ab05535c0e3f")
   .use(tutils.authorization("admin@admin.com"))
@@ -554,7 +551,7 @@ test('http: destroy user that don\'t exists (noerr?)', function (t) {
   });
 });
 
-test('http: user not found', function (t) {
+test('http: user not found', function(t) {
   request(app)
   .get("/test_models/56b3683ce8b5ab05535c0e3f")
   .use(tutils.authorization("admin@admin.com"))
@@ -569,7 +566,7 @@ test('http: user not found', function (t) {
 
 
 
-test('http: get user not-found', function (t) {
+test('http: get user not-found', function(t) {
   request(app)
   .get("/test_models/123")
   .use(tutils.authorization("admin@admin.com"))
@@ -582,7 +579,7 @@ test('http: get user not-found', function (t) {
   });
 });
 
-test('http: get user list template', function (t) {
+test('http: get user list template', function(t) {
   request(app)
   .get("/angular/test_models.list.tpl.html")
   .expect(200)
@@ -608,7 +605,7 @@ test('http: get user list template', function (t) {
   });
 });
 
-test('http: get user list controller', function (t) {
+test('http: get user list controller', function(t) {
   request(app)
   .get("/angular/test_models.list.ctrl.js")
   .expect(200)
@@ -622,7 +619,7 @@ test('http: get user list controller', function (t) {
   });
 });
 
-test('http: get user create controller', function (t) {
+test('http: get user create controller', function(t) {
   request(app)
   .get("/angular/test_models.create.ctrl.js")
   .expect(200)
@@ -636,7 +633,7 @@ test('http: get user create controller', function (t) {
   });
 });
 
-test('http: get user update controller', function (t) {
+test('http: get user update controller', function(t) {
   request(app)
   .get("/angular/test_models.update.ctrl.js")
   .expect(200)
@@ -650,7 +647,7 @@ test('http: get user update controller', function (t) {
   });
 });
 
-test('http: destroy user', function (t) {
+test('http: destroy user', function(t) {
   request(app)
   .delete("/test_models/" + user_id)
   .use(tutils.authorization("admin@admin.com"))

@@ -1,4 +1,6 @@
-var user_json = require("./user.model.json");
+'use strict';
+
+var user_json = require('./user.model.json');
 var crypto = require('crypto');
 
 function makeSalt() {
@@ -36,4 +38,4 @@ module.exports = function(modelador, app) {
   user.init();
 
   return user;
-}
+};

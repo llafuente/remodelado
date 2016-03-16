@@ -1,17 +1,16 @@
-var cheerio = require("cheerio");
+'use strict';
+
 
 // test
 var request = require('supertest');
 var test = require('tap').test;
-var fs = require('fs');
-var join = require('path').join;
 var tutils = require('./utils');
 
 var app = require("../server/express.js");
 var config = require("../server/config/index.js");
-var api = require("./start.js")(test, app, config);
+require("./start.js")(test, app, config);
 
-test('login as admin', function (t) {
+test('login as admin', function(t) {
   tutils.login(app, "admin@admin.com", "admin", function(err, data) {
     console.log(data);
     t.error(err);
@@ -19,7 +18,7 @@ test('login as admin', function (t) {
   });
 });
 
-test('login as reader', function (t) {
+test('login as reader', function(t) {
   tutils.login(app, "reader@admin.com", "admin", function(err, data) {
     console.log(data);
     t.error(err);
@@ -27,7 +26,7 @@ test('login as reader', function (t) {
   });
 });
 
-test('/users/me admin', function (t) {
+test('/users/me admin', function(t) {
   request(app)
   .post("/users/me")
   .use(tutils.authorization("admin@admin.com"))
@@ -40,7 +39,7 @@ test('/users/me admin', function (t) {
   });
 });
 
-test('/users/me reader', function (t) {
+test('/users/me reader', function(t) {
   request(app)
   .post("/users/me")
   .use(tutils.authorization("reader@admin.com"))

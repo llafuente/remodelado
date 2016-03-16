@@ -180,7 +180,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
 
 function list_query_builder_middleware(meta) {
   return function(req, res, next) {
-    req.log.silly("list_query_builder_middleware");
+    req.log.silly('list_query_builder_middleware');
     list_query(
       meta,
       req.log,
@@ -193,7 +193,7 @@ function list_query_builder_middleware(meta) {
 
       res.error,
       function build_query_ok(query, qcount, limit, offset) {
-        req.log.silly("build_query_ok");
+        req.log.silly('build_query_ok');
         req.list = {
           query: query,
           qcount: qcount,
@@ -208,7 +208,7 @@ function list_query_builder_middleware(meta) {
 
 function json_list_query_middleware(meta) {
   return function(req, res/*, next*/) {
-    req.log.silly("json_list_query_middleware");
+    req.log.silly('json_list_query_middleware');
     req.list.query.exec(function(err, mlist) {
       /* istanbul ignore next */ if (err) {
         return res.error(500, err);
@@ -236,14 +236,14 @@ function json_list_query_middleware(meta) {
 
       });
     });
-  }
+  };
 }
 // TODO labels
 function csv_list_query_middleware(meta) {
   return function(req, res, next) {
-    req.log.silly("Headers: Accept" + req.headers.accept);
+    req.log.silly('Headers: Accept' + req.headers.accept);
     //example: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-    if (req.headers.accept && req.headers.accept.indexOf("text/csv") !== -1) {
+    if (req.headers.accept && req.headers.accept.indexOf('text/csv') !== -1) {
       res.set('content-type', 'text/csv; charset=utf-8');
       // TODO doc: strict means exactly current page!
       if (!req.query.strict) {
@@ -252,11 +252,11 @@ function csv_list_query_middleware(meta) {
       }
       req.list.query.lean(true);
 
-      var newline = "\n";
-      switch(req.query.newline) {
-      case 'win': newline = "\r\n"; break;
-      case 'linux': newline = "\n"; break;
-      case 'max': newline = "\r"; break;
+      var newline = '\n';
+      switch (req.query.newline) {
+      case 'win': newline = '\r\n'; break;
+      case 'linux': newline = '\n'; break;
+      case 'max': newline = '\r'; break;
       }
 
       var writer = csv_writer({
@@ -281,15 +281,15 @@ function csv_list_query_middleware(meta) {
       });
     }
     next();
-  }
+  };
 }
 
 //TODO FIXME XML - array issues
-// use: arrayMap: {nicknames: "name"}
+// use: arrayMap: {nicknames: 'name'}
 function xml_list_query_middleware(meta) {
   return function(req, res, next) {
-    req.log.silly("xml_list_query_middleware");
-    if (req.headers.accept && req.headers.accept.indexOf("text/xml") !== -1) {
+    req.log.silly('xml_list_query_middleware');
+    if (req.headers.accept && req.headers.accept.indexOf('text/xml') !== -1) {
       res.set('content-type', 'text/xml; charset=utf-8');
       // TODO doc: strict means exactly current page!
       if (!req.query.strict) {
@@ -327,7 +327,7 @@ function xml_list_query_middleware(meta) {
       });
     }
     next();
-  }
+  };
 }
 
 function list_middleware(meta) {

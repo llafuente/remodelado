@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   login: login,
   update_bearer: update_bearer,
@@ -44,10 +46,10 @@ function update_bearer(old, headers) {
 function authorization(username) {
   return function(r) {
     if (!logged[username]) {
-      throw new Error("user[" + username + "] not logged previously")
+      throw new Error("user[" + username + "] not logged previously");
     }
 
     r.set('authorization', logged[username]);
     return r;
-  }
+  };
 }

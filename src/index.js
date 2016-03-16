@@ -23,9 +23,9 @@ function Modelador(config, _mongoose) {
   this.model = model;
   this.swagger = swagger;
 
-  var permissions = require("./models/permissions.model.js")(this);
-  var user = require("./models/user.model.js")(this);
-  var roles = require("./models/roles.model.js")(this);
+  var permissions = require('./models/permissions.model.js')(this);
+  var user = require('./models/user.model.js')(this);
+  var roles = require('./models/roles.model.js')(this);
 
 
   this.$router = express.Router();
@@ -35,7 +35,7 @@ function Modelador(config, _mongoose) {
   this.$router.use(ex_jwt({
     secret: config.auth.secret,
     credentialsRequired: false,
-    getToken: function fromHeaderOrQuerystring (req) {
+    getToken: function fromHeaderOrQuerystring(req) {
       if (req.headers.authorization) {
         var x = req.headers.authorization.split(' ');
         if (x[0] === 'Bearer') {
@@ -60,11 +60,11 @@ function Modelador(config, _mongoose) {
   this.$router.post('/users/me', function(req, res/*, next*/) {
     // TODO check token
     if (!req.headers.authorization) {
-      return res.status(401).json({error: "No session"});
+      return res.status(401).json({error: 'No session'});
     }
 
     if (!req.user) {
-      return res.status(401).json({error: "Invalid session"});
+      return res.status(401).json({error: 'Invalid session'});
     }
 
     // TODO handle permissions
@@ -77,12 +77,12 @@ function Modelador(config, _mongoose) {
       }
 
       if (!user) {
-        return res.error(401, "User not found");
+        return res.error(401, 'User not found');
       }
       user = user.toJSON();
       user.id = user._id;
       res.status(200).json(user);
-    })
+    });
   });
 
   this.$router.post('/auth', function(req, res/*, next*/) {
@@ -96,14 +96,14 @@ function Modelador(config, _mongoose) {
       }
 
       if (!user || !user.authenticate(req.body.password)) {
-        return res.error(422, "User not found or invalid pasword");
+        return res.error(422, 'User not found or invalid pasword');
       }
       // TODO do not save the entire user, just _id
       // TODO load from the _id the user
       res.status(200).json({
-        "token": jwt.sign(user.toJSON(), config.auth.secret)
+        'token': jwt.sign(user.toJSON(), config.auth.secret)
       });
-    })
+    });
   });
 }
 
