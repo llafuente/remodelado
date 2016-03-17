@@ -37,7 +37,6 @@ test('http: create user (err)', function(t) {
   })
   .expect(201)
   .end(function(err, res) {
-    console.log(res.body);
     t.error(err);
     t.end();
   });

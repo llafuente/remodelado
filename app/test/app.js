@@ -30,6 +30,15 @@ angular
   authConfigProvider.api_users_data = '/users/me';
   authConfigProvider.api_auth = '/auth';
 })
+.run(function($rootScope) {
+  $rootScope.$on('$login', function() {
+    // normalize user
+    // roles.permisions -> permisions
+    $rootScope.user.roles.forEach(function(r) {
+      $rootScope.user.permissions = $rootScope.user.permissions.concat(r.permissions);
+    });
+  });
+})
 .directive('ngBindHtmlAndCompile', ['$compile', '$parse', '$sce', '$timeout', function ($compile, $parse, $sce, $timeout) {
   return {
     restrict: 'A',

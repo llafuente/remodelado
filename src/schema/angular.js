@@ -37,8 +37,9 @@ function __build_labels(meta, back_field, front_field) {
   case 'select':
     var src = back_field;
 
+    // TODO review this may not be necessary or in fact wrong!
     if ('array' === src.type) {
-      src = src.array;
+      src = src.items;
       if ('ObjectId' === src.type) {
         if (!front_field.source_url) {
           console.error(front_field);
@@ -82,6 +83,10 @@ function schema_angular(meta) {
     if (!back_field) {
       console.warn(meta.singular, '[', k, '] is not found in schema');
       return;
+    }
+    // fix: [ObjectId]
+    if (back_field.instance == "Array") {
+      back_field = back_field.caster;
     }
     back_field = back_field.options;
 

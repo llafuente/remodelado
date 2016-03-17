@@ -14,19 +14,19 @@
     "schema": {
       "id": {
         "label": "ID",
-        "type": "number",
+        "type": "Number",
         "create": false,
         "update": false
       },
       "description": {
         "label": "Dandled",
-        "type": "string",
+        "type": "String",
         "create": true,
         "update": true
       },
       "handled": {
         "label": "Handled",
-        "type": "number",
+        "type": "Number",
         "restricted": true,
         "create": true
       },

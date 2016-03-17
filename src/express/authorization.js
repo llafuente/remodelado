@@ -28,10 +28,25 @@ function has_permission(perm, err) {
       res.error(500, new Error('Invalid user'));
     }
 
+    // check @permissions and @roles.permissions
+    var j;
     var i;
+    var found;
+    var roles = req.user.roles;
     for (i = 0; i < perm.length; ++i) {
       if (req.user.permissions.indexOf(perm[i]) === -1) {
-        return res.error(403, err || new Error(['Access Denied', 'Permision required', perm[i]]));
+
+        // look at roles
+        found = false;
+        for (j = 0; j < roles.length; ++j) {
+          if (roles[j].permissions.indexOf(perm[i]) !== -1) {
+            found = true;
+          }
+        }
+
+        if (!found) {
+          return res.error(403, err || new Error(['Access Denied', 'Permision required', perm[i]]));
+        }
       }
     }
 

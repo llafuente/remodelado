@@ -3,9 +3,90 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "description": "Schema for backend model and fontend interface",
 
-  "definitions": {},
+  "definitions": {
+    "backend_schema": {
+      "oneOf": [{
+        "$ref": "#/definitions/backend_schema_item"
+      },{
+        "$ref": "#/definitions/backend_schema_array"
+      }]
+    },
+    "backend_schema_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/backend_schema_item"
+      }
+    },
+    "backend_schema_item": {
+      "type": "object",
+      "required": ["label"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "String",
+            "Number",
+            "ObjectId",
+            "Array",
+            "Mixed"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "maxlength": {
+          "type": "number"
+        },
+        "minlength": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "match": {
+          "type": "number"
+        },
+        "restricted": {
+          "type": ["string", "boolean"]
+        },
+        "create": {
+          "type": "boolean"
+        },
+        "update": {
+          "type": "boolean"
+        },
+        "enum": {
+          "type": "array"
+        },
+        "labels": {
+          "type": "array"
+        },
+        "default": {
+          "type": ["array", "boolean", "integer", "number", "null", "object", "string" ]
+        },
+        "items": {
+          "type": "object"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "set_current_user": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
 
-  "id": "/",
+  "id": "",
   "type": "object",
   "required": ["singular", "backend", "frontend"],
   "additionalProperties": false,
@@ -63,90 +144,10 @@
           "type": "object",
           "patternProperties": {
             "[a-z0-9_]": {
-              "type": "object",
-              "required": ["label"],
-              "additionalProperties": false,
-              "properties": {
-                "label": {
-                  "id": "backend/schema/label",
-                  "type": "string"
-                },
-                "type": {
-                  "id": "backend/schema/type",
-                  "enum": [
-                    "string",
-                    "number",
-                    "ObjectId",
-                    "array",
-                    "mixed"
-                  ]
-                },
-                "required": {
-                  "id": "backend/schema/required",
-                  "type": "boolean"
-                },
-                "maxlength": {
-                  "id": "backend/schema/maxlength",
-                  "type": "number"
-                },
-                "minlength": {
-                  "id": "backend/schema/minlength",
-                  "type": "number"
-                },
-                "min": {
-                  "id": "backend/schema/min",
-                  "type": "number"
-                },
-                "max": {
-                  "id": "backend/schema/max",
-                  "type": "number"
-                },
-                "match": {
-                  "id": "backend/schema/match",
-                  "type": "number"
-                },
-                "restricted": {
-                  "id": "backend/schema/restricted",
-                  "type": ["string", "boolean"]
-                },
-                "create": {
-                  "id": "backend/schema/create",
-                  "type": "boolean"
-                },
-                "update": {
-                  "id": "backend/schema/update",
-                  "type": "boolean"
-                },
-                "enum": {
-                  "id": "backend/schema/enum",
-                  "type": "array"
-                },
-                "labels": {
-                  "id": "backend/schema/labels",
-                  "type": "array"
-                },
-                "default": {
-                  "id": "backend/schema/labels"
-                },
-                "array": {
-                  "id": "backend/schema/array",
-                  "type": "object"
-                },
-                "required": {
-                  "id": "backend/schema/required",
-                  "type": "boolean"
-                },
-                "ref": {
-                  "id": "backend/schema/ref",
-                  "type": "string"
-                },
-                "set_current_user": {
-                  "id": "backend/schema/set_current_user",
-                  "type": "boolean"
-                }
-              }
+              "$ref": "#/definitions/backend_schema"
             }
           }
+
         }
       }
     },

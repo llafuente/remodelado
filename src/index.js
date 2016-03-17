@@ -15,6 +15,7 @@ var schema_express = require('./schema/express.js');
 var jwt = require('express-jwt/node_modules/jsonwebtoken');
 var ex_jwt = require('express-jwt');
 var express = require('express');
+var error_handler = require('./express/error-handler.js');
 
 function Modelador(config, _mongoose) {
   this.mongoose = _mongoose;
@@ -29,13 +30,14 @@ function Modelador(config, _mongoose) {
 
 
   this.$router = express.Router();
+
   //
   // jwt
   //
   this.$router.use(ex_jwt({
     secret: config.auth.secret,
     credentialsRequired: false,
-    getToken: function fromHeaderOrQuerystring(req) {
+    getToken: function from_header_or_querystring(req) {
       if (req.headers.authorization) {
         var x = req.headers.authorization.split(' ');
         if (x[0] === 'Bearer') {
@@ -48,6 +50,31 @@ function Modelador(config, _mongoose) {
     }
   }));
 
+  // error-handler
+  this.$router.use(error_handler.middleware({}));
+
+  this.$router.use(function(req, res, next) {
+    if (req.user && req.user.id) {
+      req.log.silly("regenerate session" + req.user.id.toString());
+
+      return api.models.user.$model
+      .findOne({
+        _id: req.user.id
+      })
+      .populate("roles")
+      .exec(function(err, dbuser) {
+        if (err || !dbuser) {
+          return res.error(401, 'Regenerate session failed');
+        }
+
+        req.user = dbuser;
+        req.log.silly("user logged: " + JSON.stringify(dbuser.toJSON()));
+        next();
+
+      });
+    }
+    next();
+  });
 
   this.$router.use(permissions.$router);
   this.$router.use(user.$router);
@@ -68,21 +95,9 @@ function Modelador(config, _mongoose) {
     }
 
     // TODO handle permissions
-    api.models.user.$model.findOne({
-      _id: req.user._id
-    }, function(err, user) {
-      // TODO res.error doesn't exist!
-      if (err) {
-        return res.error(err);
-      }
-
-      if (!user) {
-        return res.error(401, 'User not found');
-      }
-      user = user.toJSON();
-      user.id = user._id;
-      res.status(200).json(user);
-    });
+    var u = req.user.toJSON();
+    u.id = u._id;
+    res.status(200).json(u);
   });
 
   this.$router.post('/auth', function(req, res/*, next*/) {
@@ -101,7 +116,10 @@ function Modelador(config, _mongoose) {
       // TODO do not save the entire user, just _id
       // TODO load from the _id the user
       res.status(200).json({
-        'token': jwt.sign(user.toJSON(), config.auth.secret)
+        'token': jwt.sign({
+          id: user._id.toString(),
+          session_start: (new Date()).toString()
+        }, config.auth.secret)
       });
     });
   });

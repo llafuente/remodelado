@@ -17,13 +17,13 @@
       "id": {
         "label": "ID",
 
-        "type": "number",
+        "type": "Number",
         "create": false,
         "update": false
       },
       "username": {
         "label": "Username",
-        "type": "string",
+        "type": "String",
         "required": true,
         "maxlength": 254,
         "create": true,
@@ -31,7 +31,7 @@
       },
       "password": {
         "label": "Password",
-        "type": "string",
+        "type": "String",
         "required": true,
         "restricted": true,
         "create": true,
@@ -39,33 +39,26 @@
       },
       "salt": {
         "label": "",
-        "type": "string",
+        "type": "String",
         "restricted": true
       },
-      "roles": {
+      "roles": [{
         "label": "Roles",
-        "type": "array",
-        "array": {
-          "type": "string",
-          "enum": ["admin", "user"],
-          "labels": ["Admin", "User"]
-        },
+        "type": "ObjectId",
+        "ref": "roles",
         "create": true,
         "update": true
-      },
-      "permissions": {
+      }],
+      "permissions": [{
         "label": "Permissions",
-        "type": "array",
-        "array": {
-          "type": "ObjectId",
-          "ref": "permissions"
-        },
+        "type": "String",
+        "ref": "permissions",
         "create": true,
         "update": true
-      },
+      }],
       "state": {
         "label": "Estado",
-        "type": "string",
+        "type": "String",
         "enum": ["active", "banned"],
         "labels": ["Active", "Banned"],
         "default": "active",
@@ -103,7 +96,11 @@
         "type": "text"
       },
       "roles": {
-        "type": "select"
+        "type": "select",
+        "source_url": {
+          "method": "GET",
+          "url": "/api/roles"
+        }
       },
       "state": {
         "label": "Estado",

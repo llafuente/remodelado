@@ -100,16 +100,21 @@ function middleware(meta) {
 
       return error_handler(err, req, res, meta.$schema);
     };
-
+/* TODO this let the process die atm
     var d = domain.create();
     d.on('error', function(err) {
-      req.log.silly('(domain error)');
+      req.log.info('(domain error)');
+      req.log.info(err);
+      console.log("err --> ", err);
       err.status = 500;
       return error_handler(err, req, res, meta.$schema);
     });
 
     d.run(function() {
+      req.log.info('(domain start)');
       next();
     });
+*/
+    next();
   };
 }

@@ -65,10 +65,10 @@ function schema_mongoose(meta, mongoose, models) {
   });
 
   meta.init = function() {
-    meta.$model = mongoose.model(meta.singular, meta.$schema);
+    meta.$model = mongoose.model(meta.plural, meta.$schema);
     _.each(meta.backend.permissions, function(v, k) {
       if (v) {
-        var id = `permission/${meta.singular}/${k}`;
+        var id = `permission/${meta.plural}/${k}`;
 
         models.permissions.$model.update({
           _id: id

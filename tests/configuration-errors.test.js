@@ -9,24 +9,20 @@ var api = require("./start.js")(test, app, config);
 test('create model error 01', function(t) {
   t.plan(1);
   t.throws(function() {
-    console.log("???");
     api.model({
-      "singular": "user",
+      "singular": "chiwaka",
       "backend": {
         "permissions": {},
         "schema": {
           "id": {
             "label": "ID",
-            "type": "number"
+            "type": "Number"
           },
-          "permissions": {
+          "permissions": [{
             "label": "Permissions",
-            "type": "array",
-            "array": {
-              "type": "ObjectId",
-              "ref": "permissions"
-            }
-          }
+            "type": "ObjectId",
+            "ref": "permissions"
+          }]
         }
       },
       "frontend": {

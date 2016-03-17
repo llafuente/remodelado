@@ -40,7 +40,6 @@ test('create user model', function(t) {
 
 test('login as admin', function(t) {
   tutils.login(app, "admin@admin.com", "admin", function(err, data) {
-    console.log(data);
     t.error(err);
     t.end();
   });
@@ -118,14 +117,14 @@ test('http: create user (err-required)', function(t) {
           message: 'err-required',
           path: 'last_name',
           type: 'invalid-value',
-          value_type: 'string',
+          value_type: 'String',
           value_constraint: 'required',
           label: 'Last name'
         }, {
           message: 'err-required',
           path: 'first_name',
           type: 'invalid-value',
-          value_type: 'string',
+          value_type: 'String',
           value_constraint: 'required',
           label: 'First Name'
         }
@@ -158,7 +157,7 @@ test('http: create user (err-enum)', function(t) {
           "type": "invalid-value",
           "value": "chiwaka",
           "value_constraint": "enum",
-          "value_type": "string"
+          "value_type": "String"
         }
       ]
     }, "error structure ok");
@@ -188,7 +187,7 @@ test('http: create user (err-cast)', function(t) {
           "type": "invalid-type",
           "value": "chiwaka",
           "value_constraint": "cast",
-          "value_type": "number"
+          "value_type": "Number"
         }
       ]
     }, "error structure ok");

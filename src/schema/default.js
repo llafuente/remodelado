@@ -6,7 +6,7 @@ var _ = require('lodash');
 var pluralize = require('pluralize');
 
 var default_schema = {
-  type: 'string',
+  type: 'String',
   create: false,
   update: false
 };
@@ -16,7 +16,11 @@ function schema_default(meta) {
   meta.backend.schema = {};
 
   _.forEach(t, function(o, k) {
-    meta.backend.schema[k] = _.defaults(o, default_schema);
+    if (!Array.isArray(o)) {
+      meta.backend.schema[k] = _.defaults(o, default_schema);
+    } else {
+      meta.backend.schema[k] = o;
+    }
   });
 
   meta.plural = pluralize(meta.singular);

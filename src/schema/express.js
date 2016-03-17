@@ -22,14 +22,13 @@ function schema_express(meta) {
       delete: j('/', meta.backend.prefix, meta.plural + '/:' + id_param),
     },
     permissions: {
-      list: `permission/${meta.singular}/list`,
-      create: `permission/${meta.singular}/create`,
-      read: `permission/${meta.singular}/read`,
-      update: `permission/${meta.singular}/update`,
-      delete: `permission/${meta.singular}/delete`,
+      list: `permission/${meta.plural}/list`,
+      create: `permission/${meta.plural}/create`,
+      read: `permission/${meta.plural}/read`,
+      update: `permission/${meta.plural}/update`,
+      delete: `permission/${meta.plural}/delete`,
     }
   };
-  console.log(meta.$express);
 
   // common cleanup before send
   var blacklist = [];

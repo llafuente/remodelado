@@ -15,20 +15,20 @@
       "id": {
         "label": "ID",
 
-        "type": "number",
+        "type": "Number",
         "create": false,
         "update": false
       },
       "restricted_field": {
         "label": "",
-        "type": "number",
+        "type": "Number",
         "restricted": true,
         "create": true
       },
       "first_name": {
         "label": "First Name",
 
-        "type": "string",
+        "type": "String",
         "required": true,
         "create": true,
         "update": true
@@ -36,7 +36,7 @@
       "last_name": {
         "label": "Last name",
 
-        "type": "string",
+        "type": "String",
         "required": true,
         "create": true,
         "update": true
@@ -44,7 +44,7 @@
       "role": {
         "label": "Role",
 
-        "type": "string",
+        "type": "String",
         "enum": ["admin", "user"],
         "labels": ["Admin", "User"],
         "create": true,
@@ -53,14 +53,14 @@
       "age": {
         "label": "Age",
 
-        "type": "number",
+        "type": "Number",
         "create": true,
         "update": false
       },
       "bio": {
         "label": "About myself",
 
-        "type": "string",
+        "type": "String",
         "create": true,
         "update": true,
         "default": null
