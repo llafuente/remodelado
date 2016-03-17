@@ -22,11 +22,11 @@ function schema_express(meta) {
       delete: j('/', meta.backend.prefix, meta.plural + '/:' + id_param),
     },
     permissions: {
-      list: `permission/${meta.plural}/list`,
-      create: `permission/${meta.plural}/create`,
-      read: `permission/${meta.plural}/read`,
-      update: `permission/${meta.plural}/update`,
-      delete: `permission/${meta.plural}/delete`,
+      list: `permission-${meta.plural}-list`,
+      create: `permission-${meta.plural}-create`,
+      read: `permission-${meta.plural}-read`,
+      update: `permission-${meta.plural}-update`,
+      delete: `permission-${meta.plural}-delete`,
     }
   };
 

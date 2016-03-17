@@ -101,6 +101,11 @@ function schema_angular(meta) {
 
   // create/update (schema)
   _.forEach(meta.backend.schema, function(o, k) {
+    // fix: [ObjectId]
+    if (Array.isArray(o)) {
+      o = o[0];
+    }
+
     if (!meta.frontend.schema[k]) {
       console.warn(meta.singular, '[', k, '] is not found in schema');
       return;
@@ -236,8 +241,13 @@ function each_control(meta, action, cb) {
       return ;
     }
 
-    var client_opt = meta.frontend.schema[path];
+    // fix: [ObjectId]
+    if (options.instance == "Array") {
+      options = options.caster;
+    }
 
+    var client_opt = meta.frontend.schema[path];
+    console.log(path, options, client_opt);
     if (!check_action(action, options.options, client_opt)) {
       return;
     }

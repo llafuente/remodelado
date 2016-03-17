@@ -39,7 +39,7 @@ module.exports = function(test, app, config) {
         },{
           label: "Reader",
           permissions: perms_ids.filter(function(v) {
-            return v.indexOf("/read") !== -1 || v.indexOf("/list") !== -1;
+            return v.indexOf("-read") !== -1 || v.indexOf("-list") !== -1;
           })
         }], function(err, roles) {
           api.models.user.$model.remove({}, function() {

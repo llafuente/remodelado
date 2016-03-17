@@ -59,7 +59,7 @@
       "id": {
         "type": "static",
         "create": false,
-        "update": true
+        "update": false
       },
       "label": {
         "type": "text"

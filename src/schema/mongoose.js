@@ -68,7 +68,7 @@ function schema_mongoose(meta, mongoose, models) {
     meta.$model = mongoose.model(meta.plural, meta.$schema);
     _.each(meta.backend.permissions, function(v, k) {
       if (v) {
-        var id = `permission/${meta.plural}/${k}`;
+        var id = meta.$express.permissions[k];
 
         models.permissions.$model.update({
           _id: id
