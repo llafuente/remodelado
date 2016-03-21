@@ -81,9 +81,6 @@ function Modelador(config, _mongoose) {
   this.$router.use(roles.$router);
 
   var api = this;
-  //
-  // TODO properly handle user-login, regenerate session(/me).
-  //
   this.$router.post('/users/me', function(req, res/*, next*/) {
     // TODO check token
     if (!req.headers.authorization) {
@@ -94,10 +91,10 @@ function Modelador(config, _mongoose) {
       return res.status(401).json({error: 'Invalid session'});
     }
 
-    // TODO handle permissions
     var u = req.user.toJSON();
-    u.id = u._id;
-    res.status(200).json(u);
+    user.$express.before_send(req, 'read', u, function(err, output) {
+      res.status(200).json(output);
+    });
   });
 
   this.$router.post('/auth', function(req, res/*, next*/) {
@@ -113,8 +110,6 @@ function Modelador(config, _mongoose) {
       if (!user || !user.authenticate(req.body.password)) {
         return res.error(422, 'User not found or invalid pasword');
       }
-      // TODO do not save the entire user, just _id
-      // TODO load from the _id the user
       res.status(200).json({
         'token': jwt.sign({
           id: user._id.toString(),
