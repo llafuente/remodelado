@@ -1,7 +1,9 @@
+'use strict';
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 var config = require('./config/index.js');
 var util = require('util');
 require('./winston-readable-console.js');
@@ -40,24 +42,10 @@ app.use(function(req, res, next) {
 logger.info(config);
 
 //
-// mongoose errors
+// mongoose
 //
 
-var messages = mongoose.Error.messages;
-
-// TODO access model.errors and override this default values!
-messages.general.default = "err-validator-failed";
-messages.general.required = "err-required";
-messages.Number.min = "err-min";
-messages.Number.max = "err-max";
-messages.Date.min = "err-min";
-messages.Date.max = "err-max";
-messages.String.enum = "err-out-of-bounds";
-messages.String.match = "err-match";
-messages.String.minlength = "err-minlength";
-messages.String.maxlength = "err-maxlength";
-
-mongoose.set('debug', function (name, i) {
+mongoose.set('debug', function(name, i) {
   var args = Array.prototype.slice.call(arguments, 2);
 
   logger.db(
@@ -75,13 +63,13 @@ mongoose.set('debug', function (name, i) {
 
 mongoose.connect(config.mongo.uri);
 app.mongoose = mongoose;
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   req.mongoose = mongoose;
   if (mongoose.connection.readyState === 1) {
     return next();
   }
   // too fast, wait a little!
-  mongoose.connection.on('open', function () {
-    next()
+  mongoose.connection.on('open', function() {
+    next();
   });
 });

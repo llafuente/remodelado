@@ -1,7 +1,8 @@
-var util = require('util'),
-    winston = require('winston');
+'use strict';
 
-var ReadableConsole = winston.transports.ReadableConsole = function (options) {
+var util = require('util');
+var winston = require('winston');
+var ReadableConsole = winston.transports.ReadableConsole = function(options) {
   //
   // Name this logger
   //
@@ -35,7 +36,7 @@ var ReadableConsole = winston.transports.ReadableConsole = function (options) {
 //
 util.inherits(ReadableConsole, winston.Transport);
 
-ReadableConsole.prototype.log = function (level, msg, meta, callback) {
+ReadableConsole.prototype.log = function(level, msg, meta, callback) {
   //
   // Store this message and metadata, maybe use some custom logic
   // then callback indicating success.
@@ -55,24 +56,24 @@ ReadableConsole.prototype.log = function (level, msg, meta, callback) {
 
   if (msg instanceof Error) {
     text = util.inspect(msg, {depth: true, colors: true});
-    text += "\n" + msg.stack.split("\n").slice(0, 5).join("\n");
-  } else if ("string" === typeof msg) {
+    text += '\n' + msg.stack.split('\n').slice(0, 5).join('\n');
+  } else if ('string' === typeof msg) {
     text = msg;
   } else {
     text = util.inspect(msg, {depth: true, colors: true});
   }
 
-  var stack = new Error().stack.split("\n").slice(8, 9).join("\n").trim();
+  var stack = new Error().stack.split('\n').slice(8, 9).join('\n').trim();
   this.std.write([
     level,
     text,
     util.inspect(meta, {depth: true, colors: true}),
-    "\n"
-  ].join(" "));
+    '\n'
+  ].join(' '));
 
 
   if (this.trace) {
-    this.std.write("trace");
+    this.std.write('trace');
     this.std.write(stack);
   }
 
