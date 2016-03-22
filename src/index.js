@@ -3,6 +3,7 @@
 module.exports = Modelador;
 
 var util = require('util');
+var mongoose = require('mongoose');
 var router = require('./express/router.js');
 var ajv = require('ajv')({allErrors: true});
 
@@ -16,6 +17,24 @@ var jwt = require('express-jwt/node_modules/jsonwebtoken');
 var ex_jwt = require('express-jwt');
 var express = require('express');
 var error_handler = require('./express/error-handler.js');
+
+//
+// configure mongoose errors
+//
+
+var messages = mongoose.Error.messages;
+
+// TODO access model.errors and override this default values!
+messages.general.default = 'err-validator-failed';
+messages.general.required = 'err-required';
+messages.Number.min = 'err-min';
+messages.Number.max = 'err-max';
+messages.Date.min = 'err-min';
+messages.Date.max = 'err-max';
+messages.String.enum = 'err-out-of-bounds';
+messages.String.match = 'err-match';
+messages.String.minlength = 'err-minlength';
+messages.String.maxlength = 'err-maxlength';
 
 function Modelador(config, _mongoose) {
   this.mongoose = _mongoose;
