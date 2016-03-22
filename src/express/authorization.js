@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   authorization: authorization,
   has_permission: has_permission,
@@ -45,7 +47,7 @@ function has_permission(perm, err) {
         }
 
         if (!found) {
-          return res.error(403, err || new Error(['Access Denied', 'Permision required', perm[i]]));
+          return res.error(403, err || new Error(['Access Denied', 'Permission required', perm[i]]));
         }
       }
     }

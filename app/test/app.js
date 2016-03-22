@@ -28,7 +28,7 @@ angular
 .config(function(errorConfigProvider, authConfigProvider, rewriteRequestConfigProvider) {
   authConfigProvider.token_header = 'Authorization';
   authConfigProvider.api_users_data = '/users/me';
-  authConfigProvider.api_auth = '/auth';
+  authConfigProvider.api_auth = '/users/auth';
 })
 .run(function($rootScope) {
   $rootScope.$on('$login', function() {

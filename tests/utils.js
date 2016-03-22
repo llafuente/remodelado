@@ -11,7 +11,7 @@ var logged = {};
 
 function login(app, username, pwd, callback) {
   request(app)
-    .post('/auth')
+    .post('/users/auth')
     .send({
       username: username,
       password: pwd

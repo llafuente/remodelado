@@ -85,7 +85,7 @@ function schema_angular(meta) {
       return;
     }
     // fix: [ObjectId]
-    if (back_field.instance == "Array") {
+    if (back_field.instance == 'Array') {
       back_field = back_field.caster;
     }
     back_field = back_field.options;
@@ -242,7 +242,7 @@ function each_control(meta, action, cb) {
     }
 
     // fix: [ObjectId]
-    if (options.instance == "Array") {
+    if (options.instance == 'Array') {
       options = options.caster;
     }
 

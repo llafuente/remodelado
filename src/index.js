@@ -13,8 +13,6 @@ var schema_angular = require('./schema/angular.js');
 var schema_mongoose = require('./schema/mongoose.js');
 var schema_express = require('./schema/express.js');
 
-var jwt = require('express-jwt/node_modules/jsonwebtoken');
-var ex_jwt = require('express-jwt');
 var express = require('express');
 var error_handler = require('./express/error-handler.js');
 
@@ -44,99 +42,21 @@ function Modelador(config, _mongoose) {
   this.swagger = swagger;
 
   var permissions = require('./models/permissions.model.js')(this);
-  var user = require('./models/user.model.js')(this);
+  var user = require('./models/user.model.js')(this, config);
   var roles = require('./models/roles.model.js')(this);
+
+  permissions.init();
+  user.init();
+  roles.init();
 
 
   this.$router = express.Router();
-
-  //
-  // jwt
-  //
-  this.$router.use(ex_jwt({
-    secret: config.auth.secret,
-    credentialsRequired: false,
-    getToken: function from_header_or_querystring(req) {
-      if (req.headers.authorization) {
-        var x = req.headers.authorization.split(' ');
-        if (x[0] === 'Bearer') {
-          return x[1];
-        }
-      } else if (req.query && req.query.access_token) {
-        return req.query.access_token;
-      }
-      return null;
-    }
-  }));
-
   // error-handler
   this.$router.use(error_handler.middleware({}));
 
-  this.$router.use(function(req, res, next) {
-    if (req.user && req.user.id) {
-      req.log.silly("regenerate session" + req.user.id.toString());
-
-      return api.models.user.$model
-      .findOne({
-        _id: req.user.id
-      })
-      .populate("roles")
-      .exec(function(err, dbuser) {
-        if (err || !dbuser) {
-          return res.error(401, 'Regenerate session failed');
-        }
-
-        req.user = dbuser;
-        req.log.silly("user logged: " + JSON.stringify(dbuser.toJSON()));
-        next();
-
-      });
-    }
-    next();
-  });
-
-  this.$router.use(permissions.$router);
   this.$router.use(user.$router);
+  this.$router.use(permissions.$router);
   this.$router.use(roles.$router);
-
-  var api = this;
-  this.$router.post('/users/me', function(req, res/*, next*/) {
-    // TODO check token
-    if (!req.headers.authorization) {
-      return res.status(401).json({error: 'No session'});
-    }
-
-    if (!req.user) {
-      return res.status(401).json({error: 'Invalid session'});
-    }
-
-    var u = req.user.toJSON();
-    user.$express.before_send(req, 'read', u, function(err, output) {
-      res.status(200).json(output);
-    });
-  });
-
-  this.$router.post('/auth', function(req, res/*, next*/) {
-
-    api.models.user.$model.findOne({
-      username: req.body.username
-    }, function(err, user) {
-      // TODO res.error doesn't exist!
-      if (err) {
-        return res.error(err);
-      }
-
-      if (!user || !user.authenticate(req.body.password)) {
-        return res.error(422, 'User not found or invalid pasword');
-      }
-      res.status(200).json({
-        'token': jwt.sign({
-          id: user._id.toString(),
-          session_start: (new Date()).toString()
-        }, config.auth.secret)
-      });
-    });
-  });
 }
 
 function model(meta) {
