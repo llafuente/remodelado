@@ -1,0 +1,11 @@
+# Global scoped method and vars
+globals:
+  $: true
+  $$: true
+  by: true
+  element: true
+  browser: true
+  protractor: true
+  describe: true
+  it: true
+  expect: true

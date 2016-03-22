@@ -4,7 +4,8 @@
   "description": "Angular + Express + Mongoose REST",
   "main": "index.js",
   "scripts": {
-    "test": "tap -b --cov --coverage-report=lcov tests/*.test.js"
+    "test": "tap -b --cov --coverage-report=lcov tests/*.test.js",
+    "testncv": "tap -b tests/*.test.js"
   },
   "author": "",
   "license": "ISC",

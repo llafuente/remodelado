@@ -2,6 +2,7 @@
 
 // test
 var request = require('supertest');
+var _ = require('lodash');
 var test = require('tap').test;
 var tutils = require('./utils');
 
@@ -17,7 +18,21 @@ test('create user model', function(t) {
   app.use(mdl.$router);
 
   mdl.$model.remove({}, function() {
-    t.end();
+    // add permissions to admin
+    api.models.roles.$model.findOne({
+      label: 'Administrator'
+    }, function(err, role) {
+      t.error(err);
+      console.log(role);
+      role.permissions = role.permissions
+        .concat(_.values(mdl.$express.permissions));
+      role.setRequest({});
+      role.save(function(err, role_saved) {
+        t.error(err);
+
+        t.end();
+      });
+    });
   });
 });
 

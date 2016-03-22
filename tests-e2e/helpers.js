@@ -5,22 +5,6 @@
 
 'use strict';
 
-// slow down!
-/*
-var origFn = browser.driver.controlFlow().execute;
-
-browser.driver.controlFlow().execute = function() {
-  var args = arguments;
-
-  // queue 100ms wait
-  origFn.call(browser.driver.controlFlow(), function() {
-    return protractor.promise.delayed(50);
-  });
-
-  return origFn.apply(browser.driver.controlFlow(), args);
-};
-*/
-
 browser.driver.manage().window().setSize(1024, 768);
 //browser.driver.manage().window().maximize();
 browser.driver.manage().window().setPosition(50, 50);
@@ -30,50 +14,54 @@ for (var i = 0; i < 50; ++i) {
   backspace50 += protractor.Key.BACK_SPACE;
 }
 
-function random_number (n) {
-    var text = "";
-    var possible = "0123456789";
+function random_number(n) {
+  var text = '';
+  var possible = '0123456789';
+  var i;
 
-    for( var i=0; i < (n || 10); i++ )
-        if (n % 11 === 0) {
-            text += " ";
-        } else {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
+  for (i = 0; i < (n || 10); i++) {
+    if (n % 11 === 0) {
+      text += ' ';
+    } else {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+  }
 
-    return text;
+  return text;
 }
 
-function random_str (n) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+function random_str(n) {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var i;
 
-    for( var i=0; i < (n || 10); i++ )
-        if (n % 11 === 0) {
-            text += " ";
-        } else {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
+  for (i = 0; i < (n || 10); i++) {
+    if (n % 11 === 0) {
+      text += ' ';
+    } else {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+  }
 
-    return text;
+  return text;
 }
 
 function random_email() {
-  return random_str(5) + "@" + random_str(5) + ".com";
+  return random_str(5) + '@' + random_str(5) + '.com';
 }
 
 function random_date(year) {
-    // 2014-07-10
-    var m = Math.floor(Math.random() * 11)+1;
-    var d = Math.floor(Math.random() * 25)+1;
+  // 2014-07-10
+  var m = Math.floor(Math.random() * 11) + 1;
+  var d = Math.floor(Math.random() * 25) + 1;
 
-    return year + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d);
+  return year + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
 }
 
 var Config = function() {
   return {
     go: function(url) {
-      console.log("# goto", url);
+      console.log('# goto', url);
 
       browser.ignoreSynchronization = true;
 
@@ -89,13 +77,13 @@ var Config = function() {
         browser.waitForAngular();
         browser.sleep(500);
       }, function(e) {
-        console.log("# alert", e.name);
+        console.log('# alert', e.name);
       }).then(function() {
-        console.log("# goto ", url, " done");
+        console.log('# goto ', url, ' done');
         browser.ignoreSynchronization = false;
       });
     },
-    login: function (user, pwd) {
+    login: function(user, pwd) {
       // logout if necessary
 
       browser.get(this.base_url + '/login');
@@ -118,19 +106,19 @@ var Config = function() {
     // selectors
     //
     $p: function(selector) {
-      return $("[protractor='" + selector + "']");
+      return $('[protractor=\'' + selector + '\']');
     },
     $m: function(selector) {
       return element(by.model(selector));
     },
     ui_link: function(ui_sref) {
-      return $("a[ui-sref='" + ui_sref + "']");
+      return $('a[ui-sref=\'' + ui_sref + '\']');
     },
     by_text: function(text) {
-      return element(by.xpath("//*[contains(text(),'" + text +"')]"));
+      return element(by.xpath('//*[contains(text(),\'' + text + '\')]'));
     },
     parent: function(selector) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $(selector);
       }
 
@@ -144,30 +132,37 @@ var Config = function() {
       browser.waitForAngular();
     },
     xpath_click: function(xpath) {
-      var script = "document.evaluate(" +
+      var script = 'document.evaluate(' +
         JSON.stringify(xpath) +
-        ", document, null, 9, null).singleNodeValue.click()";
+        ', document, null, 9, null).singleNodeValue.click()';
 
       browser.executeScript(script);
       browser.waitForAngular();
     },
-    click: function(text) {
+    click: function(css) {
+      $(css).click();
+      browser.sleep(125);
+      return browser.waitForAngular();
+    },
+    click_text: function(text) {
       this.xpath_click(
-        "//*[contains(text(),'" + text +"')]"
+        '//*[contains(text(),\'' + text + '\')]'
       );
+      browser.sleep(125);
+      return browser.waitForAngular();
     },
     click_inside: function(selector, text) {
       this.xpath_click(
-        "//" + selector + "//*[contains(text(),'" + text +"')]"
+        '//' + selector + '//*[contains(text(),\'' + text + '\')]'
       );
     },
     click_menu_tree: function(text) {
       this.xpath_click(
-        "//div[@id='menu-tree']//*[contains(text(),'" + text +"')]"
+        '//div[@id=\'menu-tree\']//*[contains(text(),\'' + text + '\')]'
       );
     },
     save_entity: function() {
-      return $(".save-button-container button").click();
+      return $('.save-button-container button').click();
     },
     //
     // forms
@@ -181,108 +176,108 @@ var Config = function() {
       browser.waitForAngular();
 
       // TODO check number of fields
-      // $(path).all(by.tagName("input, select, textarea"))
+      // $(path).all(by.tagName('input, select, textarea'))
     },
     // select: match value or text -> click
     // text: fill input
     fill_control: function(model, value, clear) {
-      var el = "string" === typeof model ? element(by.model(model)) : model;
+      var el = 'string' === typeof model ? element(by.model(model)) : model;
 
-      el.getAttribute("type")
+      el.getAttribute('type')
       .then(function(type) {
-        switch(type) {
-          case "datepicker":
-            if (clear) {
-              el.clear();
+        switch (type) {
+        case 'datepicker':
+          if (clear) {
+            el.clear();
+          }
+
+          el.click();
+          browser.sleep(125);
+
+          el.sendKeys(value);
+          browser.sleep(250); // wait a bit before click on body
+          $('body').click();
+          break;
+        case 'date':
+        /*
+          throw new Error('date is not supported');
+
+          // try to fix chrome date helper!
+          return browser.executeAsyncScript(function() {
+            var el = jQuery(arguments[0]);
+            el.attr('type', 'text');
+            el.val(value);
+            el.attr('type', 'date');
+            var callback = arguments[arguments.length - 1];
+            callback();
+          }, model, value);
+        break;
+        */
+        case 'number':
+        case 'text':
+        case 'email':
+          if (clear) {
+            el.clear();
+          }
+          if ('number' === type) {
+            // backspace keys
+            el.sendKeys(backspace50);
+          }
+
+          el.sendKeys(value);
+          break;
+        case 'checkbox':
+          //console.log('checkbox!!!');
+          el
+          .getAttribute('checked')
+          .then(function(checked) {
+            //console.log('checkbox', checked, value);
+            if (checked != value) {
+              el.click();
             }
-
-            el.click();
-            browser.sleep(125);
-
-            el.sendKeys(value);
-            browser.sleep(250); // wait a bit before click on body
-            $("body").click();
+          });
           break;
-          case "date":
-          /*
-            throw new Error("date is not supported");
+        case 'select-one':
+        case 'select':
+          var text = value;
 
-            // try to fix chrome date helper!
-            return browser.executeAsyncScript(function() {
-              var el = jQuery(arguments[0]);
-              el.attr("type", "text");
-              el.val(value);
-              el.attr("type", "date");
-              var callback = arguments[arguments.length - 1];
-              callback();
-            }, model, value);
-          break;
-          */
-          case "number":
-          case "text":
-          case "email":
-            if (clear) {
-              el.clear();
-            }
-            if ("number" === type) {
-              // backspace keys
-              el.sendKeys(backspace50);
-            }
+          el
+          .all(by.tagName('option'))
+          .then(function(options) {
+            //console.log('options.length', options.length);
+            options.forEach(function(o) {
+              o.getAttribute('value')
+              .then(function(val) {
+                ['string:', 'number:'].forEach(function(c) {
+                  var svalue =  c + value;
+                  //console.log('check value', svalue == val, svalue, val);
 
-            el.sendKeys(value);
-          break;
-          case "checkbox":
-            //console.log("checkbox!!!");
-            el
-            .getAttribute('checked')
-            .then(function(checked) {
-              //console.log("checkbox", checked, value);
-              if (checked != value) {
-                el.click();
-              }
-            });
-          break;
-          case "select-one":
-          case "select":
-            var text = value;
-
-            el
-            .all(by.tagName("option"))
-            .then(function(options) {
-              //console.log("options.length", options.length);
-              options.forEach(function(o) {
-                o.getAttribute("value")
-                .then(function(val) {
-                  ["string:", "number:"].forEach(function(c) {
-                    var svalue =  c + value;
-                    //console.log("check value", svalue == val, svalue, val);
-
-                    if (svalue == val) {
-                      o.click();
-                    }
-                  });
-                });
-
-                o.getAttribute("label")
-                .then(function(val) {
-                  //console.log("check value", svalue == val, svalue, val);
-                  if (value == val) {
-                    o.click();
-                  }
-                });
-
-                o.getText()
-                .then(function(t) {
-                  //console.log("text", t, text);
-                  if (t == text) {
+                  if (svalue == val) {
                     o.click();
                   }
                 });
               });
+
+              o.getAttribute('label')
+              .then(function(val) {
+                //console.log('check value', svalue == val, svalue, val);
+                if (value == val) {
+                  o.click();
+                }
+              });
+
+              o.getText()
+              .then(function(t) {
+                //console.log('text', t, text);
+                if (t == text) {
+                  o.click();
+                }
+              });
             });
+          });
           break;
-          default:
-            console.log("TODO! handle this type!!!", type);
+        default:
+          console.log('TODO! handle this type!!!', type);
         }
       });
     },
@@ -290,13 +285,13 @@ var Config = function() {
     // assert
     //
     has_class: function(selector, cls) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $(selector);
       }
 
       expect(
-        selector.getAttribute("class")
-        .then(function (classes) {
+        selector.getAttribute('class')
+        .then(function(classes) {
           return classes.split(' ');
         })
       ).toMatch(cls);
@@ -305,78 +300,78 @@ var Config = function() {
       expect(this.by_text(text).isDisplayed(), check === undefined ? true : !!check);
     },
     text: function(selector, text) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $(selector);
       }
 
       expect(selector.getText()).toBe(text);
     },
     disabled: function(selector) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $(selector);
       }
 
-      //expect(selector.getAttribute("disabled")).toBe("disabled");
-      expect(selector.getAttribute("disabled")).toBe(null);
+      //expect(selector.getAttribute('disabled')).toBe('disabled');
+      expect(selector.getAttribute('disabled')).toBe(null);
     },
     no_disabled: function(selector) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $(selector);
       }
 
-      expect(selector.getAttribute("disabled")).toBe(null);
+      expect(selector.getAttribute('disabled')).toBe(null);
     },
     value: function(selector, text)  {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $(selector);
       }
 
-      return selector.getAttribute("value")
+      return selector.getAttribute('value')
       .then(function(value) {
         expect(value).toBe(text);
       });
     },
     count_controls: function(selector, count) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $$(selector);
       }
 
-      selector.$$("input").count()
+      selector.$$('input').count()
       .then(function(inputs) {
-        selector.$$("textarea").count()
+        selector.$$('textarea').count()
         .then(function(textareas) {
-          selector.$$("select").count()
+          selector.$$('select').count()
           .then(function(selects) {
             expect(inputs + textareas + selects).toBe(count);
           });
         });
-      })
+      });
     },
     count: function(selector, count) {
-      if ("string" === typeof selector) {
+      if ('string' === typeof selector) {
         selector = $$(selector);
       }
 
       expect(selector.count()).toEqual(count);
     },
     control_ko: function(model) {
-      var script = "if (!" +
-        "jQuery(\"*[ng-model='" + model + "']\")" +
-        ".closest('.form-group').hasClass('has-error')" +
-      ") {" +
-        "throw new Error('error expected')" +
-      "}";
+      var script = 'if (!' +
+        'jQuery(\'*[ng-model=\'' + model + '\']\')' +
+        '.closest(\'.form-group\').hasClass(\'has-error\')' +
+      ') {' +
+        'throw new Error(\'error expected\')' +
+      '}';
 
       browser.executeScript(script);
       browser.waitForAngular();
     },
     control_ok: function(model) {
-      var script = "if (" +
-        "jQuery(\"*[ng-model='" + model + "']\")" +
-        ".closest('.form-group').hasClass('has-error')" +
-      ") {" +
-        "throw new Error('no error expected')" +
-      "}";
+      var script = 'if (' +
+        'jQuery(\'*[ng-model=\'' + model + '\']\')' +
+        '.closest(\'.form-group\').hasClass(\'has-error\')' +
+      ') {' +
+        'throw new Error(\'no error expected\')' +
+      '}';
 
       browser.executeScript(script);
       browser.waitForAngular();
@@ -402,7 +397,7 @@ var Config = function() {
     // files must be relative to e2e/specs
     upload: function(selector, file) {
       var e = element(by.css(selector));
-      var abs = require("path").join(process.env.PWD, file);
+      var abs = require('path').join(process.env.PWD, file);
 
       this.set_css(selector, 'visibility', 'visible');
       this.set_css(selector, 'width', 'auto');
@@ -417,108 +412,38 @@ var Config = function() {
       browser.sleep(500);
     },
     set_css: function(selector, attr, value) {
-      var script = "jQuery(" +
+      var script = 'jQuery(' +
         JSON.stringify(selector) +
-        ").css("+
+        ').css(' +
         JSON.stringify(attr) +
-        "," +
+        ',' +
         JSON.stringify(value) +
-        ");";
+        ');';
 
       browser.executeScript(script);
     },
     close_last_window: function() {
       browser.sleep(500);
-      browser.getAllWindowHandles().then(function (handles) {
-          browser.driver.switchTo().window(handles[1]);
-          browser.driver.close();
-          browser.driver.switchTo().window(handles[0]);
+      browser.getAllWindowHandles()
+      .then(function(handles) {
+        browser.driver.switchTo().window(handles[1]);
+        browser.driver.close();
+        browser.driver.switchTo().window(handles[0]);
       });
     },
 
     drag_to: function(start_sel, finish_sel) {
       //this.position(finish_sel, function(dest) {
-        browser.driver.actions().dragAndDrop(start_sel, finish_sel).perform();
-        browser.driver.sleep(800);
+      browser.driver.actions().dragAndDrop(start_sel, finish_sel).perform();
+      browser.driver.sleep(800);
       //});
     },
-    //
-    // garu specific
-    //
-    it_create_crf: function(test_name, crf) {
-      var _ = this;
-
-      it(test_name, function() {
-        _.sref_click("design");
-        _.sref_click("design.crf");
-
-        _.click("Nuevo CRF");
-        _.upload("input[type='file']", crf);
-        browser.sleep(1500); // wait request
-        _.click("Guardar");
-
-        _.wait_visible("#modal-dismiss-ok");
-        $("#modal-dismiss-ok").click();
-      });
-    },
-    it_create_app: function(test_name, uploads, app) {
-      var _ = this;
-
-      app.config_id = app.config_id || 2;
-
-      if (uploads.crf) {
-        this.it_create_crf(test_name + ' - importar CRF', uploads.crf);
-      }
-
-      if (uploads.rules) {
-        it(test_name + ' - importar Grupo de reglas', function() {
-          _.sref_click("design");
-          _.sref_click("design.rules");
-
-          _.click("Nuevo Grupo de Reglas CRF");
-          _.upload("input[type='file']", uploads.rules);
-          browser.sleep(1500); // wait request
-
-          _.fill("section form", {
-            'rule.crf_id': app.crf_id
-          });
-
-          _.click("Guardar");
-
-          _.wait_visible("#modal-dismiss-ok");
-          $("#modal-dismiss-ok").click();
-
-        });
-      }
-
-      var app_form = {};
-      Object.keys(app).forEach(function(k) {
-        app_form["app." + k] = app[k];
-      });
-
-      it(test_name + " - create app", function() {
-        _.sref_click("design.publish");
-
-        _.click("Nueva App");
-
-        _.fill("section form", app_form, 4);
-
-        $("#form-submit").click();
-      });
-
-      it(test_name + " - publicar app", function() {
-        $$(".publish-live").get(0).click();
-        browser.waitForAngular();
-      });
-
-    },
-
     // below will be deprecated soon
     // or goes up :D
 
     /*
     // usage:
-    // config.is_visible("[ng-model='entity.nuevo_formulario2.a']", function(visible) {
+    // config.is_visible('[ng-model='entity.nuevo_formulario2.a']', function(visible) {
     //   expect(visible).toBe(false);
     // });
 
@@ -531,15 +456,15 @@ var Config = function() {
     */
     button_click: function(text) {
       this.xpath_click(
-        "//a[contains(.,'" + text +"')]"
+        '//a[contains(.,\'' + text + '\')]'
       );
     },
     randomize_form: function() {
-      $$("section form select").then(function(selects) {
-        console.log("selects =", selects.length);
+      $$('section form select').then(function(selects) {
+        console.log('selects =', selects.length);
         selects.forEach(function(el_select, idx) {
-          el_select.all(by.tagName("option")).then(function(options) {
-            console.log("options = ", options.length);
+          el_select.all(by.tagName('option')).then(function(options) {
+            console.log('options = ', options.length);
 
             var max = options.length - 1; // assume first to be blank
             var idx = Math.floor(Math.random() * max);
@@ -549,46 +474,46 @@ var Config = function() {
         });
       });
 
-      $$("section form textarea").then(function(textareas) {
-        console.log("textareas =", textareas.length);
+      $$('section form textarea').then(function(textareas) {
+        console.log('textareas =', textareas.length);
         textareas.forEach(function(textarea, idx) {
           textarea.sendKeys(random_str(40));
         });
       });
 
-      $$("section form input").then(function(inputs) {
-        console.log("inputs =", inputs.length);
+      $$('section form input').then(function(inputs) {
+        console.log('inputs =', inputs.length);
         inputs.forEach(function(input, idx) {
 
-          input.getAttribute("type").then(function(type) {
-            console.log("type", type);
+          input.getAttribute('type').then(function(type) {
+            console.log('type', type);
 
-            switch(type) {
-            case "text":
+            switch (type) {
+            case 'text':
               // check datepicker-popup
-              input.getAttribute("is-open")
+              input.getAttribute('is-open')
               .then(function(is_datepicker) {
                 var txt;
 
-                if ("string" === typeof is_datepicker) {
-                  txt = random_date("2015");
+                if ('string' === typeof is_datepicker) {
+                  txt = random_date('2015');
                 } else {
                   txt = random_str(15);
                 }
 
-                console.log("is_datepicker", "string" === typeof is_datepicker ? "true" : "false", txt);
+                console.log('is_datepicker', 'string' === typeof is_datepicker ? 'true' : 'false', txt);
 
                 input.click().sendKeys(txt);
-                $("body").click();
+                $('body').click();
               });
               break;
-            case "number":
+            case 'number':
               input.sendKeys(random_number(5));
               break;
-            case "email":
+            case 'email':
               input.sendKeys(random_email());
               break;
-            case "checkbox":
+            case 'checkbox':
               input.click();
             }
           });

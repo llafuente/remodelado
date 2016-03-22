@@ -9,7 +9,7 @@ module.exports = function(grunt) {
       tests_e2e: ['tmp'],
     },
     instrument: {
-      files: 'app/src/**/*.js',
+      files: 'bower_components/**/*.js',
       options: {
         lazy: true,
         basePath: "tmp/instrumented"

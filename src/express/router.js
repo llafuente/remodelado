@@ -23,6 +23,7 @@ function router(meta) {
 
   if (meta.backend.permissions.list) {
     r.get(meta.$express.urls.list, [
+      auth.authorization(),
       auth.has_permission(meta.$express.permissions.list),
       list(meta)
     ]);
@@ -32,6 +33,7 @@ function router(meta) {
 
   if (meta.backend.permissions.read) {
     r.get(meta.$express.urls.read, [
+      auth.authorization(),
       auth.has_permission(meta.$express.permissions.read),
       read(meta)
     ]);
@@ -39,6 +41,7 @@ function router(meta) {
 
   if (meta.backend.permissions.create) {
     r.post(meta.$express.urls.create, [
+      auth.authorization(),
       auth.has_permission(meta.$express.permissions.create),
       create(meta)
     ]);
@@ -55,6 +58,7 @@ function router(meta) {
     }
 
     r.patch(meta.$express.urls.update, [
+      auth.authorization(),
       auth.has_permission(meta.$express.permissions.update),
       update(meta)
     ]);
@@ -67,6 +71,7 @@ function router(meta) {
 
   if (meta.backend.permissions.delete) {
     r.delete(meta.$express.urls.delete, [
+      auth.authorization(),
       auth.has_permission(meta.$express.permissions.delete),
       destroy(meta)
     ]);

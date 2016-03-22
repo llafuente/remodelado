@@ -19,7 +19,8 @@ exports.config = {
 
   // list of files / patterns to load in the browser
   specs: [
-    'tests-e2e/login.spec.js'
+    'tests-e2e/login.spec.js',
+    'tests-e2e/users.spec.js'
   ],
 
   // Patterns to exclude.
