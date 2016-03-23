@@ -1,0 +1,55 @@
+{
+  "singular": "restricted_model",
+  "backend": {
+    "options": {
+      "collection": "restricted_model"
+    },
+    "permissions": {
+      "read": "Ver retricted test model",
+      "list": "Listar retricted test model",
+      "create": "Crear retricted test model",
+      "update": "Modificar retricted test model",
+      "delete": "Borrar retricted test model"
+    },
+    "schema": {
+      "full_restricted": {
+        "label": "",
+        "type": "String",
+        "restricted": true,
+        "create": true
+      },
+      "perm_restricted": {
+        "label": "First Name",
+        "type": "String",
+        "restricted": {
+          "read": "permission-restricted-read",
+          "create": "permission-restricted-create",
+          "update": "permission-restricted-update"
+        },
+        "create": true,
+        "update": true,
+        "default": "default-value"
+      }
+    }
+  },
+  "frontend": {
+    "navbar": {
+      "label": "Users"
+    },
+    "list": {
+      "perm_restricted": {}
+    },
+    "schema": {
+      "perm_restricted": {
+        "type": "text",
+        "create": false,
+        "update": true
+      },
+      "full_restricted": {
+        "type": "text",
+        "create": false,
+        "update": true
+      }
+    }
+  }
+}

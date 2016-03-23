@@ -44,6 +44,30 @@ function schema_express(meta) {
   // remove __v
   // remove restricted
   var before_send = meta.express.before_send;
+
+  meta.$express.restricted_filter = function restricted_filter(user, method, input) {
+    // restricted: true
+    var output = input;
+    if ("read" === method && blacklist.length) {
+      output = mongoosemask.mask(input, blacklist);
+    }
+
+    var blacklist2 = [];
+
+    meta.$schema.eachPath(function(path, options) {
+      if (options.options.restricted !== undefined && options.options.restricted !== true) {
+        if (!user.has_permission(options.options.restricted[method])) {
+          blacklist2.push(path);
+        }
+      }
+    });
+    if (blacklist2.length) {
+      return mongoosemask.mask(output, blacklist2);
+    }
+
+    return output;
+  }
+
   meta.$express.before_send = function before_send_cb(req, method, output, cb) {
     switch (method) {
     case 'update':
@@ -55,6 +79,7 @@ function schema_express(meta) {
       delete output.__v;
       break;
     case 'list':
+      // TODO review if mongoosemask.mask works with arrays...
       var i;
       for (i = 0; i < output.length; ++i) {
         output[i].id = output[i]._id;
@@ -63,7 +88,8 @@ function schema_express(meta) {
       }
     }
 
-    output = mongoosemask.mask(output, blacklist);
+    // restricted: true | {create,read,update}
+    output = meta.$express.restricted_filter(req.user, "read", output);
 
     if (before_send) {
       return before_send(req, method, output, cb);

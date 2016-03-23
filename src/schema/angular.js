@@ -247,7 +247,7 @@ function each_control(meta, action, cb) {
     }
 
     var client_opt = meta.frontend.schema[path];
-    console.log(path, options, client_opt);
+
     if (!check_action(action, options.options, client_opt)) {
       return;
     }

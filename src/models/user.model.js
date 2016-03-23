@@ -38,6 +38,24 @@ module.exports = function(modelador, config) {
     return encryptPassword(plainText, this.salt) === this.password;
   };
 
+  user.$schema.methods.has_permission = function has_permission(perm) {
+    if (this.permissions.indexOf(perm) === -1) {
+      // look at roles
+      var found = false;
+      var i;
+
+      for (i = 0; i < this.roles.length; ++i) {
+        if (this.roles[i].permissions.indexOf(perm) !== -1) {
+          found = true;
+        }
+      }
+
+      return found;
+    }
+    return true;
+  };
+
+
   // prio:
   // * /users/auth, first so we can always login, even with
   // and invalid session

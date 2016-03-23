@@ -3,7 +3,9 @@
 module.exports = {
   login: login,
   update_bearer: update_bearer,
-  authorization: authorization
+  authorization: authorization,
+  add_user_permissions: add_user_permissions,
+  rem_user_permissions: rem_user_permissions
 };
 
 var request = require('supertest');
@@ -52,4 +54,37 @@ function authorization(username) {
     r.set('authorization', logged[username]);
     return r;
   };
+}
+
+function add_user_permissions(api, username, permissions, callback) {
+  api.models.users.$model.findOne({
+    username: username
+  }, function(err, data) {
+    var i;
+    for (i = 0; i < permissions.length; ++i) {
+      if (data.permissions.indexOf(permissions[i]) === -1) {
+        data.permissions.push(permissions[i]);
+      }
+    }
+
+    data.setRequest({});
+    data.save(callback);
+  });
+}
+
+function rem_user_permissions(api, username, permissions, callback) {
+  api.models.users.$model.findOne({
+    username: username
+  }, function(err, data) {
+    var i, c;
+    for (i = 0; i < permissions.length; ++i) {
+      c = data.permissions.indexOf(permissions[i]);
+      if (c !== -1) {
+        data.permissions.splice(c, 1);
+      }
+    }
+
+    data.setRequest({});
+    data.save(callback);
+  });
 }

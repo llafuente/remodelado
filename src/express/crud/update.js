@@ -5,9 +5,10 @@ module.exports = update_middleware;
 var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
 
-function update(meta, row, data, blacklist, error, ok) {
+function update(meta, user, row, data, blacklist, error, ok) {
   clean_body(meta, data);
   data = mongoosemask.mask(data, blacklist);
+  data = meta.$express.restricted_filter(user, 'update', data);
 
   // TODO review this!
   row.set(data);
@@ -37,7 +38,7 @@ function update_middleware(meta) {
 
   console.log('# update middleware', meta.name, ' blacklist', blacklist);
 
-  return function(req, res, next) {
+  return function(req, res/*, next*/) {
     req.log.info(req.body);
 
     if (Array.isArray(req.body)) {
@@ -59,7 +60,7 @@ function update_middleware(meta) {
 
       row.setRequest(req);
 
-      return update(meta, row, req.body, blacklist, res.error, function(saved_row) {
+      return update(meta, req.user, row, req.body, blacklist, res.error, function(saved_row) {
         meta.$express.before_send(req, 'update', saved_row.toJSON(), function(err, output) {
           /* istanbul ignore next */ if (err) {
             return res.error(err);

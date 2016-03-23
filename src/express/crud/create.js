@@ -10,6 +10,7 @@ function create(meta, req, blacklist, data, error, ok) {
   clean_body(meta, data);
   delete data.__v;
   data = mongoosemask.mask(data, blacklist);
+  data = meta.$express.restricted_filter(req.user, 'create', data);
 
   var entity = new meta.$model(data);
   entity.setRequest(req);

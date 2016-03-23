@@ -23,7 +23,6 @@ test('create user model', function(t) {
       label: 'Administrator'
     }, function(err, role) {
       t.error(err);
-      console.log(role);
       role.permissions = role.permissions
         .concat(_.values(mdl.$express.permissions));
       role.setRequest({});
