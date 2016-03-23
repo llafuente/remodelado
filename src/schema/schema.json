@@ -60,13 +60,13 @@
             "additionalProperties": false,
             "properties": {
               "read": {
-                "type": ["string", "null"]
+                "type": ["string", "boolean"]
               },
               "create": {
-                "type": ["string", "null"]
+                "type": ["string", "boolean"]
               },
               "update": {
-                "type": ["string", "null"]
+                "type": ["string", "boolean"]
               }
             }
           }]

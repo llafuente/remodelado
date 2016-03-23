@@ -56,7 +56,11 @@ function schema_express(meta) {
 
     meta.$schema.eachPath(function(path, options) {
       if (options.options.restricted !== undefined && options.options.restricted !== true) {
-        if (!user.has_permission(options.options.restricted[method])) {
+        if (options.options.restricted[method] === false) {
+          return;
+        }
+
+        if (options.options.restricted[method] === true || !user.has_permission(options.options.restricted[method])) {
           blacklist2.push(path);
         }
       }
