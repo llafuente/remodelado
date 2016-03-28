@@ -82,14 +82,6 @@ function schema_express(meta) {
       delete output._id;
       delete output.__v;
       break;
-    case 'list':
-      // TODO review if mongoosemask.mask works with arrays...
-      var i;
-      for (i = 0; i < output.length; ++i) {
-        output[i].id = output[i]._id;
-        delete output[i] ._id;
-        delete output[i].__v;
-      }
     }
 
     // restricted: true | {create,read,update}

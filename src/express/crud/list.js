@@ -8,6 +8,7 @@ var ValidationError = mongoose.Error.ValidationError;
 var csv_writer = require('csv-write-stream');
 var jsontoxml = require('jsontoxml');
 var exutils = require('../utils.js');
+var _async = require('async');
 
 function list_query(meta, logger, where, sort, limit, offset, populate, error, ok) {
   var query = meta.$model.find({});
@@ -219,9 +220,17 @@ function json_list_query_middleware(meta) {
           return res.error(500, err);
         }
 
-        var list = mlist.map(function(d) { return d.toJSON(); });
+        return _async.map(mlist, function(entity, cb) {
+          entity = entity.toJSON();
 
-        meta.$express.before_send(req, 'list', list, function(err, output_list) {
+          return meta.$express.before_send(req, 'read', entity, function(err, output) {
+            /* istanbul ignore next */ if (err) {
+              return cb(err);
+            }
+
+            cb(null, output);
+          });
+        }, function(err, output_list) {
           /* istanbul ignore next */ if (err) {
             return res.error(err);
           }
@@ -233,7 +242,6 @@ function json_list_query_middleware(meta) {
             list: output_list
           });
         });
-
       });
     });
   };
