@@ -556,7 +556,7 @@ test('http: user not found', function(t) {
   .use(tutils.authorization("admin@admin.com"))
   .expect(404)
   .end(function(err, res) {
-    t.deepEqual(res.body, {"error":"Not found"});
+    t.equal(res.body.error, "Not found");
 
     t.error(err);
     t.end();

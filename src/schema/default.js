@@ -24,4 +24,13 @@ function schema_default(meta) {
   });
 
   meta.plural = pluralize(meta.singular);
+
+  meta.$init = [];
+
+  meta.init = function() {
+    var i;
+    for (i = 0; i < this.$init.length; ++i) {
+      this.$init[i]();
+    }
+  };
 }

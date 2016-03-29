@@ -10,6 +10,8 @@ var list = require('./crud/list.js');
 var create = require('./crud/create.js');
 var update = require('./crud/update.js');
 var destroy = require('./crud/destroy.js');
+var show = require('./crud/show.js');
+var format = require('./crud/format.js');
 var angular = require('./angular.js');
 var auth = require('./authorization.js');
 
@@ -22,7 +24,9 @@ function router(meta) {
     r.get(meta.$express.urls.list, [
       auth.authorization(),
       auth.has_permission(meta.$express.permissions.list),
-      list(meta)
+      list(meta, 'entities'),
+      format(meta, 'entities', 'entities'),
+      show(meta, 200, 'entities')
     ]);
     r.get(meta.$angular.templates.list, angular.list_tpl(meta));
     r.get(meta.$angular.controllers.list, angular.list_ctrl(meta));
@@ -32,7 +36,9 @@ function router(meta) {
     r.get(meta.$express.urls.read, [
       auth.authorization(),
       auth.has_permission(meta.$express.permissions.read),
-      read(meta)
+      read(meta, 'entity'),
+      format(meta, 'entity', 'entity'),
+      show(meta, 200, 'entity')
     ]);
   }
 
@@ -40,7 +46,9 @@ function router(meta) {
     r.post(meta.$express.urls.create, [
       auth.authorization(),
       auth.has_permission(meta.$express.permissions.create),
-      create(meta)
+      create(meta, 'entity'),
+      format(meta, 'entity', 'entity'),
+      show(meta, 201, 'entity')
     ]);
     r.get(meta.$angular.controllers.create, angular.create_ctrl(meta));
     r.get(meta.$angular.templates.create, function(req, res, next) {
@@ -57,7 +65,10 @@ function router(meta) {
     r.patch(meta.$express.urls.update, [
       auth.authorization(),
       auth.has_permission(meta.$express.permissions.update),
-      update(meta)
+      read(meta, 'entity'),
+      update(meta, 'entity', 'entity'),
+      format(meta, 'entity', 'entity'),
+      show(meta, 200, 'entity')
     ]);
     r.get(meta.$angular.controllers.update, angular.update_ctrl(meta));
     r.get(meta.$angular.templates.update, function(req, res, next) {
@@ -70,7 +81,8 @@ function router(meta) {
     r.delete(meta.$express.urls.delete, [
       auth.authorization(),
       auth.has_permission(meta.$express.permissions.delete),
-      destroy(meta)
+      destroy(meta),
+      show(meta, 204)
     ]);
   }
 

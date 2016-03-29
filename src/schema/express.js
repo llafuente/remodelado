@@ -27,6 +27,10 @@ function schema_express(meta) {
       read: `permission-${meta.plural}-read`,
       update: `permission-${meta.plural}-update`,
       delete: `permission-${meta.plural}-delete`,
+    },
+    blacklisted: {
+      create: [],
+      update: []
     }
   };
 
@@ -43,7 +47,7 @@ function schema_express(meta) {
   // rename _id -> id
   // remove __v
   // remove restricted
-  var before_send = meta.express.before_send;
+  var formatter = meta.backend.format;
 
   meta.$express.restricted_filter = function restricted_filter(user, method, input) {
     // restricted: true
@@ -72,25 +76,35 @@ function schema_express(meta) {
     return output;
   };
 
-  meta.$express.before_send = function before_send_cb(req, method, output, cb) {
-    switch (method) {
-    case 'update':
-    case 'create':
-    case 'read':
-      // TODO remove and use an autoincrement
-      output.id = output._id;
-      delete output._id;
-      delete output.__v;
-      break;
-    }
+  meta.$express.formatter = function formatter_db(req, output, cb) {
+    // TODO remove and use an autoincrement
+    output.id = output._id;
+    delete output._id;
+    delete output.__v;
 
     // restricted: true | {create,read,update}
     output = meta.$express.restricted_filter(req.user, 'read', output);
 
-    if (before_send) {
-      return before_send(req, method, output, cb);
+    if (formatter) {
+      return formatter(req, method, output, cb);
     }
 
     cb(null, output);
   };
+
+  meta.$init.push(function create_blacklist() {
+    meta.$schema.eachPath(function(path, options) {
+      if (options.options.create === false) {
+        meta.$express.blacklisted.create.push(path);
+      }
+    });
+  });
+
+  meta.$init.push(function update_blacklist() {
+    meta.$schema.eachPath(function(path, options) {
+      if (options.options.update === false) {
+        meta.$express.blacklisted.update.push(path);
+      }
+    });
+  });
 }

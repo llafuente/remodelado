@@ -56,6 +56,35 @@ module.exports = function(modelador, config) {
     return true;
   };
 
+  // TODO do it!
+  user.$schema.methods.filter_query = function filter_query(query, cb) {
+    if (!this.populated('roles')) {
+      this.populate('roles', function(err, user) {
+        if (err) {
+          return cb(err);
+        }
+
+        user.filter_query(query, cb);
+      });
+    }
+    /*
+    if (!this.populated('groups')) {
+      this.populate('groups', function(err, user) {
+        if (err) {
+          return cb(err);
+        }
+
+        user.filter_query(query, cb)
+      })
+    }
+    */
+
+    //var roles = this.populated('roles');
+    //query.in(groups, this.populated('groups'));
+
+    return cb(null, query);
+  };
+
 
   // prio:
   // * /users/auth, first so we can always login, even with
@@ -141,7 +170,7 @@ module.exports = function(modelador, config) {
     }
 
     var u = req.user.toJSON();
-    user.$express.before_send(req, 'read', u, function(err, output) {
+    user.$express.formatter(req, u, function(err, output) {
       res.status(200).json(output);
     });
   });

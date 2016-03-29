@@ -160,6 +160,7 @@ test('http: create without perm', function(t) {
   })
   .expect(201)
   .end(function(err, res) {
+    t.type(res.body.id, "string", "id defined an string");
     entity_id = res.body.id;
 
     t.equal(res.body.full_restricted, undefined, "full_restricted is not exposed");

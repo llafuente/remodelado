@@ -8,7 +8,8 @@ var ValidationError = mongoose.Error.ValidationError;
 var csv_writer = require('csv-write-stream');
 var jsontoxml = require('jsontoxml');
 var exutils = require('../utils.js');
-var _async = require('async');
+var Pagination = require('./pagination.js');
+
 
 function list_query(meta, logger, where, sort, limit, offset, populate, next) {
   var query = meta.$model.find({});
@@ -210,7 +211,7 @@ function list_query_builder_middleware(meta) {
   };
 }
 
-function json_list_query_middleware(meta) {
+function json_list_query_middleware(meta, store_at) {
   return function(req, res, next) {
     req.log.silly('json_list_query_middleware');
     req.list.query.exec(function(err, mlist) {
@@ -223,28 +224,8 @@ function json_list_query_middleware(meta) {
           return next(err);
         }
 
-        return _async.map(mlist, function(entity, cb) {
-          entity = entity.toJSON();
-
-          return meta.$express.before_send(req, 'read', entity, function(err, output) {
-            /* istanbul ignore next */ if (err) {
-              return cb(err);
-            }
-
-            cb(null, output);
-          });
-        }, function(err, output_list) {
-          /* istanbul ignore next */ if (err) {
-            return next(err);
-          }
-
-          res.status(200).json({
-            count: count,
-            offset: req.list.offset,
-            limit: req.list.limit,
-            list: output_list
-          });
-        });
+        req[store_at] = new Pagination(count, req.list.offset, req.list.limit, mlist);
+        return next();
       });
     });
   };
@@ -280,7 +261,7 @@ function csv_list_query_middleware(meta) {
       return req.list.query
       .stream()
       .on('data', function(d) {
-        meta.$express.before_send(req, 'read', d, function(err, fd) {
+        meta.$express.formatter(req, d, function(err, fd) {
           writer.write(fd);
         });
       })
@@ -313,7 +294,7 @@ function xml_list_query_middleware(meta) {
       return req.list.query
       .stream()
       .on('data', function(d) {
-        meta.$express.before_send(req, 'read', d, function(err, fd) {
+        meta.$express.formatter(req, d, function(err, fd) {
           var obj = {};
           // properly handled id as string
           obj[meta.singular] = JSON.parse(JSON.stringify(fd));
@@ -341,11 +322,11 @@ function xml_list_query_middleware(meta) {
   };
 }
 
-function list_middleware(meta) {
+function list_middleware(meta, store_at) {
   return  [
     list_query_builder_middleware(meta),
     csv_list_query_middleware(meta),
     xml_list_query_middleware(meta),
-    json_list_query_middleware(meta),
+    json_list_query_middleware(meta, store_at),
   ];
 }

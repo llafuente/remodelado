@@ -64,7 +64,7 @@ function schema_mongoose(meta, mongoose, models) {
     next();
   });
 
-  meta.init = function() {
+  meta.$init.push(function() {
     meta.$model = mongoose.model(meta.plural, meta.$schema);
     _.each(meta.backend.permissions, function(v, k) {
       if (v) {
@@ -84,8 +84,7 @@ function schema_mongoose(meta, mongoose, models) {
         });
       }
     });
-
-  };
+  });
 
   // TODO add a version plugin
 }
