@@ -10,7 +10,7 @@ var jsontoxml = require('jsontoxml');
 var exutils = require('../utils.js');
 var _async = require('async');
 
-function list_query(meta, logger, where, sort, limit, offset, populate, error, ok) {
+function list_query(meta, logger, where, sort, limit, offset, populate, next) {
   var query = meta.$model.find({});
   var qcount = (query.toConstructor())().count();
   var path;
@@ -29,7 +29,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         value: where,
         value_type: 'json_string',
       };
-      return error(400, err);
+      return next(err);
     }
   } else if ('object' === typeof where) {
     where = where;
@@ -51,7 +51,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
       value: offset,
       value_type: 'number',
     };
-    return error(400, err);
+    return next(err);
   }
 
   if (offset) {
@@ -67,7 +67,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
       value: limit,
       value_type: 'number',
     };
-    return error(400, err);
+    return next(err);
   }
 
 
@@ -90,7 +90,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         value: path,
         value_type: 'string',
       };
-      return error(400, err);
+      return next(err);
     }
 
     if (options.options.restricted) {
@@ -102,7 +102,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         value: path,
         value_type: 'string',
       };
-      return error(400, err);
+      return next(err);
     }
   }
 
@@ -117,7 +117,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
       type: 'invalid-populate',
       value: populate,
     };
-    return error(400, err);
+    return next(err);
   }
 
   for (i = 0; i < populate.length; ++i) {
@@ -131,7 +131,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         type: 'invalid-populate',
         value: path,
       };
-      return error(400, err);
+      return next(err);
     }
 
     if (!exutils.type_can_be_populated(options.options.type)) {
@@ -142,7 +142,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         type: 'invalid-populate',
         value: path,
       };
-      return error(400, err);
+      return next(err);
     }
 
     if (options.options.restricted) {
@@ -153,7 +153,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         type: 'invalid-populate',
         value: path,
       };
-      return error(400, err);
+      return next(err);
     }
 
     query.populate(path);
@@ -170,13 +170,13 @@ function list_query(meta, logger, where, sort, limit, offset, populate, error, o
         type: 'invalid-where',
         value: path,
       };
-      return error(400, err);
+      return next(err);
     }
     query = query.where(path).equals(where[path]);
     qcount = qcount.where(path).equals(where[path]);
   }
 
-  return ok(query, qcount, limit, offset);
+  return next(null, query, qcount, limit, offset);
 }
 
 function list_query_builder_middleware(meta) {
@@ -192,8 +192,11 @@ function list_query_builder_middleware(meta) {
       req.query.offset,
       req.query.populate,
 
-      res.error,
-      function build_query_ok(query, qcount, limit, offset) {
+      function build_query_ok(err, query, qcount, limit, offset) {
+        if (err) {
+          return next(err);
+        }
+
         req.log.silly('build_query_ok');
         req.list = {
           query: query,
@@ -208,16 +211,16 @@ function list_query_builder_middleware(meta) {
 }
 
 function json_list_query_middleware(meta) {
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     req.log.silly('json_list_query_middleware');
     req.list.query.exec(function(err, mlist) {
       /* istanbul ignore next */ if (err) {
-        return res.error(500, err);
+        return next(err);
       }
 
       req.list.qcount.exec(function(err, count) {
         /* istanbul ignore next */ if (err) {
-          return res.error(500, err);
+          return next(err);
         }
 
         return _async.map(mlist, function(entity, cb) {
@@ -232,7 +235,7 @@ function json_list_query_middleware(meta) {
           });
         }, function(err, output_list) {
           /* istanbul ignore next */ if (err) {
-            return res.error(err);
+            return next(err);
           }
 
           res.status(200).json({

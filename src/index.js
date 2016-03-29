@@ -14,7 +14,6 @@ var schema_mongoose = require('./schema/mongoose.js');
 var schema_express = require('./schema/express.js');
 
 var express = require('express');
-var error_handler = require('./express/error-handler.js');
 
 //
 // configure mongoose errors
@@ -51,8 +50,6 @@ function Modelador(config, _mongoose) {
 
 
   this.$router = express.Router();
-  // error-handler
-  this.$router.use(error_handler.middleware({}));
 
   this.$router.use(user.$router);
   this.$router.use(permissions.$router);

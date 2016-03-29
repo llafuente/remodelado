@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var jwt = require('express-jwt/node_modules/jsonwebtoken');
 var ex_jwt = require('express-jwt');
 var express = require('express');
+var http_error = require('../express/http.error.js');
 
 function makeSalt() {
   return crypto.randomBytes(16).toString('base64');
@@ -64,19 +65,19 @@ module.exports = function(modelador, config) {
   // * the rest
   var r = express.Router();
 
-  r.post('/users/auth', function(req, res/*, next*/) {
+  r.post('/users/auth', function(req, res, next) {
 
     user.$model.findOne({
       username: req.body.username
     }, function(err, user) {
-      // TODO res.error doesn't exist!
       if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       if (!user || !user.authenticate(req.body.password)) {
-        return res.error(422, 'User not found or invalid pasword');
+        return next(new http_error(422, 'user not found or invalid pasword'));
       }
+
       res.status(200).json({
         'token': jwt.sign({
           id: user._id.toString(),
@@ -117,7 +118,7 @@ module.exports = function(modelador, config) {
       .populate('roles')
       .exec(function(err, dbuser) {
         if (err || !dbuser) {
-          return res.error(401, 'Regenerate session failed');
+          return next(new http_error(401, 'regenerate session failed'));
         }
 
         req.user = dbuser;

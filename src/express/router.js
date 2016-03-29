@@ -16,9 +16,6 @@ var auth = require('./authorization.js');
 function router(meta) {
   var r = express.Router();
 
-  //crud
-  r.use(error_handler.middleware(meta));
-
   // api
 
   if (meta.backend.permissions.list) {
@@ -79,6 +76,11 @@ function router(meta) {
 
   // angular
   r.get(meta.$angular.configuration, angular.configuration(meta));
+
+  // error-handler
+  r.use(function(err, req, res, next) {
+    return error_handler(err, req, res, meta.$schema, next);
+  });
 
   return r;
 }

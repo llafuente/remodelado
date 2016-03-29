@@ -16,13 +16,13 @@ var form = require('../angular/form.js');
 function configuration_middleware(meta) {
   console.log('# configuration_middleware', meta.singular);
 
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     var base_state = req.query.base_state || null;
     var app_name = req.query.app || 'app';
 
     controllers.configuration(meta, app_name, base_state, function(err, js_text) {
       /* istanbul ignore next */ if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       req.log.silly('return js generated');
@@ -37,7 +37,7 @@ function configuration_middleware(meta) {
 function forms_middleware(meta) {
   console.log('# forms_middleware', meta.singular);
 
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     req.log.silly('create_form', meta.singular);
     var action = req.query.action || 'create';
     var layout = req.query.layout || 'horizontal';
@@ -50,7 +50,7 @@ function forms_middleware(meta) {
 
     form(meta, action, button, layout, 'form', 'entity', function(err, html) {
       /* istanbul ignore next */ if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       req.log.silly('return form generated');
@@ -62,12 +62,12 @@ function forms_middleware(meta) {
 function list_tpl_middleware(meta) {
   console.log('# list_tpl_middleware', meta.singular);
 
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     req.log.silly('list.html', meta.singular);
 
     templates.list(meta, null, function(err, html) {
       /* istanbul ignore next */ if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       req.log.silly('return list.html generated');
@@ -79,13 +79,13 @@ function list_tpl_middleware(meta) {
 function list_ctrl_middleware(meta) {
   console.log('# list_ctrl_middleware', meta.singular);
 
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     req.log.silly('list.js', meta.singular);
     var app_name = req.query.app || 'app';
 
     controllers.list_ctrl(meta, app_name, function(err, html) {
       /* istanbul ignore next */ if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       req.log.silly('return list.js generated');
@@ -97,13 +97,13 @@ function list_ctrl_middleware(meta) {
 function create_ctrl_middleware(meta) {
   console.log('# create_ctrl_middleware', meta.singular);
 
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     req.log.silly('create.js', meta.singular);
     var app_name = req.query.app || 'app';
 
     controllers.create_ctrl(meta, app_name, function(err, html) {
       /* istanbul ignore next */ if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       req.log.silly('return create.js generated');
@@ -115,13 +115,13 @@ function create_ctrl_middleware(meta) {
 function update_ctrl_middleware(meta) {
   console.log('# update_ctrl_middleware', meta.singular);
 
-  return function(req, res/*, next*/) {
+  return function(req, res, next) {
     req.log.silly('update.js', meta.singular);
     var app_name = req.query.app || 'app';
 
     controllers.update_ctrl(meta, app_name, function(err, html) {
       /* istanbul ignore next */ if (err) {
-        return res.error(err);
+        return next(err);
       }
 
       req.log.silly('return update.js generated');

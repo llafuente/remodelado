@@ -48,7 +48,7 @@ function schema_express(meta) {
   meta.$express.restricted_filter = function restricted_filter(user, method, input) {
     // restricted: true
     var output = input;
-    if ("read" === method && blacklist.length) {
+    if ('read' === method && blacklist.length) {
       output = mongoosemask.mask(input, blacklist);
     }
 
@@ -70,7 +70,7 @@ function schema_express(meta) {
     }
 
     return output;
-  }
+  };
 
   meta.$express.before_send = function before_send_cb(req, method, output, cb) {
     switch (method) {
@@ -85,7 +85,7 @@ function schema_express(meta) {
     }
 
     // restricted: true | {create,read,update}
-    output = meta.$express.restricted_filter(req.user, "read", output);
+    output = meta.$express.restricted_filter(req.user, 'read', output);
 
     if (before_send) {
       return before_send(req, method, output, cb);

@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = error_handler;
-module.exports.middleware = middleware;
 
 var mongoose = require('mongoose');
 var ValidationError = mongoose.Error.ValidationError;
@@ -9,7 +8,7 @@ var CastError = mongoose.Error.CastError;
 var _ = require('lodash');
 var forEach = _.forEach;
 var clone = _.clone;
-var domain = require('domain');
+var HttpError = require('./http.error.js');
 
 function mongoose_to_readable(schema, err, path) {
   var value = clone(err);
@@ -73,6 +72,8 @@ function error_handler(err, req, res, schema) {
     });
 
     return res.status(400).json({error: errors});
+  } else if (err instanceof HttpError) {
+    return res.status(err.status).json({error: err.message});
   }
 
   if (err.status) {
@@ -85,36 +86,4 @@ function error_handler(err, req, res, schema) {
 
   req.log.silly('Exception');
   return res.status(500).json({error: err.message});
-}
-
-function middleware(meta) {
-  return function(req, res, next) {
-    res.error = function(err, message) {
-      if (arguments.length === 2) {
-        if (message instanceof Error) {
-          message.status = err;
-          return error_handler(message, req, res, meta.$schema);
-        }
-        err = {status: err, message: message};
-      }
-
-      return error_handler(err, req, res, meta.$schema);
-    };
-/* TODO this let the process die atm
-    var d = domain.create();
-    d.on('error', function(err) {
-      req.log.info('(domain error)');
-      req.log.info(err);
-      console.log("err --> ", err);
-      err.status = 500;
-      return error_handler(err, req, res, meta.$schema);
-    });
-
-    d.run(function() {
-      req.log.info('(domain start)');
-      next();
-    });
-*/
-    next();
-  };
 }

@@ -5,8 +5,9 @@ module.exports.create = create;
 
 var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
+var http_error = require('../http.error.js');
 
-function create(meta, req, blacklist, data, error, ok) {
+function create(meta, req, blacklist, data, next) {
   clean_body(meta, data);
   delete data.__v;
   data = mongoosemask.mask(data, blacklist);
@@ -17,15 +18,15 @@ function create(meta, req, blacklist, data, error, ok) {
 
   return entity.save(function(err, mdata) {
     if (err) {
-      return error(err);
+      return next(err);
     }
 
     /* istanbul ignore next */
     if (!mdata) {
-      return error(500, 'database don\'t return data');
+      return next(new http_error(500, 'database don\'t return data'));
     }
 
-    ok(mdata);
+    next(null, mdata);
   });
 }
 
@@ -44,22 +45,24 @@ function create_middleware(meta) {
     req.log.info(req.body);
 
     if (Array.isArray(req.body)) {
-      return res.error(422, 'body is an array');
+      return next(new http_error(422, 'body is an array'));
     }
 
-    return create(meta, req, blacklist, req.body, res.error, function(mdata) {
-      req.log.info('created ok');
+    return create(meta, req, blacklist, req.body, function(err, mdata) {
+      /* istanbul ignore next */ if (err) {
+        return next(err);
+      }
 
       var data = mdata.toJSON();
+      req.log.info('created ok');
 
       meta.$express.before_send(req, 'create', data, function(err, output) {
         /* istanbul ignore next */ if (err) {
-          return res.error(err);
+          return next(err);
         }
 
         res.status(201).json(output);
       });
-
     });
   };
 }

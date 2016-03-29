@@ -6,10 +6,15 @@ module.exports = {
   has_role: has_role
 };
 
+var http_error = require('./http.error.js');
+
+// NOTE every middleware has an err parameter
+// NOTE use it to be less specific about the nature of the error
+
 function authorization(err) {
   return function require_authorization(req, res, next) {
     if (!req.user) {
-      return res.error(403, err || new Error('Authorization is required'));
+      return next(err || new http_error(403, 'Authorization is required'));
     }
 
     return next();
@@ -23,25 +28,24 @@ function has_permission(perm, err) {
 
   return function must_have_permission(req, res, next) {
     if (!req.user) {
-      res.error(403, new Error('Authorization is required'));
+      return next(err || new http_error(403, 'Authorization is required'));
     }
 
     if (!req.user.permissions) {
-      res.error(500, new Error('Invalid user'));
+      return next(err || new http_error(403, 'Invalid user'));
     }
 
     // check @permissions and @roles.permissions
     var i;
     for (i = 0; i < perm.length; ++i) {
       if (!req.user.has_permission(perm[i])) {
-        return res.error(403, err || new Error(['Access Denied', 'Permission required', perm[i]]));
+        return next(err || new http_error(403, ['Access Denied', 'Permission required', perm[i]]));
       }
     }
 
     return next();
   };
 }
-
 
 function has_role(role, err) {
   if (!Array.isArray(role)) {
@@ -50,17 +54,17 @@ function has_role(role, err) {
 
   return function must_have_role(req, res, next) {
     if (!req.user) {
-      res.error(403, new Error('Authorization is required'));
+      return next(err || new http_error(403, 'Authorization is required'));
     }
 
     if (!req.user.roles) {
-      res.error(500, new Error('Invalid user'));
+      return next(err || new http_error(403, 'Invalid user'));
     }
 
     var i;
     for (i = 0; i < role.length; ++i) {
       if (req.user.roles.indexOf(role[i]) === -1) {
-        return res.error(403, err || new Error(['Access Denied', 'Role required', role[i]]));
+        return next(err || new http_error(403, ['Access Denied', 'Role required', role[i]]));
       }
     }
 
