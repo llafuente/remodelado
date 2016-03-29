@@ -94,7 +94,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, next) {
       return next(err);
     }
 
-    if (options.options.restricted) {
+    if (options.options.restricted.read) {
       err = new ValidationError(null);
       err.errors.sort = {
         path: 'query:sort',
@@ -146,7 +146,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, next) {
       return next(err);
     }
 
-    if (options.options.restricted) {
+    if (options.options.restricted.read) {
       err = new ValidationError(null);
       err.errors.populate = {
         path: 'query:populate',

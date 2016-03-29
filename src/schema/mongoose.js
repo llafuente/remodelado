@@ -65,6 +65,16 @@ function schema_mongoose(meta, mongoose, models) {
   });
 
   meta.$init.push(function() {
+    meta.$schema.eachPath(function(path, options) {
+      // if dont have restricted, are internal!
+      // default are set before...
+      options.options.restricted = options.options.restricted || {
+        read: false,
+        create: true,
+        update: true
+      };
+    });
+
     meta.$model = mongoose.model(meta.plural, meta.$schema);
     _.each(meta.backend.permissions, function(v, k) {
       if (v) {

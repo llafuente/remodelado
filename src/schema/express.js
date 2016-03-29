@@ -34,15 +34,6 @@ function schema_express(meta) {
     }
   };
 
-  // common cleanup before send
-  var blacklist = [];
-
-  meta.$schema.eachPath(function(path, options) {
-    if (options.options.restricted === true) {
-      blacklist.push(path);
-    }
-  });
-
   // use the user one after our common clean up
   // rename _id -> id
   // remove __v
@@ -52,23 +43,20 @@ function schema_express(meta) {
   meta.$express.restricted_filter = function restricted_filter(user, method, input) {
     // restricted: true
     var output = input;
-    if ('read' === method && blacklist.length) {
-      output = mongoosemask.mask(input, blacklist);
-    }
 
     var blacklist2 = [];
 
     meta.$schema.eachPath(function(path, options) {
-      if (options.options.restricted !== undefined && options.options.restricted !== true) {
-        if (options.options.restricted[method] === false) {
-          return;
-        }
+      var ref = options.options.restricted[method];
+      if (ref === false) {
+        return;
+      }
 
-        if (options.options.restricted[method] === true || !user.has_permission(options.options.restricted[method])) {
-          blacklist2.push(path);
-        }
+      if (ref === true || !user.has_permission(ref)) {
+        blacklist2.push(path);
       }
     });
+    console.log(output);
     if (blacklist2.length) {
       return mongoosemask.mask(output, blacklist2);
     }

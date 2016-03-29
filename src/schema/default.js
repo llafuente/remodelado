@@ -8,7 +8,12 @@ var pluralize = require('pluralize');
 var default_schema = {
   type: 'String',
   create: false,
-  update: false
+  update: false,
+  restricted: {
+    create: false,
+    update: false,
+    read: false
+  }
 };
 
 function schema_default(meta) {
@@ -21,6 +26,15 @@ function schema_default(meta) {
     } else {
       meta.backend.schema[k] = o;
     }
+
+    if (meta.backend.schema[k].restricted === true) {
+      meta.backend.schema[k].restricted = {
+        create: false,
+        update: false,
+        read: true
+      };
+    }
+    console.log(meta.backend.schema[k]);
   });
 
   meta.plural = pluralize(meta.singular);
