@@ -15,8 +15,11 @@
       "full_restricted": {
         "label": "",
         "type": "String",
-        "restricted": true,
-        "create": true
+        "restricted": {
+          "read": true,
+          "create": false,
+          "update": true
+        }
       },
       "perm_restricted": {
         "label": "First Name",
@@ -26,8 +29,6 @@
           "create": "permission-restricted-create",
           "update": "permission-restricted-update"
         },
-        "create": true,
-        "update": true,
         "default": "default-value"
       }
     }
@@ -42,12 +43,12 @@
     "schema": {
       "perm_restricted": {
         "type": "text",
-        "create": false,
+        "create": true,
         "update": true
       },
       "full_restricted": {
         "type": "text",
-        "create": false,
+        "create": true,
         "update": true
       }
     }

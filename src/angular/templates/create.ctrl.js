@@ -5,6 +5,7 @@ angular
 .controller('<%= controllers.create_ctrl %>', function ($rootScope, $scope, $http, $state, confirmStateExit, $log, $injector) {
   confirmStateExit($scope, "form.$dirty && !submitted");
 
+  $scope.crud_action = 'create';
   $scope.entity = {
   }; // TODO defaults!
 

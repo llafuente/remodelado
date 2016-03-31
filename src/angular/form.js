@@ -6,12 +6,13 @@ var assert = require('assert');
 var jade = require('jade');
 var join = require('path').join;
 var $angular = require('../schema/angular.js');
+var schema_utils = require("../schema/utils.js");
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
 var fs = require('fs');
 
 // TODO cache compiled
-function gen_control(control, path, form_path, base_path, layout, cb) {
+function gen_control(control, backend, form_path, base_path, action, layout, cb) {
   var file = join(__dirname, 'controls', 'control-' + control.type + '.jade');
   fs.readFile(file, {encoding: 'utf-8'}, function(err, data) {
     /* istanbul ignore next */ if (err) {
@@ -35,7 +36,9 @@ function gen_control(control, path, form_path, base_path, layout, cb) {
         control_path: form_path + '.' + control.name,
         model: base_path + '.' + control.name,
 
-        control: control
+        action: action,
+        control: control,
+        backend: backend
       });
       return cb(null, html);
     } catch (e) {
@@ -51,14 +54,18 @@ function form(meta, action, button, layout, form_path, base_path, cb) {
   form_path = form_path || 'form';
   base_path = base_path || 'entity';
 
+  console.log("generate", arguments);
+
   var controls = [];
   var errors = [];
   var todo = 0;
 
   $angular.each_control(meta, action, function(client_opt, path) {
-    ++todo;
+    console.log("generate", path);
 
-    gen_control(client_opt, path, form_path, base_path, layout, function(err, html) {
+    ++todo;
+    var server_opt = schema_utils.get_path_options(meta, path);
+    gen_control(client_opt, server_opt, form_path, base_path, action, layout, function(err, html) {
       --todo;
 
       if (err) {

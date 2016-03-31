@@ -39,6 +39,8 @@ function forms_middleware(meta) {
 
   return function(req, res, next) {
     req.log.silly('create_form', meta.singular);
+    req.log.silly(req.query);
+
     var action = req.query.action || 'create';
     var layout = req.query.layout || 'horizontal';
 
@@ -47,6 +49,7 @@ function forms_middleware(meta) {
     }
 
     var button = meta.frontend.buttons[req.query.action];
+    req.log.silly(button);
 
     form(meta, action, button, layout, 'form', 'entity', function(err, html) {
       /* istanbul ignore next */ if (err) {

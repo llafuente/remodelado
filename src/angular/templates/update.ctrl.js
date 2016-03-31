@@ -5,6 +5,7 @@ angular
 .controller('<%= controllers.update_ctrl %>', function ($rootScope, $scope, $http, entity, $state, $stateParams, confirmStateExit, $log, $injector) {
   confirmStateExit($scope, "form.$dirty && !submitted");
 
+  $scope.crud_action = 'update';
   $scope.entity = entity;
   $scope.submitted = false;
   $scope.submitting = false;

@@ -9,9 +9,10 @@ var csv_writer = require('csv-write-stream');
 var jsontoxml = require('jsontoxml');
 var exutils = require('../utils.js');
 var Pagination = require('./pagination.js');
+var schema_utils = require("../../schema/utils.js");
 
 
-function list_query(meta, logger, where, sort, limit, offset, populate, next) {
+function list_query(meta, logger, user, where, sort, limit, offset, populate, next) {
   var query = meta.$model.find({});
   var qcount = (query.toConstructor())().count();
   var path;
@@ -94,7 +95,9 @@ function list_query(meta, logger, where, sort, limit, offset, populate, next) {
       return next(err);
     }
 
-    if (options.options.restricted.read) {
+    console.log("list-sort", path, schema_utils.is_path_restricted(meta, path, 'read', user));
+
+    if (schema_utils.is_path_restricted(meta, path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.sort = {
         path: 'query:sort',
@@ -146,7 +149,7 @@ function list_query(meta, logger, where, sort, limit, offset, populate, next) {
       return next(err);
     }
 
-    if (options.options.restricted.read) {
+    if (schema_utils.is_path_restricted(meta, path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.populate = {
         path: 'query:populate',
@@ -186,6 +189,7 @@ function list_query_builder_middleware(meta) {
     list_query(
       meta,
       req.log,
+      req.user,
 
       req.query.where,
       req.query.sort,

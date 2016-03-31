@@ -71,6 +71,7 @@ test('login as admin', function(t) {
     .send(u)
     .expect(201)
     .end(function(err, res) {
+      console.log(res.body);
       t.type(res.body.id, "string", "id type");
       t.type(res.body.first_name, "string", "first_name type");
       t.type(res.body.last_name, "string", "last_name type");
@@ -215,9 +216,10 @@ test('http: get update user form', function(t) {
   .get("/angular/test_models.update.tpl.html")
   .expect(200)
   .end(function(err, res) {
+    console.log(res.text);
     var $ = cheerio.load(res.text);
     // bio cannot be updated! -1
-    t.equal($(".control-container").toArray().length, 5);
+    t.equal($(".control-container").toArray().length, 4);
 
     t.error(err);
     t.end();

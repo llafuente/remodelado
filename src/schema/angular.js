@@ -29,6 +29,7 @@ var err_messages = {
 
 
 var _ = require('lodash');
+var schema_utils = require("./utils.js");
 
 function __build_labels(meta, back_field, front_field) {
   // build labels array
@@ -112,8 +113,9 @@ function schema_angular(meta) {
     }
 
     var front_field = meta.frontend.schema[k];
+    var container;
     front_field.constraints = front_field.constraints || {};
-    front_field.container = front_field.container || {};
+    front_field.container = container = front_field.container || {};
     front_field.errors = front_field.errors || {};
 
     // cp label/name
@@ -145,7 +147,34 @@ function schema_angular(meta) {
 
     __build_labels(meta, o, front_field);
 
-    front_field.container.class = Object.keys(front_field.constraints);
+    container.class = Object.keys(front_field.constraints);
+
+    //
+    // handle restricted fields
+    //
+    if (container['ng-if']) {
+      throw new Error("ng-if use is still internal for restricted. use ng-show")
+    }
+
+    // NOTE do not check current user permissions!
+    // this could be cached
+    container['ng-if'] = [];
+    ["create", "update"].forEach(function(action) {
+      if ("string" === typeof o.restricted[action]) {
+        container['ng-if'].push(
+          "(crud_action == '" + action + "' && " +
+          "Auth.hasPermissions('" +
+            o.restricted[action] +
+          "'))"
+        );
+      }
+    });
+
+    if (container['ng-if'].length) {
+      container['ng-if'] = container['ng-if'].join(" || ")
+    } else {
+      delete container['ng-if'];
+    }
   });
 
   meta.frontend.buttons = meta.frontend.buttons || {};
@@ -195,38 +224,33 @@ function schema_angular(meta) {
   };
 }
 
-function check_action(action, model_opt, client_opt) {
+function check_action(action, back_opt, client_opt) {
   // internal values like __v
   // or fields that aren't exposed to angular
   if (!client_opt) {
     return false;
   }
-  // if it has no type, can be displayed!
+  // if it has no type, can't be displayed!
   if (!client_opt.type) {
     return false;
   }
 
   // fallback to api?
-  if (client_opt[action] === undefined) {
-    return !!model_opt[action];
-  }
-
-  return !!client_opt[action];
+  return back_opt.restricted[action] !== true;
 }
 
 // TODO fallback to api?!
 function each_control_sorted(meta, action) {
   var controls = [];
 
-  meta.$schema.eachPath(function(path) {
+  schema_utils.each_path(meta, function(path, back_opt, front_opt) {
     // ignore private
     if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;
     }
 
-    var client_opt = meta.frontend.schema[path];
-    if (client_opt && client_opt[action]) {
-      controls.push(client_opt);
+    if (front_opt && front_opt[action]) {
+      controls.push(front_opt);
     }
   });
 
@@ -235,24 +259,16 @@ function each_control_sorted(meta, action) {
   });
 }
 function each_control(meta, action, cb) {
-  meta.$schema.eachPath(function(path, options) {
+  schema_utils.each_path(meta, function(path, back_opt, front_opt) {
     // ignore private
     if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;
     }
-
-    // fix: [ObjectId]
-    if (options.instance == 'Array') {
-      options = options.caster;
-    }
-
-    var client_opt = meta.frontend.schema[path];
-
-    if (!check_action(action, options.options, client_opt)) {
+    if (!check_action(action, back_opt.options, front_opt)) {
       return;
     }
 
     // TODO this could be a problem because it's not one-one relation
-    cb(client_opt, path);
+    cb(front_opt, path);
   });
 }

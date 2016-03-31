@@ -16,30 +16,34 @@
         "label": "ID",
 
         "type": "Number",
-        "create": false,
-        "update": false
+        "restricted": {
+          "read": false,
+          "update": true,
+          "create": true
+        }
       },
       "restricted_field": {
         "label": "",
         "type": "Number",
-        "restricted": true,
-        "create": true
+        "restricted": {
+          "read": true,
+          "update": true,
+          "create": false
+        }
       },
       "first_name": {
         "label": "First Name",
 
         "type": "String",
         "required": true,
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "last_name": {
         "label": "Last name",
 
         "type": "String",
         "required": true,
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "role": {
         "label": "Role",
@@ -47,22 +51,23 @@
         "type": "String",
         "enum": ["admin", "user"],
         "labels": ["Admin", "User"],
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "age": {
         "label": "Age",
 
         "type": "Number",
-        "create": true,
-        "update": false
+        "restricted": false
       },
       "bio": {
         "label": "About myself",
 
         "type": "String",
-        "create": true,
-        "update": true,
+        "restricted": {
+          "create": false,
+          "read": false,
+          "update": true
+        },
         "default": null
       }
     }

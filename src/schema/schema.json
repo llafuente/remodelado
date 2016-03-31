@@ -71,12 +71,6 @@
             }
           }]
         },
-        "create": {
-          "type": "boolean"
-        },
-        "update": {
-          "type": "boolean"
-        },
         "enum": {
           "type": "array"
         },

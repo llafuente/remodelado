@@ -3,7 +3,6 @@ section#update
     fieldset
       legend(translate="")= legend
       each c in controls
-        // TODO this should be a div ?
         span!= c
       div.clearfix
         button.btn.btn-primary.btn-update(type=button ng-click=name + ".$valid ? submit() : null" ng-hide="submitting" ng-disabled=name + ".$invalid")
@@ -11,7 +10,6 @@ section#update
           span(translate="")= button.text
         span.btn.btn-secondary(translate="" ng-show="submitting")= button.inprogress
       div.clearfix
-      //pre= '{{' + name + ' | json}}'
       div.row
         div.col-xs-4
           pre= '{{' + name + ' | json}}'
@@ -27,4 +25,3 @@ section#update
           span.btn= 'submitting: {{submitting | json}}'
         div.col-xs-4
           pre entity = {{entity | json}}
-          

@@ -4,6 +4,7 @@ module.exports = schema_express;
 
 var mongoosemask = require('mongoosemask');
 var j = require('path').join;
+var schema_utils = require("./utils.js");
 
 function schema_express(meta) {
   meta.express = meta.express || {};
@@ -40,13 +41,13 @@ function schema_express(meta) {
   // remove restricted
   var formatter = meta.backend.format;
 
-  meta.$express.restricted_filter = function restricted_filter(user, method, input) {
+  meta.$express.restricted_filter = function restricted_filter(log, user, method, input) {
     // restricted: true
     var output = input;
 
     var blacklist2 = [];
 
-    meta.$schema.eachPath(function(path, options) {
+    schema_utils.each_path(meta, function(path, options) {
       var ref = options.options.restricted[method];
       if (ref === false) {
         return;
@@ -56,8 +57,9 @@ function schema_express(meta) {
         blacklist2.push(path);
       }
     });
-    console.log(output);
+
     if (blacklist2.length) {
+      log.silly("restricted fields", blacklist2);
       return mongoosemask.mask(output, blacklist2);
     }
 
@@ -71,7 +73,7 @@ function schema_express(meta) {
     delete output.__v;
 
     // restricted: true | {create,read,update}
-    output = meta.$express.restricted_filter(req.user, 'read', output);
+    output = meta.$express.restricted_filter(req.log, req.user, 'read', output);
 
     if (formatter) {
       return formatter(req, method, output, cb);
@@ -79,20 +81,4 @@ function schema_express(meta) {
 
     cb(null, output);
   };
-
-  meta.$init.push(function create_blacklist() {
-    meta.$schema.eachPath(function(path, options) {
-      if (options.options.create === false) {
-        meta.$express.blacklisted.create.push(path);
-      }
-    });
-  });
-
-  meta.$init.push(function update_blacklist() {
-    meta.$schema.eachPath(function(path, options) {
-      if (options.options.update === false) {
-        meta.$express.blacklisted.update.push(path);
-      }
-    });
-  });
 }

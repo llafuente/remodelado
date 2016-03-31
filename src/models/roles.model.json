@@ -17,22 +17,23 @@
         "label": "ID",
 
         "type": "Number",
-        "create": false,
-        "update": false
+        "restricted": {
+          "create": true,
+          "update": true,
+          "read": false
+        }
       },
       "label": {
         "label": "Label",
         "type": "String",
         "required": true,
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "permissions": [{
         "label": "Permissions",
         "type": "String",
         "ref": "permissions",
-        "create": true,
-        "update": true
+        "restricted": false
       }]
     }
   },

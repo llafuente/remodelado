@@ -22,19 +22,29 @@ function schema_default(meta) {
 
   _.forEach(t, function(o, k) {
     if (!Array.isArray(o)) {
-      meta.backend.schema[k] = _.defaults(o, default_schema);
+      meta.backend.schema[k] = o = _.defaults(o, default_schema);
     } else {
-      meta.backend.schema[k] = o;
+      meta.backend.schema[k] = [_.defaults(o[0], default_schema)];
+      o = meta.backend.schema[k][0];
     }
 
-    if (meta.backend.schema[k].restricted === true) {
-      meta.backend.schema[k].restricted = {
+    // shortcut: can update/create cant read
+    if (o.restricted === true) {
+      o.restricted = {
         create: false,
         update: false,
         read: true
       };
     }
-    console.log(meta.backend.schema[k]);
+
+    // shortcut: can update/create/read
+    if (o.restricted === false) {
+      o.restricted = {
+        create: false,
+        update: false,
+        read: false
+      };
+    }
   });
 
   meta.plural = pluralize(meta.singular);

@@ -17,22 +17,19 @@
         "label": "ID",
         "type": "String",
         "required": true,
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "id": {
         "label": "ID",
         "type": "String",
         "required": true,
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "label": {
         "label": "name",
         "type": "String",
         "required": true,
-        "create": true,
-        "update": true
+        "restricted": false
       }
     }
   },

@@ -66,8 +66,8 @@ function schema_mongoose(meta, mongoose, models) {
 
   meta.$init.push(function() {
     meta.$schema.eachPath(function(path, options) {
-      // if dont have restricted, are internal!
-      // default are set before...
+      // if dont have restricted, fields are internal!
+      // default are set before... so do not expose
       options.options.restricted = options.options.restricted || {
         read: false,
         create: true,

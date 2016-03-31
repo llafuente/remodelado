@@ -6,13 +6,10 @@ var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
 var http_error = require('../http.error.js');
 
-function update(meta, user, row, data, next) {
+function update(meta, log, user, row, data, next) {
   clean_body(meta, data);
 
-  var blacklist = meta.$express.blacklisted.update;
-  data = mongoosemask.mask(data, blacklist);
-
-  data = meta.$express.restricted_filter(user, 'update', data);
+  data = meta.$express.restricted_filter(log, user, 'update', data);
 
   // TODO review this!
   row.set(data);
@@ -44,7 +41,7 @@ function update_middleware(meta, stored_at, store_at) {
     var row = req[stored_at];
     row.setRequest(req);
 
-    return update(meta, req.user, row, req.body, function(err, saved_row) {
+    return update(meta, req.log, req.user, row, req.body, function(err, saved_row) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }

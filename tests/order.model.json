@@ -15,20 +15,21 @@
       "id": {
         "label": "ID",
         "type": "Number",
-        "create": false,
-        "update": false
+        "restricted": {
+          "create": true,
+          "update": true,
+          "read": false
+        }
       },
       "description": {
         "label": "Dandled",
         "type": "String",
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "handled": {
         "label": "Handled",
         "type": "Number",
-        "restricted": true,
-        "create": true
+        "restricted": false
       },
       "created_by": {
         "label": "Created by",
@@ -36,8 +37,11 @@
         "ref": "users",
         "default": null,
         "set_current_user": true,
-        "create": true,
-        "update": false
+        "restricted": {
+          "create": false,
+          "update": true,
+          "read": true
+        }
       },
       "last_update_by": {
         "label": "last update by",
@@ -45,8 +49,11 @@
         "ref": "users",
         "default": null,
         "set_current_user": true,
-        "create": false,
-        "update": true
+        "restricted": {
+          "create": true,
+          "update": true,
+          "read": false
+        }
       }
     }
   },

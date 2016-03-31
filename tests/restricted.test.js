@@ -218,4 +218,17 @@ test('http: update without perm', function(t) {
   });
 });
 
+test('http: get create user form', function(t) {
+  request(app)
+  .get("/angular/restricted_models.create.tpl.html")
+  .expect(200)
+  .end(function(err, res) {
+    var $ = cheerio.load(res.text);
+    t.equal($(".control-container").toArray().length, 2);
+
+    t.error(err);
+    t.end();
+  });
+});
+
 require("./finish.js");

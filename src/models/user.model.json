@@ -18,43 +18,41 @@
         "label": "ID",
 
         "type": "Number",
-        "create": false,
-        "update": false
+        "restricted": false
       },
       "username": {
         "label": "Username",
         "type": "String",
         "required": true,
         "maxlength": 254,
-        "create": true,
-        "update": true
+        "restricted": false
       },
       "password": {
         "label": "Password",
         "type": "String",
         "required": true,
-        "restricted": true,
-        "create": true,
-        "update": true
+        "restricted": true
       },
       "salt": {
         "label": "",
         "type": "String",
-        "restricted": true
+        "restricted": {
+          "create": true,
+          "update": true,
+          "read": true
+        }
       },
       "roles": [{
         "label": "Roles",
         "type": "ObjectId",
         "ref": "roles",
-        "create": true,
-        "update": true
+        "restricted": false
       }],
       "permissions": [{
         "label": "Permissions",
         "type": "String",
         "ref": "permissions",
-        "create": true,
-        "update": true
+        "restricted": false
       }],
       "state": {
         "label": "Estado",
@@ -62,7 +60,11 @@
         "enum": ["active", "banned"],
         "labels": ["Active", "Banned"],
         "default": "active",
-        "update": true
+        "restricted": {
+          "create": true,
+          "update": false,
+          "read": false
+        }
       }
     }
   },
