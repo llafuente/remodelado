@@ -9,7 +9,7 @@ var csv_writer = require('csv-write-stream');
 var jsontoxml = require('jsontoxml');
 var exutils = require('../utils.js');
 var Pagination = require('./pagination.js');
-var schema_utils = require("../../schema/utils.js");
+var schema_utils = require('../../schema/utils.js');
 
 
 function list_query(meta, logger, user, where, sort, limit, offset, populate, next) {
@@ -94,8 +94,6 @@ function list_query(meta, logger, user, where, sort, limit, offset, populate, ne
       };
       return next(err);
     }
-
-    console.log("list-sort", path, schema_utils.is_path_restricted(meta, path, 'read', user));
 
     if (schema_utils.is_path_restricted(meta, path, 'read', user)) {
       err = new ValidationError(null);

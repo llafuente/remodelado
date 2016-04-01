@@ -62,7 +62,7 @@ function model(meta) {
   if (!valid) {
     console.error(ajv.errors);
     console.error(util.inspect(meta, {depth:null, colors: true}));
-    throw new Error("invalid schema");
+    throw new Error('invalid schema');
   }
 
   // always have the full metadata available

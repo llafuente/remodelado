@@ -6,6 +6,7 @@ var jwt = require('express-jwt/node_modules/jsonwebtoken');
 var ex_jwt = require('express-jwt');
 var express = require('express');
 var http_error = require('../express/http.error.js');
+var error_handler = require('../express/error-handler.js');
 
 function makeSalt() {
   return crypto.randomBytes(16).toString('base64');
@@ -159,14 +160,14 @@ module.exports = function(modelador, config) {
     next();
   });
 
-  r.post('/users/me', function(req, res/*, next*/) {
+  r.post('/users/me', function(req, res, next) {
     // TODO check token
     if (!req.headers.authorization) {
-      return res.status(401).json({error: 'No session'});
+      return next(new http_error(401, 'no session'));
     }
 
     if (!req.user) {
-      return res.status(401).json({error: 'Invalid session'});
+      return next(new http_error(401, 'invalid session'));
     }
 
     var u = req.user.toJSON();
@@ -175,6 +176,8 @@ module.exports = function(modelador, config) {
     });
   });
 
+
+  r.use(error_handler.middleware);
 
   r.use(user.$router);
   user.$router = r;

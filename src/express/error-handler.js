@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = error_handler;
+module.exports.middleware = middleware;
 
 var mongoose = require('mongoose');
 var ValidationError = mongoose.Error.ValidationError;
@@ -86,4 +87,9 @@ function error_handler(err, req, res, schema) {
 
   req.log.silly('Exception');
   return res.status(500).json({error: err.message});
+}
+
+// TODO maybe we need to add a closure with meta
+function middleware(err, req, res, next) {
+  return error_handler(err, req, res, {}/*meta.$schema*/, next);
 }

@@ -18,7 +18,7 @@ function is_path_restricted(meta, path, action, user) {
 
   // TODO review...
   if (ref === undefined) {
-    throw new Error("restricted not defined?!");
+    throw new Error('restricted not defined?!');
   }
 
   if (ref === true) {

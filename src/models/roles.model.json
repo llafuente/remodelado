@@ -13,15 +13,11 @@
       "delete": "Borrar roles"
     },
     "schema": {
-      "id": {
+      "_id": {
         "label": "ID",
-
-        "type": "Number",
-        "restricted": {
-          "create": true,
-          "update": true,
-          "read": false
-        }
+        "type": "String",
+        "required": true,
+        "restricted": false
       },
       "label": {
         "label": "Label",

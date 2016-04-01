@@ -4,7 +4,7 @@ module.exports = schema_express;
 
 var mongoosemask = require('mongoosemask');
 var j = require('path').join;
-var schema_utils = require("./utils.js");
+var schema_utils = require('./utils.js');
 
 function schema_express(meta) {
   meta.express = meta.express || {};
@@ -59,7 +59,7 @@ function schema_express(meta) {
     });
 
     if (blacklist2.length) {
-      log.silly("restricted fields", blacklist2);
+      log.silly('restricted fields', blacklist2);
       return mongoosemask.mask(output, blacklist2);
     }
 
@@ -76,7 +76,7 @@ function schema_express(meta) {
     output = meta.$express.restricted_filter(req.log, req.user, 'read', output);
 
     if (formatter) {
-      return formatter(req, method, output, cb);
+      return formatter(req, 'read', output, cb);
     }
 
     cb(null, output);

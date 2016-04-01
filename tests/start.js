@@ -34,9 +34,11 @@ module.exports = function(test, app, config) {
 
       api.models.roles.$model.remove({}, function() {
         api.models.roles.$model.insertMany([{
+          _id: 'administrator',
           label: "Administrator",
           permissions: perms_ids
         },{
+          _id: 'readonly',
           label: "Reader",
           permissions: perms_ids.filter(function(v) {
             return v.indexOf("-read") !== -1 || v.indexOf("-list") !== -1;
@@ -51,6 +53,10 @@ module.exports = function(test, app, config) {
               username: "reader@admin.com",
               password: "admin",
               roles: [roles[1]._id]
+            }, {
+              username: "empty@admin.com",
+              password: "admin",
+              roles: []
             }], create_user, function(err) {
               t.error(err);
               t.end();

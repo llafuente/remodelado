@@ -44,7 +44,7 @@
       },
       "roles": [{
         "label": "Roles",
-        "type": "ObjectId",
+        "type": "String",
         "ref": "roles",
         "restricted": false
       }],

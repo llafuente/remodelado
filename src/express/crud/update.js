@@ -2,7 +2,6 @@
 
 module.exports = update_middleware;
 
-var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
 var http_error = require('../http.error.js');
 

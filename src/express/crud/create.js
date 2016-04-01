@@ -3,7 +3,6 @@
 module.exports = create_middleware;
 module.exports.create = create;
 
-var mongoosemask = require('mongoosemask');
 var clean_body = require('../clean_body.js');
 var http_error = require('../http.error.js');
 

@@ -29,7 +29,7 @@ var err_messages = {
 
 
 var _ = require('lodash');
-var schema_utils = require("./utils.js");
+var schema_utils = require('./utils.js');
 
 function __build_labels(meta, back_field, front_field) {
   // build labels array
@@ -153,14 +153,14 @@ function schema_angular(meta) {
     // handle restricted fields
     //
     if (container['ng-if']) {
-      throw new Error("ng-if use is still internal for restricted. use ng-show")
+      throw new Error('ng-if use is still internal for restricted. use ng-show');
     }
 
     // NOTE do not check current user permissions!
     // this could be cached
     container['ng-if'] = [];
-    ["create", "update"].forEach(function(action) {
-      if ("string" === typeof o.restricted[action]) {
+    ['create', 'update'].forEach(function(action) {
+      if ('string' === typeof o.restricted[action]) {
         container['ng-if'].push(
           "(crud_action == '" + action + "' && " +
           "Auth.hasPermissions('" +
@@ -171,7 +171,7 @@ function schema_angular(meta) {
     });
 
     if (container['ng-if'].length) {
-      container['ng-if'] = container['ng-if'].join(" || ")
+      container['ng-if'] = container['ng-if'].join(' || ');
     } else {
       delete container['ng-if'];
     }
