@@ -5,7 +5,7 @@ module.exports.destroy = destroy;
 
 function destroy(meta, id, next) {
   meta.$model.findByIdAndRemove(id, function(err, data) {
-    if (err) {
+    /* istanbul ignore next */ if (err) {
       return next(err);
     }
 
@@ -19,7 +19,7 @@ function destroy_middleware(meta) {
     // TODO int validation?!
 
     return destroy(meta, id, function(err) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return next(err);
       }
 

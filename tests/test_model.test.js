@@ -267,6 +267,21 @@ test('http: get user list', function(t) {
   });
 });
 
+test('http: get user list (with accesss token)', function(t) {
+  request(app)
+  .get("/test_models?access_token=" + tutils.get_access_token("admin@admin.com"))
+  .expect(200)
+  .end(function(err, res) {
+    t.ok(res.body.count > 0);
+    t.equal(res.body.count, res.body.list.length);
+    t.equal(res.body.limit, 0);
+    t.equal(res.body.offset, 0);
+
+    t.error(err);
+    t.end();
+  });
+});
+
 test('http: get user list', function(t) {
   request(app)
   .get("/test_models")
@@ -275,6 +290,20 @@ test('http: get user list', function(t) {
   .expect(200)
   .end(function(err, res) {
     t.equal(res.text.split("\n").length, 6); // 4 + headers + last
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list', function(t) {
+  request(app)
+  .get("/test_models?strict=true&limit=2")
+  .use(tutils.authorization("admin@admin.com"))
+  .set('Accept', 'text/csv')
+  .expect(200)
+  .end(function(err, res) {
+    t.equal(res.text.split("\n").length, 4); // 2 + headers + last
 
     t.error(err);
     t.end();
@@ -335,7 +364,21 @@ test('http: get user list xml', function(t) {
   .set('Accept', 'text/xml')
   .expect(200)
   .end(function(err, res) {
-    t.equal(res.text.split("\n").length, 23); // 4 + headers + last
+    t.equal(res.text.split("\n").length, 23);
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list xml', function(t) {
+  request(app)
+  .get("/test_models")
+  .use(tutils.authorization("admin@admin.com"))
+  .set('Accept', 'text/xml')
+  .expect(200)
+  .end(function(err, res) {
+    t.equal(res.text.split("\n").length, 45);
 
     t.error(err);
     t.end();
@@ -364,6 +407,19 @@ test('http: get user list (err-invalid offset)', function(t) {
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:limit","message":"limit must be a number","type":"invalid-limit","value":null,"value_type":"number"}]});
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list (err-invalid invalid where)', function(t) {
+  request(app)
+  .get("/test_models?offset=2&limit=10&where=dsajfs:true")
+  .use(tutils.authorization("admin@admin.com"))
+  .expect(400)
+  .end(function(err, res) {
+    t.deepEqual(res.body, {"error":[{"path":"query:where","message":"invalid where","type":"invalid-where","value":"dsajfs:true","value_type":"json_string"}]});
 
     t.error(err);
     t.end();
@@ -405,6 +461,19 @@ test('http: get user list (err invalid sort)', function(t) {
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:sort","message":"field is restricted","type":"invalid-sort","value":"restricted_field","value_type":"string"}]});
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list (err invalid populate)', function(t) {
+  request(app)
+  .get("/test_models?populate[]=restricted_field")
+  .use(tutils.authorization("admin@admin.com"))
+  .expect(400)
+  .end(function(err, res) {
+    t.deepEqual(res.body, {"error":[{"path":"query:populate","message":"field cannot be populated","type":"invalid-populate","value":"restricted_field", "value_type": null}]});
 
     t.error(err);
     t.end();

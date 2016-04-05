@@ -4,6 +4,7 @@ module.exports = {
   login: login,
   update_bearer: update_bearer,
   authorization: authorization,
+  get_access_token: get_access_token,
   add_user_permissions: add_user_permissions,
   rem_user_permissions: rem_user_permissions
 };
@@ -54,6 +55,10 @@ function authorization(username) {
     r.set('authorization', logged[username]);
     return r;
   };
+}
+
+function get_access_token(username) {
+  return logged[username].substring(7);
 }
 
 function add_user_permissions(api, username, permissions, callback) {

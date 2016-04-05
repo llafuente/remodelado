@@ -12,6 +12,21 @@ var error_handler = require("../src/express/error-handler.js");
 var config = require("../server/config/index.js");
 var api = require("./start.js")(test, app, config);
 
+test('invalid user login', function(t) {
+  request(app)
+  .post('/users/auth')
+  .send({
+    username: "cantbefound@user.com",
+    password: "xxx"
+  })
+  .expect(422)
+  .end(function(err, res) {
+    t.deepEqual(res.body, {"error":"user not found or invalid pasword"});
+    t.error(err);
+    t.end();
+  });
+});
+
 test('login as admin', function(t) {
   tutils.login(app, "admin@admin.com", "admin", function(err, data) {
     t.error(err);

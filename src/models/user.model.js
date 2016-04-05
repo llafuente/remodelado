@@ -58,6 +58,7 @@ module.exports = function(modelador, config) {
   };
 
   // TODO do it!
+  /* istanbul ignore next */
   user.$schema.methods.filter_query = function filter_query(query, cb) {
     if (!this.populated('roles')) {
       this.populate('roles', function(err, user) {
@@ -100,7 +101,7 @@ module.exports = function(modelador, config) {
     user.$model.findOne({
       username: req.body.username
     }, function(err, user) {
-      if (err) {
+      /* istanbul ignore next */ if (err) {
         return next(err);
       }
 

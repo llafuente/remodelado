@@ -38,10 +38,10 @@ function read(meta, id, req, res, next) {
     return next(null, entity);
   });
 }
-
+/* istanbul ignore next */
 function read_nullable(meta, id, req, res, next) {
   meta.$model.findById(id, function(err, entity) {
-    /* istanbul ignore next */ if (err) {
+    if (err) {
       return next(err);
     }
 
