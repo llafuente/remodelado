@@ -6,6 +6,7 @@ var _ = require("lodash");
 var modelador = require("../src/index.js");
 var _async = require("async");
 var api = null;
+var tutils = require("./utils.js");
 
 tap.Test.prototype.addAssert('isDate', 1, function(str, message, extra) {
   message = message || 'should be a Date compatible type';
@@ -28,7 +29,6 @@ module.exports = function(test, app, config) {
   }
 
   test('fixtures', function(t) {
-
     api.models.permissions.$model.find({}, function(err, perms) {
       var perms_ids = _.map(perms, '_id');
 
@@ -61,12 +61,34 @@ module.exports = function(test, app, config) {
               t.error(err);
               t.end();
             });
+          });
         });
-      });
-
       });
     });
   });
+
+  test('login as admin@admin.com', function(t) {
+    tutils.login(app, "admin@admin.com", "admin", function(err, data) {
+      t.error(err);
+      t.end();
+    });
+  });
+
+  test('login as reader@admin.com', function(t) {
+    tutils.login(app, "reader@admin.com", "admin", function(err, data) {
+      t.error(err);
+      t.end();
+    });
+  });
+
+  test('login as empty@admin.com', function(t) {
+    tutils.login(app, "empty@admin.com", "admin", function(err, data) {
+      t.error(err);
+      t.end();
+    });
+  });
+
+
 
   return api;
 };

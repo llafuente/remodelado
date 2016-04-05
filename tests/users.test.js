@@ -11,12 +11,6 @@ var app = require("../server/express.js");
 var config = require("../server/config/index.js");
 require("./start.js")(test, app, config);
 
-test('login as admin', function(t) {
-  tutils.login(app, "admin@admin.com", "admin", function(err, data) {
-    t.error(err);
-    t.end();
-  });
-});
 var roles_ids;
 test('/roles admin', function(t) {
   request(app)

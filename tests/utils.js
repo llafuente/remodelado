@@ -6,10 +6,13 @@ module.exports = {
   authorization: authorization,
   get_access_token: get_access_token,
   add_user_permissions: add_user_permissions,
-  rem_user_permissions: rem_user_permissions
+  rem_user_permissions: rem_user_permissions,
+  clear: clear,
+  clear_and_add_permissions: clear_and_add_permissions,
 };
 
 var request = require('supertest');
+var _ = require("lodash");
 var logged = {};
 
 function login(app, username, pwd, callback) {
@@ -91,5 +94,32 @@ function rem_user_permissions(api, username, permissions, callback) {
 
     data.setRequest({});
     data.save(callback);
+  });
+}
+
+function clear(api, mdl, t) {
+  mdl.$model.remove({}, function(err) {
+    t.error(err);
+    t.end();
+  });
+}
+
+
+function clear_and_add_permissions(api, mdl, t) {
+  mdl.$model.remove({}, function() {
+    // add permissions to admin
+    api.models.roles.$model.findOne({
+      label: 'Administrator'
+    }, function(err, role) {
+      t.error(err);
+      role.permissions = role.permissions
+        .concat(_.values(mdl.$express.permissions));
+      role.setRequest({});
+      role.save(function(err/*, role_saved*/) {
+        t.error(err);
+
+        t.end();
+      });
+    });
   });
 }

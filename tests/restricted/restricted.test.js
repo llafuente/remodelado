@@ -6,45 +6,20 @@ var _ = require("lodash");
 // test
 var request = require('supertest');
 var test = require('tap').test;
-var check_js = require('syntax-error');
-var tutils = require('./utils');
+var tutils = require('../utils.js');
 
-var app = require("../server/express.js");
-var config = require("../server/config/index.js");
-var api = require("./start.js")(test, app, config);
+var app = require("../../server/express.js");
+var config = require("../../server/config/index.js");
+var api = require("../start.js")(test, app, config);
 
 test('create user model', function(t) {
-  var model = require("./restricted.model.json");
-  var mdl = api.model(model);
-  mdl.init();
+  var json_model = require("./restricted.model.json");
 
+  var mdl = api.model(json_model).init();
   app.use(mdl.$router);
 
-  mdl.$model.remove({}, function() {
-    // add permissions to admin
-    api.models.roles.$model.findOne({
-      label: 'Administrator'
-    }, function(err, role) {
-      t.error(err);
-      role.permissions = role.permissions
-        .concat(_.values(mdl.$express.permissions));
-      role.setRequest({});
-      role.save(function(err, role_saved) {
-        t.error(err);
-
-        t.end();
-      });
-    });
-  });
-
-
-});
-
-test('login as admin', function(t) {
-  tutils.login(app, "admin@admin.com", "admin", function(err, data) {
-    t.error(err);
-    t.end();
-  });
+  // this will end this test
+  tutils.clear(api, mdl, t);
 });
 
 test('login as admin', function(t) {
@@ -231,4 +206,4 @@ test('http: get create user form', function(t) {
   });
 });
 
-require("./finish.js");
+require("../finish.js");

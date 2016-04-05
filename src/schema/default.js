@@ -56,5 +56,6 @@ function schema_default(meta) {
     for (i = 0; i < this.$init.length; ++i) {
       this.$init[i]();
     }
+    return meta;
   };
 }

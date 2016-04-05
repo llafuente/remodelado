@@ -6,11 +6,11 @@ var cheerio = require("cheerio");
 var request = require('supertest');
 var test = require('tap').test;
 var check_js = require('syntax-error');
-var tutils = require('./utils');
+var tutils = require('../utils');
 
-var app = require("../server/express.js");
-var config = require("../server/config/index.js");
-var api = require("./start.js")(test, app, config);
+var app = require("../../server/express.js");
+var config = require("../../server/config/index.js");
+var api = require("../start.js")(test, app, config);
 
 test('create user model', function(t) {
   var model = require("./test_model.model.json");
@@ -34,13 +34,6 @@ test('create user model', function(t) {
   app.use(mdl.$router);
 
   mdl.$model.remove({}, function() {
-    t.end();
-  });
-});
-
-test('login as admin', function(t) {
-  tutils.login(app, "admin@admin.com", "admin", function(err, data) {
-    t.error(err);
     t.end();
   });
 });
@@ -729,4 +722,4 @@ test('http: destroy user', function(t) {
   });
 });
 
-require("./finish.js");
+require("../finish.js");

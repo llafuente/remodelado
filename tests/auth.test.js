@@ -27,27 +27,6 @@ test('invalid user login', function(t) {
   });
 });
 
-test('login as admin', function(t) {
-  tutils.login(app, "admin@admin.com", "admin", function(err, data) {
-    t.error(err);
-    t.end();
-  });
-});
-
-test('login as reader', function(t) {
-  tutils.login(app, "reader@admin.com", "admin", function(err, data) {
-    t.error(err);
-    t.end();
-  });
-});
-
-test('login as reader', function(t) {
-  tutils.login(app, "empty@admin.com", "admin", function(err, data) {
-    t.error(err);
-    t.end();
-  });
-});
-
 test('/users/me admin', function(t) {
   request(app)
   .post("/users/me")
