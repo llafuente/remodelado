@@ -130,7 +130,10 @@
       },
       "password": {
         "type": "password",
-        "restricted": true
+        "restricted": true,
+        "constraints": {
+          "ng-required": "crud_action == 'create'"
+        }
       },
       "state": {
         "label": "Estado",
