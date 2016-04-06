@@ -4,11 +4,10 @@ module.exports = schema_default;
 
 var _ = require('lodash');
 var pluralize = require('pluralize');
+var utils = require('./utils.js');
 
 var default_schema = {
   type: 'String',
-  create: false,
-  update: false,
   restricted: {
     create: false,
     update: false,
@@ -17,15 +16,17 @@ var default_schema = {
 };
 
 function schema_default(meta) {
-  var t = meta.backend.schema;
-  meta.backend.schema = {};
-
-  _.forEach(t, function(o, k) {
-    if (!Array.isArray(o)) {
-      meta.backend.schema[k] = o = _.defaults(o, default_schema);
-    } else {
-      meta.backend.schema[k] = [_.defaults(o[0], default_schema)];
-      o = meta.backend.schema[k][0];
+  utils.loop(meta.backend.schema, function(field, path, obj, prop) {
+    var o;
+    switch(field.type) {
+      case "String":
+      case "Number":
+      case "ObjectId":
+      case "Mixed":
+        obj[prop] = o = _.defaults(field, default_schema);
+      break;
+      default:
+        return;
     }
 
     // shortcut: can update/create cant read

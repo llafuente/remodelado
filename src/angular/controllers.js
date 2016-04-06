@@ -22,6 +22,19 @@ function configuration(meta, app_name, base_state, cb) {
       return cb(err, null);
     }
 
+    console.dir({
+      app_name: app_name,
+      entity_name: meta.plural,
+      navbar: meta.frontend.navbar,
+      schema: meta.frontend.schema,
+
+      base_state: base_state,
+      states: meta.$angular.states,
+      templates: meta.$angular.templates,
+      controllers: meta.$angular.controllers,
+      api: meta.$express,
+    });
+
     var compiled = _.template(js);
     cb(null, compiled({
       app_name: app_name,

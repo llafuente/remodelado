@@ -28,7 +28,7 @@ function update(meta, log, user, row, data, next) {
 }
 
 function update_middleware(meta, stored_at, store_at) {
-  console.log('# update middleware', meta.name);
+  console.log('# update middleware', meta.singular);
 
   return function(req, res, next) {
     req.log.info(req.body);

@@ -5,19 +5,51 @@
 
   "definitions": {
     "backend_schema": {
+      "type": "object",
+      "patternProperties": {
+        "[a-z0-9_]": {
+          "$ref": "#/definitions/backend_schema_t"
+        }
+      }
+    },
+    "backend_schema_t": {
       "oneOf": [{
-        "$ref": "#/definitions/backend_schema_item"
+        "$ref": "#/definitions/backend_schema_prim"
+      },{
+        "$ref": "#/definitions/backend_schema_object"
       },{
         "$ref": "#/definitions/backend_schema_array"
       }]
     },
     "backend_schema_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/backend_schema_item"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "Array"
+          ]
+        },
+        "items": {
+          "$ref": "#/definitions/backend_schema_t"
+        }
       }
     },
-    "backend_schema_item": {
+    "backend_schema_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "Object"
+          ]
+        },
+        "properties": {
+          "$ref": "#/definitions/backend_schema"
+        }
+      }
+    },
+    "backend_schema_prim": {
       "type": "object",
       "required": ["label"],
       "additionalProperties": false,
@@ -30,7 +62,6 @@
             "String",
             "Number",
             "ObjectId",
-            "Array",
             "Mixed"
           ]
         },
@@ -150,14 +181,7 @@
           }
         },
         "schema": {
-          "id": "backend/schema",
-          "type": "object",
-          "patternProperties": {
-            "[a-z0-9_]": {
-              "$ref": "#/definitions/backend_schema"
-            }
-          }
-
+          "$ref": "#/definitions/backend_schema"
         }
       }
     },

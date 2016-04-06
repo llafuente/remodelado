@@ -31,7 +31,7 @@ function create(meta, req, data, next) {
 }
 
 function create_middleware(meta, store_at) {
-  console.log('# create middleware', meta.name);
+  console.log('# create middleware', meta.singular);
 
   return function(req, res, next) {
     req.log.info(req.body);

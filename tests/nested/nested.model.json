@@ -1,0 +1,72 @@
+{
+  "singular": "nested",
+  "backend": {
+    "options": {
+      "collection": "test_nested"
+    },
+    "permissions": {
+      "read": "Ver X",
+      "list": "Listar X",
+      "create": "Crear X",
+      "update": "Modificar X",
+      "delete": "Borrar X"
+    },
+    "schema": {
+      "obj": {
+        "type": "Object",
+        "properties": {
+          "p1": {
+            "label": "P1",
+            "type": "String"
+          },
+          "p2": {
+            "label": "P2",
+            "type": "String"
+          },
+          "p3": {
+            "label": "P3",
+            "type": "String",
+            "default": "P3-default-value"
+          }
+        }
+      }
+    }
+  },
+  "frontend": {
+    "navbar": {
+      "label": "X"
+    },
+    "list": {
+      "obj.p1": {
+        "label": "P1",
+        "type": "text"
+      },
+      "obj.p2": {
+        "label": "P1",
+        "type": "text"
+      }
+    },
+    "schema": {
+      "id": {
+        "type": "static",
+        "create": false,
+        "update": true
+      },
+      "obj.p1": {
+        "label": "P1",
+        "type": "text",
+        "required": true,
+        "create": true,
+        "update": true
+      },
+      "obj.p2": {
+        "label": "P2",
+        "type": "text",
+        "required": true,
+        "create": true,
+        "update": true
+      }
+    }
+  }
+
+}

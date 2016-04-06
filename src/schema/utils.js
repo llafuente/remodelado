@@ -4,6 +4,7 @@ module.exports = {
   is_path_restricted: is_path_restricted,
   each_path: each_path,
   get_path_options: get_path_options,
+  loop: loop
 };
 
 function is_path_restricted(meta, path, action, user) {
@@ -52,4 +53,48 @@ function get_path_options(meta, path) {
     return options.caster;
   }
   return options;
+}
+
+// cb(value, path, parent, prop_in_parent, realpath)
+function loop(obj, cb, prop, value, path, realpath) {
+  path = path || [];
+  realpath = realpath || [];
+
+  if (!value) {
+    var i;
+    for (i in obj) {
+      loop(obj, cb, i, obj[i], path);
+    }
+  } else {
+    path.push(prop);
+
+    if (value.type === "Array") {
+      realpath.push(prop);
+      realpath.push(`[${prop}_id]`);
+    } else if(obj.type !== "Array") {
+      realpath.push(prop);
+    }
+
+    //console.log("calling cb for", path, value);
+    cb(value, path.join(".").replace(/\.\[/g, "["), obj, prop, realpath.join(".").replace(/\.\[/g, "["));
+    //console.log("value.type", value.type, "items", value.items);
+    switch(value.type) {
+      case "Object":
+        loop(value, cb, "properties", value.properties, path, realpath);
+        break;
+      case "Array":
+        loop(value, cb, "items", value.items, path, realpath);
+        break;
+    }
+
+    path.pop();
+
+    if (value.type === "Array") {
+      realpath.pop();
+      realpath.pop();
+    } else if(obj.type !== "Array") {
+      realpath.pop();
+    }
+
+  }
 }

@@ -42,18 +42,24 @@
           "read": true
         }
       },
-      "roles": [{
-        "label": "Roles",
-        "type": "String",
-        "ref": "roles",
-        "restricted": false
-      }],
-      "permissions": [{
-        "label": "Permissions",
-        "type": "String",
-        "ref": "permissions",
-        "restricted": false
-      }],
+      "roles": {
+        "type": "Array",
+        "items": {
+          "label": "Roles",
+          "type": "String",
+          "ref": "roles",
+          "restricted": false
+        }
+      },
+      "permissions": {
+        "type": "Array",
+        "items": {
+          "label": "Permissions",
+          "type": "String",
+          "ref": "permissions",
+          "restricted": false
+        }
+      },
       "state": {
         "label": "Estado",
         "type": "String",

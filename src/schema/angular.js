@@ -29,7 +29,7 @@ var err_messages = {
 
 
 var _ = require('lodash');
-var schema_utils = require('./utils.js');
+var utils = require('./utils.js');
 
 function __build_labels(meta, back_field, front_field) {
   // build labels array
@@ -77,6 +77,47 @@ function __build_labels(meta, back_field, front_field) {
   }
 }
 
+function backend_loop_fix(meta, target, cb) {
+  // create/update (schema)
+  utils.loop(meta.backend.schema, function (back_field, path, parent, prop_in_parent, realpath) {
+    //console.log("-- path:", path, "realpath:", realpath);
+
+    // exclude aggregate data
+    switch(back_field.type) {
+      case "Object":
+      case "Array":
+        return;
+    }
+    // fix path for aggregate data
+    // TODO does not work with deep nested
+    switch(parent.type) {
+      case "Object":
+      case "Array":
+        path = path.split(".");
+        path = path.slice(0, path.length - 1).join(".");
+    }
+
+    // check if frontend data is defined
+    var front_field = meta.frontend[target][path];
+    if (!front_field) {
+      console.warn(`${meta.singular} @ meta.frontend.${target}[${path}]: not found`);
+      return;
+    }
+
+    cb(back_field, front_field, path);
+  });
+}
+
+function field_list_schema(meta, back_field, list_field, path) {
+  // cp label/name if needed
+  if (!list_field.label) {
+    list_field.label = back_field.label;
+  }
+  list_field.name = path;
+
+  __build_labels(meta, back_field, list_field);
+}
+
 function schema_angular(meta) {
   // list
   _.forEach(meta.frontend.list, function(front_field, k) {
@@ -85,34 +126,15 @@ function schema_angular(meta) {
       console.warn(meta.singular, '[', k, '] is not found in schema');
       return;
     }
-    // fix: [ObjectId]
-    if (back_field.instance == 'Array') {
-      back_field = back_field.caster;
-    }
-    back_field = back_field.options;
-
-    // cp label/name if needed
-    if (!front_field.label) {
-      front_field.label = back_field.label;
-    }
-    front_field.name = k;
-
-    __build_labels(meta, back_field, front_field);
   });
 
-  // create/update (schema)
-  _.forEach(meta.backend.schema, function(o, k) {
-    // fix: [ObjectId]
-    if (Array.isArray(o)) {
-      o = o[0];
-    }
+  backend_loop_fix(meta, "list", function(back_field, list_field, path) {
+    field_list_schema(meta, back_field, list_field, path);
+  });
 
-    if (!meta.frontend.schema[k]) {
-      console.warn(meta.singular, '[', k, '] is not found in schema');
-      return;
-    }
+  backend_loop_fix(meta, "schema", function(back_field, front_field, path) {
+    var o = back_field;
 
-    var front_field = meta.frontend.schema[k];
     var container;
     front_field.constraints = front_field.constraints || {};
     front_field.container = container = front_field.container || {};
@@ -120,7 +142,7 @@ function schema_angular(meta) {
 
     // cp label/name
     front_field.label = o.label;
-    front_field.name = k;
+    front_field.name = path;
 
     _.forEach(o, function(odb, kdb) {
       var kan = constraints[kdb];
@@ -243,7 +265,7 @@ function check_action(action, back_opt, client_opt) {
 function each_control_sorted(meta, action) {
   var controls = [];
 
-  schema_utils.each_path(meta, function(path, back_opt, front_opt) {
+  utils.each_path(meta, function(path, back_opt, front_opt) {
     // ignore private
     if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;
@@ -259,7 +281,7 @@ function each_control_sorted(meta, action) {
   });
 }
 function each_control(meta, action, cb) {
-  schema_utils.each_path(meta, function(path, back_opt, front_opt) {
+  utils.each_path(meta, function(path, back_opt, front_opt) {
     // ignore private
     if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;

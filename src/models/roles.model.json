@@ -25,12 +25,15 @@
         "required": true,
         "restricted": false
       },
-      "permissions": [{
-        "label": "Permissions",
-        "type": "String",
-        "ref": "permissions",
-        "restricted": false
-      }]
+      "permissions": {
+        "type": "Array",
+        "items": {
+          "label": "Permissions",
+          "type": "String",
+          "ref": "permissions",
+          "restricted": false
+        }
+      }
     }
   },
   "frontend": {

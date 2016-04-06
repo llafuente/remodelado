@@ -4,6 +4,26 @@ module.exports = schema_mongoose;
 
 var _ = require('lodash');
 var timestamps = require('mongoose-timestamp');
+var utils = require('./utils.js');
+
+function simplify_schema(obj, prop, value) {
+  if (!prop) {
+    var i;
+    for (i in obj) {
+      simplify_schema(obj, i, obj[i]);
+    }
+  } else {
+    switch(value.type) {
+      case "Object":
+        obj[prop] = value.properties;
+        simplify_schema(obj[prop]);
+        break;
+      case "Array":
+        obj[prop] = [value.items];
+        simplify_schema(obj[prop]);
+    }
+  }
+}
 
 function schema_mongoose(meta, mongoose, models) {
 
@@ -21,7 +41,14 @@ function schema_mongoose(meta, mongoose, models) {
     select: false
   };
 
-  meta.$schema = new mongoose.Schema(meta.backend.schema, meta.backend.options);
+  // duplicate the Schema
+  var schema = _.cloneDeep(meta.backend.schema);
+  simplify_schema(schema);
+
+  //utils.loop(meta.backend.schema, console.log);
+  //process._rawDebug(schema);
+
+  meta.$schema = new mongoose.Schema(schema, meta.backend.options);
 
   /*
   meta.$schema.virtual('id').get(function() {
