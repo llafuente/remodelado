@@ -286,6 +286,9 @@ function each_control(meta, action, cb) {
     if (['_id', '__v', 'created_at', 'updated_at'].indexOf(path) !== -1) {
       return ;
     }
+
+    $log.debug(`check_actioning ${path}`);
+
     if (!check_action(action, back_opt.options, front_opt)) {
       return;
     }

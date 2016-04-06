@@ -71,6 +71,21 @@
           "update": false,
           "read": false
         }
+      },
+      "data": {
+        "type": "Object",
+        "properties": {
+          "first_name": {
+            "label": "First name",
+            "type": "String",
+            "restricted": false
+          },
+          "last_name": {
+            "label": "Last name",
+            "type": "String",
+            "restricted": false
+          }
+        }
       }
     }
   },
@@ -153,6 +168,12 @@
           "method": "GET",
           "url": "/api/permissions"
         }
+      },
+      "data.first_name": {
+        "type": "text"
+      },
+      "data.last_name": {
+        "type": "text"
       }
     }
   }

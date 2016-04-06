@@ -80,7 +80,7 @@ function loop(obj, cb, prop, value, path, realpath) {
     //console.log("value.type", value.type, "items", value.items);
     switch(value.type) {
       case "Object":
-        loop(value, cb, "properties", value.properties, path, realpath);
+        loop(value.properties, cb, "properties", null, path, realpath);
         break;
       case "Array":
         loop(value, cb, "items", value.items, path, realpath);

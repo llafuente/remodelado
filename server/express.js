@@ -41,6 +41,9 @@ app.use(function(req, res, next) {
 });
 logger.info(config);
 
+// hack to allow log everywhere
+global.$log = logger;
+
 //
 // mongoose
 //

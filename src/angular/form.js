@@ -51,15 +51,15 @@ function gen_control(control, backend, form_path, base_path, action, layout, cb)
 function form(meta, action, button, layout, form_path, base_path, cb) {
   assert.ok(['create', 'update'].indexOf(action) !== -1);
   assert.ok(['vertical', 'horizontal', 'inline'].indexOf(layout) !== -1);
-
-  form_path = form_path || 'form';
-  base_path = base_path || 'entity';
+  assert.ok(form_path != null);
+  assert.ok(base_path != null);
 
   var controls = [];
   var errors = [];
   var todo = 0;
 
   $angular.each_control(meta, action, function(client_opt, path) {
+    $log.info(`control found: ${path}`);
     ++todo;
     var server_opt = schema_utils.get_path_options(meta, path);
     gen_control(client_opt, server_opt, form_path, base_path, action, layout, function(err, html) {

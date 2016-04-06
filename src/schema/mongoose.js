@@ -44,6 +44,7 @@ function schema_mongoose(meta, mongoose, models) {
   // duplicate the Schema
   var schema = _.cloneDeep(meta.backend.schema);
   simplify_schema(schema);
+  $log.silly(schema);
 
   //utils.loop(meta.backend.schema, console.log);
   //process._rawDebug(schema);

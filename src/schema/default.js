@@ -17,6 +17,7 @@ var default_schema = {
 
 function schema_default(meta) {
   utils.loop(meta.backend.schema, function(field, path, obj, prop) {
+    $log.silly(`set defaults ${meta.singular} ${path}`);
     var o;
     switch(field.type) {
       case "String":

@@ -54,20 +54,22 @@ ReadableConsole.prototype.log = function(level, msg, meta, callback) {
     meta = null;
   }
 
+  var depth = level == 'silly' ? null : 4;
+
   if (msg instanceof Error) {
-    text = util.inspect(msg, {depth: true, colors: true});
+    text = util.inspect(msg, {depth: depth, colors: true});
     text += '\n' + msg.stack.split('\n').slice(0, 5).join('\n');
   } else if ('string' === typeof msg) {
     text = msg;
   } else {
-    text = util.inspect(msg, {depth: true, colors: true});
+    text = util.inspect(msg, {depth: depth, colors: true});
   }
 
   var stack = new Error().stack.split('\n').slice(8, 9).join('\n').trim();
   this.std.write([
     level,
     text,
-    util.inspect(meta, {depth: true, colors: true}),
+    util.inspect(meta, {depth: depth, colors: true}),
     '\n'
   ].join(' '));
 
