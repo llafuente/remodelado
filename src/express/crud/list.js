@@ -38,6 +38,17 @@ function list_query(meta, logger, user, where, sort, limit, offset, populate, ne
   } else {
     where = {};
   }
+
+  // TODO review this '$' -> '.'
+  Object.keys(where).forEach(function(k) {
+    if (k.indexOf('$') !== -1) {
+      $log.info("replace!")
+      where[k.replace(/\$/g, '.')] = where[k];
+      delete where[k];
+    }
+  });
+  $log.silly(where);
+
   sort = sort || '_id';
   limit = limit ? parseInt(limit, 10) : 0;
   offset = offset ? parseInt(offset, 10) : 0;

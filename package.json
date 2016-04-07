@@ -18,6 +18,7 @@
     "express": "4.13.4",
     "express-jwt": "3.3.0",
     "jade": "1.11.0",
+    "js-yaml": "^3.5.5",
     "jstoxml": "0.2.3",
     "lodash": "4.5.0",
     "method-override": "2.3.5",

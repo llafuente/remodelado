@@ -65,4 +65,32 @@ test('/users/:id admin', function(t) {
   });
 });
 
+test('http: get user list (nested where)', function(t) {
+  request(app)
+  .get("/api/users?where={\"data.first_name\": \"Administrator\"}")
+  .use(tutils.authorization("admin@admin.com"))
+  .expect(200)
+  .end(function(err, res) {
+    console.log(res.body);
+    t.equal(res.body.count, 1, "found the admin!");
+
+    t.error(err);
+    t.end();
+  });
+});
+
+test('http: get user list (nested where)', function(t) {
+  request(app)
+  .get("/api/users?where={\"data$first_name\": \"Administrator\"}")
+  .use(tutils.authorization("admin@admin.com"))
+  .expect(200)
+  .end(function(err, res) {
+    console.log(res.body);
+    t.equal(res.body.count, 1, "found the admin!");
+
+    t.error(err);
+    t.end();
+  });
+});
+
 require("./finish.js");

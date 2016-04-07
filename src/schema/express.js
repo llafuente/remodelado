@@ -48,6 +48,7 @@ function schema_express(meta) {
     var blacklist2 = [];
 
     schema_utils.each_path(meta, function(path, options) {
+      $log.info(path, options);
       var ref = options.options.restricted[method];
       if (ref === false) {
         return;

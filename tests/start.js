@@ -48,15 +48,24 @@ module.exports = function(test, app, config) {
             _async.each([{
               username: "admin@admin.com",
               password: "admin",
-              roles: [roles[0]._id]
+              roles: [roles[0]._id],
+              data: {
+                first_name: "Administrator"
+              }
             }, {
               username: "reader@admin.com",
               password: "admin",
-              roles: [roles[1]._id]
+              roles: [roles[1]._id],
+              data: {
+                first_name: "Reader"
+              }
             }, {
               username: "empty@admin.com",
               password: "admin",
-              roles: []
+              roles: [],
+              data: {
+                first_name: "Empty"
+              }
             }], create_user, function(err) {
               t.error(err);
               t.end();

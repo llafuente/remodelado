@@ -21,13 +21,13 @@ section#list
           if (val.type)
             th
               if (val.type == "text" || val.type == "static" || val.type == "email")
-                input.input-sm.form-control(st-search=val.name type="text" id="#{name}-filter-#{val.name}")
+                input.input-sm.form-control(st-search=val.safe_name type="text" id=val.id)
               if (val.type == "number")
-                input.input-sm.form-control(st-search=val.name type="number" id="#{name}-filter-#{val.name}")
+                input.input-sm.form-control(st-search=val.safe_name type="number" id=val.id)
               if (val.type == "date-range")
-                st-date-range(collection= val.label_values predicate=val.name id="#{name}-filter-#{val.name}")
+                st-date-range(collection= val.label_values predicate=val.safe_name id=val.id)
               if (val.label_values)
-                st-select(collection= val.label_values predicate=val.name id="#{name}-filter-#{val.name}")
+                st-select(collection= val.label_values predicate=val.safe_name id=val.id)
           else
             th
         th

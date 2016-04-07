@@ -1,0 +1,42 @@
+singular: "permission"
+backend:
+  options:
+    collection: "permissions"
+  prefix: "/api"
+  permissions:
+    read: "Ver permisos"
+    list: "Listar permisos"
+    create: "Crear permisos"
+    update: "Modificar permisos"
+    delete: "Borrar permisos"
+  schema:
+    _id:
+      label: "ID"
+      type: "String"
+      required: true
+      restricted: false
+    id:
+      label: "ID"
+      type: "String"
+      required: true
+      restricted: false
+    label:
+      label: "name"
+      type: "String"
+      required: true
+      restricted: false
+frontend:
+  navbar:
+    label: "Permisos"
+  list:
+    id:
+      type: "text"
+    label:
+      type: "text"
+  schema:
+    id:
+      type: "static"
+      create: false
+      update: true
+    label:
+      type: "text"

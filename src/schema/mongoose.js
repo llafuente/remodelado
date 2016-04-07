@@ -36,10 +36,12 @@ function schema_mongoose(meta, mongoose, models) {
     throw new Error('version is reserved, use another identifier.');
   }
 
+  // NOTE __v need to be manually declared, or wont be in the paths
   meta.backend.schema.__v = {
     type: 'number',
     select: false
   };
+
 
   // duplicate the Schema
   var schema = _.cloneDeep(meta.backend.schema);

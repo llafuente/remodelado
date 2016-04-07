@@ -1,6 +1,8 @@
 'use strict';
 
-var user_json = require('./user.model.json');
+var user_json = require('js-yaml').load(require('fs')
+  .readFileSync(`${__dirname}/user.model.yml`, 'utf8'));
+
 var crypto = require('crypto');
 var jwt = require('express-jwt/node_modules/jsonwebtoken');
 var ex_jwt = require('express-jwt');

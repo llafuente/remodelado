@@ -114,6 +114,10 @@ function field_list_schema(meta, back_field, list_field, path) {
     list_field.label = back_field.label;
   }
   list_field.name = path;
+  // TODO review this hack. prevent error on nested object filters.
+  // caused by a misshandling of st-search
+  list_field.safe_name = path.replace(/\./g, "$");
+  list_field.id = `${meta.singular}-filter-${path.replace(/\./g, "-")}`;
 
   __build_labels(meta, back_field, list_field);
 }
