@@ -4,6 +4,7 @@ module.exports = Modelador;
 
 var util = require('util');
 var mongoose = require('mongoose');
+var _async = require('async');
 var router = require('./express/router.js');
 var ajv = require('ajv')({allErrors: true});
 
@@ -33,27 +34,45 @@ messages.String.match = 'err-match';
 messages.String.minlength = 'err-minlength';
 messages.String.maxlength = 'err-maxlength';
 
-function Modelador(config, _mongoose) {
+
+// create the 'autoincrements' collection
+
+mongoose.model('autoincrements', new mongoose.Schema({
+  _id: {
+    type: "String"
+  },
+  autoinc: {
+    type: "Number"
+  }
+}, {
+  collection: 'autoincrements'
+}));
+
+
+function Modelador(_config, _mongoose) {
+  this.config = _config;
   this.mongoose = _mongoose;
   this.permissions = [];
   this.models = {};
   this.model = model;
   this.swagger = swagger;
-
-  var permissions = require('./models/permissions.model.js')(this);
-  var user = require('./models/user.model.js')(this, config);
-  var roles = require('./models/roles.model.js')(this);
-
-  permissions.init();
-  user.init();
-  roles.init();
-
-
   this.$router = express.Router();
+}
+
+Modelador.prototype.init = function(cb) {
+  var permissions = require('./models/permissions.model.js')(this);
+  var user = require('./models/user.model.js')(this, this.config);
+  var roles = require('./models/roles.model.js')(this);
 
   this.$router.use(user.$router);
   this.$router.use(permissions.$router);
   this.$router.use(roles.$router);
+
+  _async.each([permissions, user, roles], function(mdl, next)  {
+    mdl.init(function() {
+      next();
+    });
+  }, cb);
 }
 
 function model(meta) {

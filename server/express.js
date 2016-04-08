@@ -24,10 +24,21 @@ app.use(methodOverride());
 var winston = require('winston');
 var logger = new (winston.Logger)({
   transports: [new (winston.transports.ReadableConsole)({
-    level: 'silly'
+    level: 'silly',
+    trace: false
   })]
 });
-logger.setLevels({ error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5, db: 4, request: 2 });
+logger.setLevels({
+  error: 0,
+  warn: 1,
+  info: 2,
+  request: 2,
+  verbose: 3,
+  db: 3,
+  debug: 4,
+  silly: 5,
+  all: 6, // max verbosity
+});
 app.use(function(req, res, next) {
   req.log = logger;
   next();
@@ -56,15 +67,17 @@ mongoose.set('debug', function(name, i) {
       '\x1B[0;36mMongoose:\x1B[0m %s.%s(%s) %s %s %s',
       name,
       i,
-      util.inspect(args[0], {depth: true, colors: true}),
-      util.inspect(args[1], {depth: true, colors: true}),
-      util.inspect(args[2], {depth: true, colors: true}),
-      util.inspect(args[3], {depth: true, colors: true})
+      util.inspect(args[0], {depth: null, colors: true}),
+      util.inspect(args[1], {depth: null, colors: true}),
+      util.inspect(args[2], {depth: null, colors: true}),
+      util.inspect(args[3], {depth: null, colors: true})
     )
   );
 });
-
 mongoose.connect(config.mongo.uri);
+mongoose.connection.once('open', function () {
+  app.emit('init');
+});
 app.mongoose = mongoose;
 app.use(function(req, res, next) {
   req.mongoose = mongoose;

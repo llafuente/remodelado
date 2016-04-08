@@ -4,7 +4,7 @@
 // test
 var request = require('supertest');
 var test = require('tap').test;
-var tutils = require('./utils');
+var test_utils = require('./utils');
 
 var app = require("../server/express.js");
 var authorization = require("../src/express/authorization.js");
@@ -30,7 +30,7 @@ test('invalid user login', function(t) {
 test('/users/me admin', function(t) {
   request(app)
   .post("/users/me")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.username, "admin@admin.com");
@@ -42,7 +42,7 @@ test('/users/me admin', function(t) {
 test('/users/me reader', function(t) {
   request(app)
   .post("/users/me")
-  .use(tutils.authorization("reader@admin.com"))
+  .use(test_utils.authorization("reader@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.username, "reader@admin.com");
@@ -54,7 +54,7 @@ test('/users/me reader', function(t) {
 test('/roles (err)', function(t) {
   request(app)
   .get("/api/roles")
-  .use(tutils.authorization("empty@admin.com"))
+  .use(test_utils.authorization("empty@admin.com"))
   .expect(403)
   .end(function(err, res) {
     t.deepEqual(res.body, {
@@ -80,7 +80,7 @@ test('custom url has_roles', function(t) {
 
   request(app)
   .get("/custom-url")
-  .use(tutils.authorization("empty@admin.com"))
+  .use(test_utils.authorization("empty@admin.com"))
   .expect(403)
   .end(function(err, res) {
     t.deepEqual(res.body, {
@@ -97,7 +97,7 @@ test('custom url has_roles', function(t) {
 test('custom url has_roles', function(t) {
   request(app)
   .get("/custom-url")
-  .use(tutils.authorization("reader@admin.com"))
+  .use(test_utils.authorization("reader@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.deepEqual(res.body, {
@@ -116,7 +116,7 @@ test('delete user in db, all requests fails', function(t) {
 
     request(app)
     .get("/custom-url")
-    .use(tutils.authorization("empty@admin.com"))
+    .use(test_utils.authorization("empty@admin.com"))
     .expect(401)
     .end(function(err, res) {
       t.deepEqual(res.body, {

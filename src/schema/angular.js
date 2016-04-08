@@ -291,7 +291,7 @@ function each_control(meta, action, cb) {
       return ;
     }
 
-    $log.debug(`check_actioning ${path}`);
+    $log.all(`check_action of ${path}`);
 
     if (!check_action(action, back_opt.options, front_opt)) {
       return;

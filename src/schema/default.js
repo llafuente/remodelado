@@ -4,6 +4,7 @@ module.exports = schema_default;
 
 var _ = require('lodash');
 var pluralize = require('pluralize');
+var _async = require('async');
 var utils = require('./utils.js');
 
 var default_schema = {
@@ -53,11 +54,11 @@ function schema_default(meta) {
 
   meta.$init = [];
 
-  meta.init = function() {
-    var i;
-    for (i = 0; i < this.$init.length; ++i) {
-      this.$init[i]();
-    }
+  meta.init = function(cb) {
+    _async.each(this.$init, function(initilizer, next)  {
+      initilizer(next);
+    }, cb);
+
     return meta;
   };
 }

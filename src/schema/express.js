@@ -48,7 +48,6 @@ function schema_express(meta) {
     var blacklist2 = [];
 
     schema_utils.each_path(meta, function(path, options) {
-      $log.info(path, options);
       var ref = options.options.restricted[method];
       if (ref === false) {
         return;
@@ -68,9 +67,6 @@ function schema_express(meta) {
   };
 
   meta.$express.formatter = function formatter_db(req, output, cb) {
-    // TODO remove and use an autoincrement
-    output.id = output._id;
-    delete output._id;
     delete output.__v;
 
     // restricted: true | {create,read,update}

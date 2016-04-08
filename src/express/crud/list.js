@@ -39,15 +39,14 @@ function list_query(meta, logger, user, where, sort, limit, offset, populate, ne
     where = {};
   }
 
-  // TODO review this '$' -> '.'
+  // TODO HACK review this '$' -> '.'
   Object.keys(where).forEach(function(k) {
     if (k.indexOf('$') !== -1) {
-      $log.info("replace!")
       where[k.replace(/\$/g, '.')] = where[k];
       delete where[k];
     }
   });
-  $log.silly(where);
+  $log.debug(where);
 
   sort = sort || '_id';
   limit = limit ? parseInt(limit, 10) : 0;

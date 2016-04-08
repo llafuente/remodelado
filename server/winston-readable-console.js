@@ -54,7 +54,7 @@ ReadableConsole.prototype.log = function(level, msg, meta, callback) {
     meta = null;
   }
 
-  var depth = level == 'silly' ? null : 4;
+  var depth = ['silly', 'db'].indexOf(level) !== -1 ? null : 4;
 
   if (msg instanceof Error) {
     text = util.inspect(msg, {depth: depth, colors: true});
@@ -65,7 +65,6 @@ ReadableConsole.prototype.log = function(level, msg, meta, callback) {
     text = util.inspect(msg, {depth: depth, colors: true});
   }
 
-  var stack = new Error().stack.split('\n').slice(8, 9).join('\n').trim();
   this.std.write([
     level,
     text,
@@ -73,10 +72,12 @@ ReadableConsole.prototype.log = function(level, msg, meta, callback) {
     '\n'
   ].join(' '));
 
-
   if (this.trace) {
+    var stack = new Error().stack.split('\n').slice(8, 9).join('\n').trim();
+
     this.std.write('trace');
     this.std.write(stack);
+    this.std.write("\n");
   }
 
   callback(null, true);

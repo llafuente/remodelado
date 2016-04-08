@@ -6,7 +6,7 @@ var _ = require("lodash");
 // test
 var request = require('supertest');
 var test = require('tap').test;
-var tutils = require('../utils.js');
+var test_utils = require('../utils.js');
 
 var app = require("../../server/express.js");
 var config = require("../../server/config/index.js");
@@ -19,11 +19,11 @@ test('create user model', function(t) {
   app.use(mdl.$router);
 
   // this will end this test
-  tutils.clear(api, mdl, t);
+  test_utils.clear_and_add_permissions(api, mdl, t);
 });
 
 test('login as admin', function(t) {
-  tutils.add_user_permissions(api, "admin@admin.com", [
+  test_utils.add_user_permissions(api, "admin@admin.com", [
     "permission-restricted-read",
     "permission-restricted-create",
     "permission-restricted-update"
@@ -44,7 +44,7 @@ test('login as admin', function(t) {
   test('http: create', function(t) {
     request(app)
     .post("/restricted_models")
-    .use(tutils.authorization("admin@admin.com"))
+    .use(test_utils.authorization("admin@admin.com"))
     .send(u)
     .expect(201)
     .end(function(err, res) {
@@ -62,7 +62,7 @@ test('login as admin', function(t) {
 test('http: list', function(t) {
   request(app)
   .get("/restricted_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.count, 2, "count 2");
@@ -79,7 +79,7 @@ test('http: list', function(t) {
 });
 
 test('remove read permission', function(t) {
-  tutils.rem_user_permissions(api, "admin@admin.com", [
+  test_utils.rem_user_permissions(api, "admin@admin.com", [
     "permission-restricted-read"
   ], function(err, data) {
     t.error(err);
@@ -90,7 +90,7 @@ test('remove read permission', function(t) {
 test('http: list (without read permission)', function(t) {
   request(app)
   .get("/restricted_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.count, 2, "count 2");
@@ -107,7 +107,7 @@ test('http: list (without read permission)', function(t) {
 });
 
 test('remove create permission', function(t) {
-  tutils.rem_user_permissions(api, "admin@admin.com", [
+  test_utils.rem_user_permissions(api, "admin@admin.com", [
     "permission-restricted-create"
   ], function(err, data) {
     t.error(err);
@@ -116,7 +116,7 @@ test('remove create permission', function(t) {
 });
 
 test('add read permission', function(t) {
-  tutils.add_user_permissions(api, "admin@admin.com", [
+  test_utils.add_user_permissions(api, "admin@admin.com", [
     "permission-restricted-read"
   ], function(err, data) {
     t.error(err);
@@ -128,15 +128,16 @@ var entity_id;
 test('http: create without perm', function(t) {
   request(app)
   .post("/restricted_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     perm_restricted: "xxx",
     full_restricted: "xxx"
   })
   .expect(201)
   .end(function(err, res) {
-    t.type(res.body.id, "string", "id defined an string");
-    entity_id = res.body.id;
+    t.type(res.body.id, "number", "id defined and a number");
+    t.type(res.body._id, "string", "_id defined and a string");
+    entity_id = res.body._id;
 
     t.equal(res.body.full_restricted, undefined, "full_restricted is not exposed");
     t.equal(res.body.perm_restricted, "default-value", "perm_restricted is exposed and default value");
@@ -151,7 +152,7 @@ test('http: create without perm', function(t) {
 test('http: update with perm', function(t) {
   request(app)
   .patch("/restricted_models/" + entity_id)
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     perm_restricted: "xxx2",
     full_restricted: "xxx2"
@@ -167,7 +168,7 @@ test('http: update with perm', function(t) {
 });
 
 test('remove create permission', function(t) {
-  tutils.rem_user_permissions(api, "admin@admin.com", [
+  test_utils.rem_user_permissions(api, "admin@admin.com", [
     "permission-restricted-update"
   ], function(err, data) {
     t.error(err);
@@ -178,7 +179,7 @@ test('remove create permission', function(t) {
 test('http: update without perm', function(t) {
   request(app)
   .patch("/restricted_models/" + entity_id)
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     perm_restricted: "xxx3",
     full_restricted: "xxx3"

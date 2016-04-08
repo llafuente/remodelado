@@ -6,7 +6,7 @@ var cheerio = require("cheerio");
 var request = require('supertest');
 var test = require('tap').test;
 var check_js = require('syntax-error');
-var tutils = require('../utils');
+var test_utils = require('../utils');
 
 var app = require("../../server/express.js");
 var config = require("../../server/config/index.js");
@@ -33,9 +33,7 @@ test('create user model', function(t) {
 
   app.use(mdl.$router);
 
-  mdl.$model.remove({}, function() {
-    t.end();
-  });
+  test_utils.clear_and_add_permissions(api, mdl, t);
 });
 
 [{
@@ -60,12 +58,13 @@ test('create user model', function(t) {
   test('http: create user', function(t) {
     request(app)
     .post("/test_models")
-    .use(tutils.authorization("admin@admin.com"))
+    .use(test_utils.authorization("admin@admin.com"))
     .send(u)
     .expect(201)
     .end(function(err, res) {
       console.log(res.body);
-      t.type(res.body.id, "string", "id type");
+      t.type(res.body._id, "string", "_id is a string");
+      t.type(res.body.id, "number", "id is a number");
       t.type(res.body.first_name, "string", "first_name type");
       t.type(res.body.last_name, "string", "last_name type");
       t.equal(res.body.first_name, u.first_name, "first_name value");
@@ -87,7 +86,7 @@ test('http: create user (err)', function(t) {
   request(app)
   .post("/test_models")
   .send([1,2,3])
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(422)
   .end(function(err, res) {
     t.equal(res.body.error, "body is an array");
@@ -100,7 +99,7 @@ test('http: create user (err)', function(t) {
 test('http: create user (err-required)', function(t) {
   request(app)
   .post("/test_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({})
   .expect(400)
   .end(function(err, res) {
@@ -133,7 +132,7 @@ test('http: create user (err-required)', function(t) {
 test('http: create user (err-enum)', function(t) {
   request(app)
   .post("/test_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     first_name: 101,
     last_name: "Pérez",
@@ -164,7 +163,7 @@ test('http: create user (err-enum)', function(t) {
 test('http: create user (err-cast)', function(t) {
   request(app)
   .post("/test_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     first_name: "Manuel",
     last_name: "Pérez",
@@ -247,7 +246,7 @@ test('http: get user routes.js', function(t) {
 test('http: get user list', function(t) {
   request(app)
   .get("/test_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.ok(res.body.count > 0);
@@ -262,7 +261,7 @@ test('http: get user list', function(t) {
 
 test('http: get user list (with accesss token)', function(t) {
   request(app)
-  .get("/test_models?access_token=" + tutils.get_access_token("admin@admin.com"))
+  .get("/test_models?access_token=" + test_utils.get_access_token("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.ok(res.body.count > 0);
@@ -278,7 +277,7 @@ test('http: get user list (with accesss token)', function(t) {
 test('http: get user list', function(t) {
   request(app)
   .get("/test_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/csv')
   .expect(200)
   .end(function(err, res) {
@@ -292,7 +291,7 @@ test('http: get user list', function(t) {
 test('http: get user list', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/csv')
   .expect(200)
   .end(function(err, res) {
@@ -306,12 +305,13 @@ test('http: get user list', function(t) {
 test('http: get user list', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/csv')
   .expect(200)
   .end(function(err, res) {
     t.equal(res.text.split("\n").length, 4); // 4 + headers + last
-    t.equal(res.text.split(",").length, 19);
+    // NOTE this test fail when more add more fields, don't worry
+    t.equal(res.text.split(",").length, 22);
 
     t.error(err);
     t.end();
@@ -321,13 +321,14 @@ test('http: get user list', function(t) {
 test('http: get user list (separator)', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2&separator=;")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/csv')
   .expect(200)
   .end(function(err, res) {
     t.equal(res.text.split("\n").length, 4); // 4 + headers + last
     t.equal(res.text.split(",").length, 1);
-    t.equal(res.text.split(";").length, 19);
+    // NOTE this test fail when more add more fields, don't worry
+    t.equal(res.text.split(";").length, 22);
 
     t.error(err);
     t.end();
@@ -337,13 +338,14 @@ test('http: get user list (separator)', function(t) {
 test('http: get user list (win newline)', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2&separator=;&newline=win")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/csv')
   .expect(200)
   .end(function(err, res) {
     t.equal(res.text.split("\r\n").length, 4); // 4 + headers + last
     t.equal(res.text.split(",").length, 1);
-    t.equal(res.text.split(";").length, 19);
+    // NOTE this test fail when more add more fields, don't worry
+    t.equal(res.text.split(";").length, 22);
 
     t.error(err);
     t.end();
@@ -353,11 +355,12 @@ test('http: get user list (win newline)', function(t) {
 test('http: get user list xml', function(t) {
   request(app)
   .get("/test_models?strict=true&limit=2")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/xml')
   .expect(200)
   .end(function(err, res) {
-    t.equal(res.text.split("\n").length, 23);
+    // NOTE this test fail when more add more fields, don't worry
+    t.equal(res.text.split("\n").length, 25);
 
     t.error(err);
     t.end();
@@ -367,11 +370,11 @@ test('http: get user list xml', function(t) {
 test('http: get user list xml', function(t) {
   request(app)
   .get("/test_models")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .set('Accept', 'text/xml')
   .expect(200)
   .end(function(err, res) {
-    t.equal(res.text.split("\n").length, 45);
+    t.equal(res.text.split("\n").length, 49);
 
     t.error(err);
     t.end();
@@ -382,7 +385,7 @@ test('http: get user list xml', function(t) {
 test('http: get user list (err-invalid offset)', function(t) {
   request(app)
   .get("/test_models?offset=no")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     //t.deepEqual(res.body, {"error":{"message":"Validation failed","name":"ValidationError","errors":{"offset":{"path":"query:offset","message":"offset must be a number","type":"invalid-offset","value":null,"value_type":"number"}}}});
@@ -396,7 +399,7 @@ test('http: get user list (err-invalid offset)', function(t) {
 test('http: get user list (err-invalid offset)', function(t) {
   request(app)
   .get("/test_models?offset=2&limit=no")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:limit","message":"limit must be a number","type":"invalid-limit","value":null,"value_type":"number"}]});
@@ -409,7 +412,7 @@ test('http: get user list (err-invalid offset)', function(t) {
 test('http: get user list (err-invalid invalid where)', function(t) {
   request(app)
   .get("/test_models?offset=2&limit=10&where=dsajfs:true")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:where","message":"invalid where","type":"invalid-where","value":"dsajfs:true","value_type":"json_string"}]});
@@ -422,7 +425,7 @@ test('http: get user list (err-invalid invalid where)', function(t) {
 test('http: get user list (err-invalid invalid sort)', function(t) {
   request(app)
   .get("/test_models?offset=2&limit=10&sort=noexistentfield")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:sort","message":"not found in schema","type":"invalid-sort","value":"noexistentfield","value_type":"string"}]});
@@ -435,7 +438,7 @@ test('http: get user list (err-invalid invalid sort)', function(t) {
 test('http: get user list with offset/limit', function(t) {
   request(app)
   .get("/test_models?offset=0&limit=1")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.list.length, 1);
@@ -450,7 +453,7 @@ test('http: get user list with offset/limit', function(t) {
 test('http: get user list (err invalid sort)', function(t) {
   request(app)
   .get("/test_models?sort=-restricted_field")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:sort","message":"field is restricted","type":"invalid-sort","value":"restricted_field","value_type":"string"}]});
@@ -463,7 +466,7 @@ test('http: get user list (err invalid sort)', function(t) {
 test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate[]=restricted_field")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:populate","message":"field cannot be populated","type":"invalid-populate","value":"restricted_field", "value_type": null}]});
@@ -476,7 +479,7 @@ test('http: get user list (err invalid populate)', function(t) {
 test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate=telephones")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:populate","message":"is not an array","type":"invalid-populate","value":"telephones","value_type":null}]});
@@ -489,7 +492,7 @@ test('http: get user list (err invalid populate)', function(t) {
 test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate[]=telephones")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:populate","message":"not found in schema","type":"invalid-populate","value":"telephones","value_type":null}]});
@@ -502,7 +505,7 @@ test('http: get user list (err invalid populate)', function(t) {
 test('http: get user list (err invalid populate)', function(t) {
   request(app)
   .get("/test_models?populate[]=first_name")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:populate","message":"field cannot be populated","type":"invalid-populate","value":"first_name","value_type":null}]});
@@ -517,7 +520,7 @@ test('http: get user list (err invalid populate)', function(t) {
 test('http: get user list with first_name=abc', function(t) {
   request(app)
   .get("/test_models?where[first_name]=abc")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.count, 1);
@@ -531,7 +534,7 @@ test('http: get user list with first_name=abc', function(t) {
 test('http: get user list (err-invalid invalid where)', function(t) {
   request(app)
   .get("/test_models?where[noexistentfield]=text")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":[{"path":"query:where","message":"not found in schema","type":"invalid-where","value":"noexistentfield","value_type":null}]});
@@ -545,13 +548,13 @@ var user_id;
 test('http: get user list age=37', function(t) {
   request(app)
   .get("/test_models?where[age]=37&limit=1")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(200)
   .end(function(err, res) {
     t.equal(res.body.count, 2);
     t.equal(res.body.list.length, 1);
 
-    user_id = res.body.list[0].id;
+    user_id = res.body.list[0]._id;
 
     t.error(err);
     t.end();
@@ -561,23 +564,23 @@ test('http: get user list age=37', function(t) {
 test('http: update user', function(t) {
   request(app)
   .patch("/test_models/" + user_id)
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     last_name: "last!",
     no_exists: "do not update"
   })
   .expect(200)
   .end(function(err, res) {
-    t.equal(res.body.id, user_id);
+    t.equal(res.body._id, user_id);
     t.equal(res.body.__v, undefined, "version is not exposed");
 
     t.error(err);
     request(app)
     .get("/test_models/" + user_id)
-    .use(tutils.authorization("admin@admin.com"))
+    .use(test_utils.authorization("admin@admin.com"))
     .expect(200)
     .end(function(err2, res2) {
-      t.equal(res2.body.id, user_id);
+      t.equal(res2.body._id, user_id);
       t.equal(res2.body.last_name, "last!");
       t.equal(res2.body.no_exists, undefined);
       t.isDate(res2.body.created_at);
@@ -592,7 +595,7 @@ test('http: update user', function(t) {
 test('http: update user (err)', function(t) {
   request(app)
   .patch("/test_models/" + user_id)
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send([1, 2, 3])
   .expect(422)
   .end(function(err, res2) {
@@ -605,7 +608,7 @@ test('http: update user (err)', function(t) {
 test('http: destroy user that don\'t exists (noerr?)', function(t) {
   request(app)
   .delete("/test_models/56b3683ce8b5ab05535c0e3f")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(204)
   .end(function(err, res2) {
     t.error(err);
@@ -617,7 +620,7 @@ test('http: destroy user that don\'t exists (noerr?)', function(t) {
 test('http: user not found', function(t) {
   request(app)
   .get("/test_models/56b3683ce8b5ab05535c0e3f")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(404)
   .end(function(err, res) {
     t.equal(res.body.error, "Not found");
@@ -632,7 +635,7 @@ test('http: user not found', function(t) {
 test('http: get user not-found', function(t) {
   request(app)
   .get("/test_models/123")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(400)
   .end(function(err, res) {
     t.deepEqual(res.body, {"error":{"message":"cast-failed","value":"123","path":"_id","type":"invalid-type","value_constraint":"cast","value_type":"objectid"}});
@@ -713,7 +716,7 @@ test('http: get user update controller', function(t) {
 test('http: destroy user', function(t) {
   request(app)
   .delete("/test_models/" + user_id)
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .expect(204)
   .end(function(err, res) {
     t.error(err);

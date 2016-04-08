@@ -4,7 +4,7 @@
 var request = require('supertest');
 var _ = require('lodash');
 var test = require('tap').test;
-var tutils = require('../utils');
+var test_utils = require('../utils');
 
 var app = require("../../server/express.js");
 var config = require("../../server/config/index.js");
@@ -18,13 +18,13 @@ test('create user model', function(t) {
 
   console.log(mdl.$schema.paths)
 
-  tutils.clear_and_add_permissions(api, mdl, t);
+  test_utils.clear_and_add_permissions(api, mdl, t);
 });
 /*
 test('http: create user (err)', function(t) {
   request(app)
   .post("/nesteds")
-  .use(tutils.authorization("admin@admin.com"))
+  .use(test_utils.authorization("admin@admin.com"))
   .send({
     description: "description 01"
   })
