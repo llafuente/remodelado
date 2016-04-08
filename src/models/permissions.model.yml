@@ -15,13 +15,8 @@ backend:
       type: "String"
       required: true
       restricted: false
-    id:
-      label: "ID"
-      type: "String"
-      required: true
-      restricted: false
     label:
-      label: "name"
+      label: "Label"
       type: "String"
       required: true
       restricted: false
@@ -29,12 +24,12 @@ frontend:
   navbar:
     label: "Permisos"
   list:
-    id:
+    _id:
       type: "text"
     label:
       type: "text"
   schema:
-    id:
+    _id:
       type: "static"
       create: false
       update: true

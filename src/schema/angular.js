@@ -66,7 +66,7 @@ function __build_labels(meta, back_field, front_field) {
       front_field.labels = [];
       var i;
       for (i = 0; i < src.enum.length; ++i) {
-        front_field.labels.push({id: src.enum[i], label: src.labels[i]});
+        front_field.labels.push({_id: src.enum[i], label: src.labels[i]});
       }
     }
 

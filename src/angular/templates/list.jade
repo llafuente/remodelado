@@ -25,9 +25,9 @@ section#list
               if (val.type == "number")
                 input.input-sm.form-control(st-search=val.safe_name type="number" id=val.id)
               if (val.type == "date-range")
-                st-date-range(collection= val.label_values predicate=val.safe_name id=val.id)
+                st-date-range(collection=val.label_values predicate=val.safe_name id=val.id)
               if (val.label_values)
-                st-select(collection= val.label_values predicate=val.safe_name id=val.id)
+                st-select(collection=val.label_values predicate=val.safe_name id=val.id)
           else
             th
         th
@@ -36,7 +36,7 @@ section#list
         each val in listable_fields
           td= '{{row.' + val.name + (val.label_filter ? ' | ' + val.label_filter : '') + '}}'
         td
-          a.entity-action.entity-update.ng-hide(ui-sref='^.update({' + id_param + ': row.id})', uib-tooltip="{{'" + buttons.update.tooltip + "' | translate}}", ng-show="$root.Auth.hasPermissions('" + api.permissions.update + "')")
+          a.entity-action.entity-update.ng-hide(ui-sref='^.update({' + id_param + ': row._id})', uib-tooltip="{{'" + buttons.update.tooltip + "' | translate}}", ng-show="$root.Auth.hasPermissions('" + api.permissions.update + "')")
             i.fa.fa-pencil-square-o.fa-lg
           a.entity-action.entity-delete.ng-hide(ng-click='delete($index, row)', confirm="{{'" + buttons.delete.alert + "' | translate}}", uib-tooltip="{{'" + buttons.delete.tooltip + "' | translate}}", ng-show="$root.Auth.hasPermissions('" + api.permissions.delete + "')")
             i.fa.list.fa-trash-o.fa-lg

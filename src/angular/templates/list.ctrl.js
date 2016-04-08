@@ -69,7 +69,7 @@ angular
   $scope.delete = function(idx, row) {
     $http({
       method: 'DELETE',
-      url: '<%= api.urls.delete %>/'.replace(':<%= api.id_param %>', row.id)
+      url: '<%= api.urls.delete %>/'.replace(':<%= api.id_param %>', row._id)
     }).then(function() {
       $scope.list.list.splice(idx, 1);
       --$scope.list.count;

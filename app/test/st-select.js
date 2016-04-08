@@ -9,7 +9,7 @@ angular
       predicate: '@',
       predicateExpression: '='
     },
-    template: '<select class="input-sm form-control" ng-model="selectedOption" ng-change="optionChanged(selectedOption)" ng-options="o.id as o.label for o in distinctItems"></select>',
+    template: '<select class="input-sm form-control" ng-model="selectedOption" ng-change="optionChanged(selectedOption)" ng-options="o._id as o.label for o in distinctItems"></select>',
     link: function(scope, element, attr, table) {
       var getPredicate = function() {
         var predicate = scope.predicate;

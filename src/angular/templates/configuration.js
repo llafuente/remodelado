@@ -96,14 +96,17 @@ if (control.labels || control.source_url) {
     var values = values_fn();
     if (!values) return ''; // w8 a bit more...
 
-    if (Array.isArray(id)) {
-      return id.map(function(k) {
-        var v = _.find(values, {id: k});
-        return v ? v.label : '??';
-      }).join(", ");
+    function get(k) {
+      var v = _.find(values, {_id: k});
+      return v ? v.label : '??';
     }
-    var v = _.find(values, {id: id})
-    return v ? v.label : '??';
+
+
+    if (Array.isArray(id)) {
+      return id.map(get).join(", ");
+    }
+
+    return get(id);
   }
 }])
 <%

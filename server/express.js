@@ -76,7 +76,7 @@ mongoose.set('debug', function(name, i) {
 });
 mongoose.connect(config.mongo.uri);
 mongoose.connection.once('open', function () {
-  app.emit('init');
+  app.emit('ready');
 });
 app.mongoose = mongoose;
 app.use(function(req, res, next) {

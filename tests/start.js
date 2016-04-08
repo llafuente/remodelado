@@ -28,7 +28,7 @@ module.exports = function(test, app, config) {
     app.use(api.$router);
 
     test('initialize api', function(t) {
-      app.once('init', function() {
+      app.once('ready', function() {
         api.init(function() {
           t.end();
         });
