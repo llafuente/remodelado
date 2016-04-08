@@ -27,34 +27,19 @@ function simplify_schema(obj, prop, value) {
 }
 
 function schema_mongoose(meta, mongoose, models) {
-
-  /* istanbul ignore next */
-  if (meta.backend.schema.__v) {
-    throw new Error('__v is reserved, use another identifier.');
-  }
   /* istanbul ignore next */
   if (meta.backend.schema.version) {
     throw new Error('version is reserved, use another identifier.');
   }
 
-
-  meta.backend.schema.id = {
-    type: 'Number',
-    label: "ID",
-    restricted: { create: true, update: true, read: false }
-  };
-  // NOTE __v need to be manually declared, or wont be in the paths
-  meta.backend.schema.__v = {
-    type: 'Number',
-    label: "Version",
-    select: false
-  };
-
-
   // duplicate the Schema
   var schema = _.cloneDeep(meta.backend.schema);
   simplify_schema(schema);
   $log.all(schema);
+
+  // cleanup
+  delete schema.created_at;
+  delete schema.updated_at;
 
   //utils.loop(meta.backend.schema, console.log);
   //process._rawDebug(schema);

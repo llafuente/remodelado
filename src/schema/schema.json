@@ -59,6 +59,7 @@
         },
         "type": {
           "enum": [
+            "Date",
             "String",
             "Number",
             "ObjectId",
