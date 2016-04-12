@@ -12,16 +12,6 @@
       "delete": "Borrar test"
     },
     "schema": {
-      "id": {
-        "label": "ID",
-
-        "type": "Number",
-        "restricted": {
-          "read": false,
-          "update": true,
-          "create": true
-        }
-      },
       "restricted_field": {
         "label": "",
         "type": "Number",
@@ -77,7 +67,9 @@
       "label": "Users"
     },
     "list": {
-      "id": {},
+      "id": {
+        "label": "ID"
+      },
       "first_name": {},
       "last_name": {},
       "age": {},
@@ -85,6 +77,7 @@
     },
     "schema": {
       "id": {
+        "label": "ID",
         "type": "static",
         "create": false,
         "update": true
