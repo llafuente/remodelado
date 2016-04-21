@@ -9,7 +9,7 @@ section#list
 
   //pre {{list | json}}
 
-  table.table.table-striped(st-table='' id=name st-pipe="getList" st-delay="1000")
+  table.table.table-striped(st-table='' id=name st-pipe="getList")
     thead
       tr.headers
         each val in listable_fields

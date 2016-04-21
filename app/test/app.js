@@ -19,6 +19,11 @@ angular
   $log.debug("(navbarLeft)", navbarLeft.tree);
   $rootScope.tl_navbar = navbarLeft.tree;
 })
+.run(function (stConfig) {
+  // https://github.com/lorenzofox3/Smart-Table/issues/388
+  stConfig.pipe.delay = 500;
+  stConfig.search.delay = 1000;
+})
 .config(function (rewriteRequestConfigProvider) {
   //rewriteRequestConfigProvider.start_with['/api'] = "/jwt/v1";
 })
