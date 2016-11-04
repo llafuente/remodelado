@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$schema": "http://json-schema.org/draft-04/schema#",
   "description": "Schema for backend model and fontend interface",
 
   "definitions": {
@@ -114,9 +113,6 @@
         },
         "items": {
           "type": "object"
-        },
-        "required": {
-          "type": "boolean"
         },
         "ref": {
           "type": "string"

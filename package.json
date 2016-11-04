@@ -1,7 +1,7 @@
 {
   "name": "remodelando",
   "version": "0.0.0",
-  "description": "Angular + Express + Mongoose REST",
+  "description": "Angular + Bootstrap + Express + Mongoose: generator",
   "main": "index.js",
   "scripts": {
     "test": "tap -b --cov --coverage-report=lcov tests/*.test.js tests/*/*.test.js",
