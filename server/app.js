@@ -2,12 +2,14 @@
 
 var app = require('./express.js');
 var express = require('express');
+var path_join = require('path').join;
 
 app.use('/', express.static('dist'));
 // e2e test
-app.use('/', express.static('tmp/instrumented/app'));
-app.use('/', express.static('app'));
-app.use('/src', express.static('bower_components/inetsys-angular-seed/src'));
+app.use('/', express.static(path_join(__dirname, '../tmp/instrumented/app')));
+app.use('/', express.static(path_join(__dirname, '../app')));
+app.use('/src', express.static(
+  path_join(__dirname, '../bower_components/inetsys-angular-seed/src')));
 
 var modelador = require('../src/index.js');
 var mongoose = require('mongoose');

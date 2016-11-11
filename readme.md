@@ -10,6 +10,26 @@ Advanced CRUD generator using:
 * mongoose errors are rewritten to support muti-language properly
 
 
+## Test
+
+backend
+
+```sh
+npm test
+```
+
+fontend/e2e
+
+```sh
+npm install -g webdriver-manager protractor
+
+
+# start selenium
+webdriver-manager start >/dev/null 2>&1 &
+node server/app.js >/dev/null 2>&1 &
+grunt test
+```
+
 ## Model definition
 
 The model definition is checked against a [JSON Schema](src/schema/schema.json), this contains all information
